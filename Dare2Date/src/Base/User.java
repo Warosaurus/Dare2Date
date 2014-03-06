@@ -4,6 +4,7 @@ public class User {
 	private String fName;
 	private String lName;
 	private String pass;
+	private int level;
 	private int age;
 
 	User(){
