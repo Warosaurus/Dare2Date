@@ -1,4 +1,5 @@
 package datefate;
+import Base.User;
 import java.util.Scanner.*; //Temp for testing
 
 public class DateFate {
@@ -40,7 +41,6 @@ public class DateFate {
 		}
 		return useArr;
 	}
-	
 	
     public static void main(String[] args) {
 		User[] users = addUsers();

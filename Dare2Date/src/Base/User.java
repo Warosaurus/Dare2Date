@@ -1,4 +1,4 @@
-package datefate;
+package Base;
 
 public class User {
 	private String fName;

@@ -3,8 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Dropbox/Work/Uni/Year3/Software%20Engineering/src/datefate/DateFate.java</file>
-            <file>file:/C:/Dropbox/Work/Uni/Year3/Software%20Engineering/src/datefate/User.java</file>
+            <file>file:/C:/Dropbox/Work/Uni/Year3/Software%20Engineering/DateFate/src/Base/User.java</file>
+            <file>file:/C:/Dropbox/Work/Uni/Year3/Software%20Engineering/DateFate/src/Server/DateServer.java</file>
+            <file>file:/C:/Dropbox/Work/Uni/Year3/Software%20Engineering/DateFate/src/Base/Response.java</file>
         </group>
     </open-files>
 </project-private>
