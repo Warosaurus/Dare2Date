@@ -1,0 +1,1 @@
+Password complexity - https://stackoverflow.com/questions/3466850/complex-password-regular-expression
