@@ -5,38 +5,46 @@ import java.io.Serializable;
 public class User implements Serializable {
 	private String fName;
 	private String lName;
-	private String pass;
+	private int userid;
 	private int level;
 	private int age;
 
 	public User() {
 	}
 
-	public User(String newFName, String newLName, String newPass, int newAge){
-		fName = newFName;
-		lName = newLName;
-		pass = newPass;
-		age = newAge;
+	//Setter methods
+	
+	//set user id of user
+	public void setUserid(int userid) {
+		this.userid = userid;
 	}
-
+	
 	//set first name of user
-	public void setFName(String newName){
-		this.fName = newName;
+	public void setFName(String fName){
+		this.fName = fName;
 	}
 
 	//set Last name of user
-	public void setLName(String newName){
-		this.lName = newName;
+	public void setLName(String lName){
+		this.lName = lName;
 	}
 
-	//set Last name of user
-	public void setPass(String newPass){
-		this.pass = newPass;
+
+	//set age of user
+	public void setAge(int age){
+		this.age = age;
 	}
 
-	//set Last name of user
-	public void setAge(int newAge){
-		this.age = newAge;
+	//set level of user
+	public void setLevel(int level){
+		this.level = level;
+	}
+	
+	//Getter methods
+	
+	//get id of user
+	public int getUserid() {
+		return userid;
 	}
 
 	//get first name of user
@@ -49,18 +57,19 @@ public class User implements Serializable {
 		return this.lName;
 	}
 
-	//get password of user
-	public String getPass(){
-		return this.pass;
-	}
-
 	//get age of user
 	public int getAge(){
 		return this.age;
 	}
 
+	//get level of user
+	public int getLevel() {
+		return level;
+	}
+
 	@Override
 	public String toString() {
-		return "User{" + "fName=" + fName + ", lName=" + lName + ", pass=" + pass + ", level=" + level + ", age=" + age + '}';
+		return "User{" + "fName=" + fName + ", lName=" + lName + ", userid=" + userid + ", level=" + level + ", age=" + age + '}';
 	}
+
 }
