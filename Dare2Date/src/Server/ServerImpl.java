@@ -44,7 +44,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			userServerArray.add(user);
 		}
 		User newUser = basicUser(user);
-		synchronized (userServerArray) {
+		synchronized (userArray) {
 			userArray.add(newUser);	
 		}
 	}
