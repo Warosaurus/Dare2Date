@@ -21,6 +21,7 @@ public class BasicClient {
 		user1.setPass("123456");
 		test[0] = user1;
 		
+		//user with same email as before to test existing email.
 		UserServerInfo user2 = new UserServerInfo();
 		user2.setEmail("example@example.com");
 		user2.setFName("Mike");
@@ -28,8 +29,16 @@ public class BasicClient {
 		user2.setAge(20);
 		user2.setPass("123456");
 		test[1] = user2;
+		
+		UserServerInfo user3 = new UserServerInfo();
+		user3.setEmail("example1@example.com");
+		user3.setFName("Mike");
+		user3.setLName("hen");
+		user3.setAge(20);
+		user3.setPass("123456");
+		test[2] = user3;
 
-		for (int i = 0; i < 2; i++){
+		for (int i = 0; i < 3; i++){
 			bc.signUp(test[i]);
 		}
 	}	
