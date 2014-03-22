@@ -10,6 +10,7 @@ public class User implements Serializable {
 
 	private String fName;
 	private String lName;
+	private String gender;
 	private int userid;
 	private int level;
 	private int age;
@@ -24,6 +25,25 @@ public class User implements Serializable {
 	 */
 	public User() {
 		level = 1;
+	}
+
+	/**
+	 *
+	 * Constructor
+	 * @param fName
+	 * @param lName
+	 * @param userid
+	 * @param level
+	 * @param age
+	 * @param location
+	 */
+	public User(String fName, String lName, int userid, int level, int age, String location) {
+		this.fName = fName;
+		this.lName = lName;
+		this.userid = userid;
+		this.level = level;
+		this.age = age;
+		this.location = location;
 	}
 
 	/**
@@ -51,6 +71,15 @@ public class User implements Serializable {
 	 */
 	public String getLName() {
 		return this.lName;
+	}
+
+	/**
+	 * Get gender of user
+	 *
+	 * @return String
+	 */
+	public String getGender() {
+		return gender;
 	}
 
 	/**
@@ -105,6 +134,15 @@ public class User implements Serializable {
 	 */
 	public void setLName(String lName) {
 		this.lName = lName;
+	}
+
+	/**
+	 * Set the gender of user
+	 *
+	 * @param gender
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	/**

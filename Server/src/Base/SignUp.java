@@ -15,6 +15,7 @@ public class SignUp {
 	private String card_Name;
 	private String account_Number;
 	private String card_Number;
+	private int level;
 
 	
 	@SuppressWarnings("unused")
@@ -53,6 +54,14 @@ public class SignUp {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	public String getSurName() {

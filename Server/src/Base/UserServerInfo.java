@@ -2,11 +2,12 @@ package Base;
 
 import java.io.Serializable;
 
-public class UserServerInfo extends User {
+public class UserServerInfo extends User implements Serializable {
 	private String email;
 	private String pass;
 	
 	public UserServerInfo () {
+		super();
 	}
 
 	public UserServerInfo(String email, String pass) {

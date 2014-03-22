@@ -9,7 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 
+ *
  * @author Warwick
  */
 public class ServerImpl extends UnicastRemoteObject implements ServiceInterface {
@@ -19,9 +19,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	private final ConcurrentHashMap<Integer, UserServerInfo> userServerMap;
 
 	/**
-	 * 
-	 * @throws java.rmi.RemoteException
-	 * Default constructor.
+	 *
+	 * @throws java.rmi.RemoteException Default constructor.
 	 */
 	public ServerImpl() throws RemoteException {
 		userMap = new ConcurrentHashMap();
@@ -30,7 +29,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	}
 
 	/**
-	 * 
+	 *
 	 * @param signUp
 	 * @return Response
 	 * @throws RemoteException
@@ -41,22 +40,20 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		if (!existingEmail(signUp.getE_Mail())) {
 			res.setError("This email address has already been registerd.");
 		} else {
-			//create a UserSerinfo object based on the SignUp object
-			UserServerInfo userserverinfo = new UserServerInfo();
-			userserverinfo.setEmail(signUp.getE_Mail());
-			userserverinfo.setFName(signUp.getFirstName());
-			userserverinfo.setLName(signUp.getSurName());
-			userserverinfo.setPass(signUp.getPassword());
 			//return the max userid so that the next one can be assigned to a new user
 			int userid = maxUserid() + 1;
+			User user = new User(signUp.getFirstName(), signUp.getSurName(), userid, signUp.getLevel(), signUp.getAge(), signUp.getLocation());
+			//create a UserSerinfo object based on the SignUp object
+			UserServerInfo userserverinfo = (UserServerInfo) user;
+			//UserServerInfo userserverinfo = new UserServerInfo();
+			userserverinfo.setEmail(signUp.getE_Mail());
+			userserverinfo.setPass(signUp.getPassword());
 			//set the id for the user
 			userserverinfo.setUserid(userid);
 			//place the userserverinfo object into the hashmap
 			userServerMap.put(userid, userserverinfo);
-			//create a user based on the userserverinfo
-			User newUser = basicUser(userserverinfo);
 			//place the user object into the the hashmap
-			userMap.put(userid, newUser);
+			userMap.put(userid, user);
 			res.setResponse(true);
 		}
 		System.out.println("userArray: " + userServerMap);
@@ -75,7 +72,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		Response res = new Response();
 		UserServerInfo userserverinfo = checkLoginDetails(email, pass);
 		if (userserverinfo != null) {
-			User user = basicUser(userserverinfo);
+			User user = userMap.get(userserverinfo.getUserid());
 			startSession(user.getUserid());
 			res.setResponse(user);
 		} else {
@@ -98,29 +95,12 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	}
 
 	/**
-	 * Convert UserServerInfo to User
-	 *
-	 * @param server
-	 * @return User
-	 */
-		public User basicUser(UserServerInfo server) {
-		User basic = new User();
-		basic.setFName(server.getFName());
-		basic.setLName(server.getLName());
-		basic.setAge(server.getAge());
-		basic.setLevel(server.getLevel());
-		basic.setUserid(server.getUserid());
-		return basic;
-	}
-
-	//check to see whether an email address has already been registerd.
-
-	/**
+	 * Check to see whether an email address has already been registered.
 	 *
 	 * @param email
 	 * @return boolean
 	 */
-		public boolean existingEmail(String email) {
+	public boolean existingEmail(String email) {
 		boolean valid = true;
 		//if there are no users then there is no point in checking if a specific email address is in use.
 		if (!userServerMap.isEmpty()) {
@@ -141,7 +121,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param pass
 	 * @return UserServerInfo
 	 */
-		public UserServerInfo checkLoginDetails(String email, String pass) {
+	public UserServerInfo checkLoginDetails(String email, String pass) {
 		UserServerInfo userserverinfo = new UserServerInfo();
 		boolean valid = false;
 		//if there are no users then there is no point in checking if a specific email address is registerd.
@@ -159,50 +139,56 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	}
 
 	/**
-	 * 
+	 *
 	 * Return the maximum userid to assign to a new user
+	 *
 	 * @return int
 	 */
-		public int maxUserid() {
+	public int maxUserid() {
 		//if userServerMap is not empty ? (return maximum keyset(userids) + 1) : (else return 1)
 		return ((!userServerMap.isEmpty()) ? (Collections.max(userServerMap.keySet())) : 1);
 	}
 
 	/**
-	 * 
+	 *
 	 * Return a specific user
+	 *
 	 * @param userid
 	 * @return User
 	 */
-		public User getUser(int userid) {
+	public User getUser(int userid) {
 		return ((userMap.containsKey(userid)) ? userMap.get(userid) : null);
 	}
 
 	/**
-	 * 
-	 * Start a users session	
+	 *
+	 * Start a users session
+	 *
 	 * @param userid
 	 */
-		public void startSession(int userid) {
+	public void startSession(int userid) {
 		sessions.put(userid, true);
 	}
 
 	/**
-	 * 
-	 * Return whether the session of the user is active, if session doesn't exist returns false.
+	 *
+	 * Return whether the session of the user is active, if session doesn't
+	 * exist returns false.
+	 *
 	 * @param userid
 	 * @return boolean
 	 */
-		public boolean findSession(int userid) {
+	public boolean findSession(int userid) {
 		return ((sessions.containsKey(userid)) ? sessions.get(userid) : false);
 	}
 
 	/**
-	 * 
+	 *
 	 * End a users session
+	 *
 	 * @param userid
 	 */
-		public void endSession(int userid) {
+	public void endSession(int userid) {
 		sessions.put(userid, false);
 	}
 }
