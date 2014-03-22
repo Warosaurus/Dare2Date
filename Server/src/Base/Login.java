@@ -2,7 +2,7 @@ package Base;
 
 /**
  *
- * @author Warwick Louw
+ *
  */
 public class Login {
 
@@ -27,7 +27,7 @@ public class Login {
 
 	/**
 	 *
-	 * @return String pass
+	 * @return String
 	 */
 	public String getPass() {
 		return pass;

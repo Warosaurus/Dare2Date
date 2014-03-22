@@ -1,10 +1,11 @@
 package Base;
 
+import java.util.Calendar;
 import java.io.Serializable;
 
 /**
  *
- * @author Warwick Louw
+ * 
  */
 public class User implements Serializable {
 
@@ -14,6 +15,7 @@ public class User implements Serializable {
 	private int userid;
 	private int level;
 	private int age;
+	private Calendar birthdate;
 	private String location;
 
 	/**
@@ -32,22 +34,26 @@ public class User implements Serializable {
 	 * Constructor
 	 * @param fName
 	 * @param lName
+	 * @param gender
 	 * @param userid
 	 * @param level
 	 * @param age
+	 * @param birthdate
 	 * @param location
 	 */
-	public User(String fName, String lName, int userid, int level, int age, String location) {
+	public User(String fName, String lName, String gender, int userid, int level, int age, Calendar birthdate, String location) {
 		this.fName = fName;
 		this.lName = lName;
+		this.gender = gender;
 		this.userid = userid;
 		this.level = level;
 		this.age = age;
+		this.birthdate = birthdate;
 		this.location = location;
 	}
 
 	/**
-	 * Get id of user
+	 * Get the id of the user
 	 *
 	 * @return int
 	 */
@@ -56,7 +62,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Get first name of user
+	 * Get the first name of the user
 	 *
 	 * @return String
 	 */
@@ -65,7 +71,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Get last name of user
+	 * Get the last name of the user
 	 *
 	 * @return String
 	 */
@@ -74,7 +80,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Get gender of user
+	 * Get the gender of the user
 	 *
 	 * @return String
 	 */
@@ -83,7 +89,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Get age of user
+	 * Get the age of the user
 	 *
 	 * @return int
 	 */
@@ -92,7 +98,16 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Get level of user
+	 * Get the birthdate of the user
+	 *
+	 * @return int
+	 */
+	public Calendar getBirthdate() {
+		return birthdate;
+	}
+
+	/**
+	 * Get the level of the user
 	 *
 	 * @return int
 	 */
@@ -101,7 +116,7 @@ public class User implements Serializable {
 	}
 	
 	/**
-	 * Get location of user
+	 * Get the location of the user
 	 *
 	 * @return String
 	 */
@@ -110,7 +125,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Set user id of user
+	 * Set the user id of the user
 	 *
 	 * @param userid
 	 */
@@ -119,7 +134,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Set first name of user
+	 * Set the first name of the user
 	 *
 	 * @param fName
 	 */
@@ -128,7 +143,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Set Last name of user
+	 * Set the Last name of the user
 	 *
 	 * @param lName
 	 */
@@ -137,7 +152,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Set the gender of user
+	 * Set the gender of the user
 	 *
 	 * @param gender
 	 */
@@ -146,7 +161,7 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Set age of user
+	 * Set the age of the user
 	 *
 	 * @param age
 	 */
@@ -155,7 +170,16 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * Set level of user
+	 * Set the birthdate of the user
+	 *
+	 * @param birthdate
+	 */
+	public void setBirthdate(Calendar birthdate) {
+		this.birthdate = birthdate;
+	}
+
+	/**
+	 * Set the level of the user
 	 *
 	 * @param level
 	 */
@@ -164,7 +188,7 @@ public class User implements Serializable {
 	}
 	
 	/**
-	 * Set location of user
+	 * Set the location of the user
 	 *
 	 * @param location
 	 */

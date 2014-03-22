@@ -1,13 +1,14 @@
 package Base;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-
-public class SignUp {
+public class SignUp implements Serializable {
 
 	private String firstName;
 	private String surName;
-	private Calendar age;
+	private Calendar birthdate;
+	private int age;
 	private String gender;
 	private String location;
 	private String e_Mail;
@@ -19,24 +20,23 @@ public class SignUp {
 
 	
 	@SuppressWarnings("unused")
-	private SignUp(){
+	public SignUp(){
 		
 	}
 
-	public SignUp(String first, String sur, Calendar ag, String gen, String loc, String e,	String pass, 
-		String card_Nam, String account_Num, String card_Num){
-		
-			this.firstName = first;
-			this.surName = sur; 
-			this.age = ag;
-			this.gender = gen;
-			this.location = loc;
-			this.e_Mail = e;
-			this.password = pass;
-			this.card_Name = card_Nam;
-			this.account_Number = account_Num;
-			this.card_Number = card_Num;
-		
+	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String card_Name, String account_Number, String card_Number, int level) {
+		this.firstName = firstName;
+		this.surName = surName;
+		this.birthdate = birthdate;
+		this.age = age;
+		this.gender = gender;
+		this.location = location;
+		this.e_Mail = e_Mail;
+		this.password = password;
+		this.card_Name = card_Name;
+		this.account_Number = account_Number;
+		this.card_Number = card_Number;
+		this.level = level;
 	}
 	
 	@Override
@@ -72,11 +72,19 @@ public class SignUp {
 		this.surName = surName;
 	}
 
-	public Calendar getAge() {
+	public Calendar getBirthdate() {
+		return birthdate;
+	}
+
+	public void setBirthdate(Calendar birthdate) {
+		this.birthdate = birthdate;
+	}
+
+	public int getAge() {
 		return age;
 	}
 
-	public void setAge(Calendar age) {
+	public void setAge(int age) {
 		this.age = age;
 	}
 

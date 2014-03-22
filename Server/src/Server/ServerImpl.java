@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
- * @author Warwick
+ *
  */
 public class ServerImpl extends UnicastRemoteObject implements ServiceInterface {
 
@@ -42,7 +42,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		} else {
 			//return the max userid so that the next one can be assigned to a new user
 			int userid = maxUserid() + 1;
-			User user = new User(signUp.getFirstName(), signUp.getSurName(), userid, signUp.getLevel(), signUp.getAge(), signUp.getLocation());
+			User user = new User(signUp.getFirstName(), signUp.getSurName(),signUp.getGender(), userid, signUp.getLevel(),signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
 			//create a UserSerinfo object based on the SignUp object
 			UserServerInfo userserverinfo = (UserServerInfo) user;
 			//UserServerInfo userserverinfo = new UserServerInfo();
