@@ -1,3 +1,10 @@
 /Dare2Date/build/
 /Dare2Date/dist/
+<<<<<<< HEAD
 /NbClient/
+=======
+/NbClient/
+/Server/dist/
+/Server/nbproject/
+/Server/test/
+>>>>>>> master
