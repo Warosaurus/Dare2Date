@@ -165,9 +165,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 *  - Note to self, possibly add bi-gender search
 	 *
 	 * @param gender
-	 * @return ArrayList<User>
+	 * @return Response - ArrayList<User>
 	 */
-	public ArrayList<User> viewProfiles(String gender) {
+	public Response viewProfiles(String gender) {
+		Response res = new Response();
 		ArrayList<User> userlist = new ArrayList();
 		if (!userMap.isEmpty()) {
 			Iterator<Integer> iter = userServerMap.keySet().iterator();
@@ -177,7 +178,31 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 					userlist.add(userMap.get(i));
 			}
 		}
-		return userlist;
+		res.setResponse(userlist);
+		return res;
+	}
+	
+	/**
+	 *
+	 * Search for a person based on their first name or last name.
+	 *
+	 * @param keyword
+	 * @return Response - ArrayList<User>
+	 */
+	@Override
+	public Response nameSearch(String keyword) {
+		Response res = new Response();
+		ArrayList<User> userlist = new ArrayList();
+		if (!userMap.isEmpty()) {
+			Iterator<Integer> iter = userServerMap.keySet().iterator();
+			while (iter.hasNext()) {
+				Integer i = iter.next();
+				if (userMap.get(i).getFName().matches(keyword) || userMap.get(i).getLName().matches(keyword))
+					userlist.add(userMap.get(i));
+			}
+		}
+		res.setResponse(userlist);
+		return res;
 	}
 
 	/**
