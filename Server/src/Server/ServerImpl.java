@@ -17,6 +17,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	private final ConcurrentHashMap<Integer, User> userMap;
 	private final ConcurrentHashMap<Integer, Boolean> sessions;
 	private final ConcurrentHashMap<Integer, UserServerInfo> userServerMap;
+	private final ConcurrentHashMap<Integer, ArrayList> userMatches;
 
 	/**
 	 *
@@ -26,6 +27,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		userMap = new ConcurrentHashMap();
 		sessions = new ConcurrentHashMap();
 		userServerMap = new ConcurrentHashMap();
+		userMatches = new ConcurrentHashMap();
 	}
 
 	/**
@@ -45,9 +47,9 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			//return the max userid so that the next one can be assigned to a new user
 			int maxid = maxUserid();
 			int userid = (maxid == 0) ? 1 : maxid + 1;
-			User user = new User(signUp.getFirstName(), signUp.getSurName(),signUp.getGender(), userid, signUp.getLevel(),signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
+			User user = new User(signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
 			//create a UserServerInfo object based on the SignUp object
-			UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(),signUp.getCard_Number(),signUp.getPassword(),signUp.getFirstName(), signUp.getSurName(),signUp.getGender(), userid, signUp.getLevel(),signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
+			UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(), signUp.getCard_Number(), signUp.getPassword(), signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
 			//place the userserverinfo object into the hashmap
 			userServerMap.put(userid, userserverinfo);
 			//place the user object into the the hashmap
@@ -93,7 +95,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	}
 
 	/**
-	 * 
+	 *
 	 * Check to see whether an email address has already been registered.
 	 *
 	 * @param email
@@ -104,7 +106,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		//if there are no users then there is no point in checking if a specific email address is in use.
 		if (!userServerMap.isEmpty()) {
 			Iterator<Integer> iter = userServerMap.keySet().iterator();
-			while(iter.hasNext() && valid == true) {
+			while (iter.hasNext() && valid == true) {
 				Integer i = iter.next();
 				if (userServerMap.get(i).getEmail().equals(email)) {
 					valid = false;
@@ -116,8 +118,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 	/**
 	 *
-	 * @param email
-	 * @param pass
+	 * @param email String
+	 * @param pass String
 	 * @return UserServerInfo
 	 */
 	public UserServerInfo checkLoginDetails(String email, String pass) {
@@ -152,7 +154,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 *
 	 * Return a specific user
 	 *
-	 * @param userid
+	 * @param userid int
 	 * @return User
 	 */
 	public User getUser(int userid) {
@@ -161,12 +163,13 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 	/**
 	 *
-	 * Return a list of all users of a specific preference
-	 *  - Note to self, possibly add bi-gender search
+	 * Return a list of all users of a specific preference - Note to self,
+	 * possibly add bi-gender search
 	 *
-	 * @param gender
-	 * @return Response - ArrayList<User>
+	 * @param gender String
+	 * @return Response - ArrayList - User
 	 */
+	@Override
 	public Response viewProfiles(String gender) {
 		Response res = new Response();
 		ArrayList<User> userlist = new ArrayList();
@@ -174,20 +177,21 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			Iterator<Integer> iter = userServerMap.keySet().iterator();
 			while (iter.hasNext()) {
 				Integer i = iter.next();
-				if (userMap.get(i).getGender().equals(gender))
+				if (userMap.get(i).getGender().equals(gender)) {
 					userlist.add(userMap.get(i));
+				}
 			}
 		}
 		res.setResponse(userlist);
 		return res;
 	}
-	
+
 	/**
 	 *
 	 * Search for a person based on their first name or last name.
 	 *
-	 * @param keyword
-	 * @return Response - ArrayList<User>
+	 * @param keyword String
+	 * @return Response - ArrayList - User
 	 */
 	@Override
 	public Response nameSearch(String keyword) {
@@ -197,11 +201,74 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			Iterator<Integer> iter = userServerMap.keySet().iterator();
 			while (iter.hasNext()) {
 				Integer i = iter.next();
-				if (userMap.get(i).getFName().matches(keyword) || userMap.get(i).getLName().matches(keyword))
+				if (userMap.get(i).getFName().matches(keyword) || userMap.get(i).getLName().matches(keyword)) {
 					userlist.add(userMap.get(i));
+				}
 			}
 		}
 		res.setResponse(userlist);
+		return res;
+	}
+
+	/**
+	 *
+	 * Match users based on their location and gender preference
+	 *
+	 * @param user User
+	 * @param gender String
+	 * @return Response - ArrayList - User
+	 */
+	public Response blindLocationMatch(User user, String gender) {
+		Response res = new Response();
+		if (user.getLevel() > 1) {
+			if (!userMap.isEmpty()) {
+				Iterator<Integer> iter = userServerMap.keySet().iterator();
+				while (iter.hasNext()) {
+					Integer i = iter.next();
+					//first chack if the locations match and their gender is what they are looking for
+					if (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation()) && userMap.get(i).getGender().equals(gender)) {
+						//then check if the this user has matches, then check if these two users haven't been matched before.
+						if (userMatches.containsKey(user.getUserid()) && !userMatches.get(user.getUserid()).contains(i)) {
+							//if the criteria is matched then return this user
+							res.setResponse(userMap.get(i));
+						}
+					}
+				}
+			}
+		} else {
+			res.setError("You do not have sufficiant rights to perform this action.");
+		}
+		return res;
+	}
+	
+	/**
+	 *
+	 * Match users based on their age
+	 *
+	 * @param user User
+	 * @param gender String
+	 * @return Response - ArrayList - User
+	 */
+	public Response blindAgeMatch(User user, String gender) {
+		Response res = new Response();
+		if (user.getLevel() > 1) {
+			if (!userMap.isEmpty()) {
+				Iterator<Integer> iter = userServerMap.keySet().iterator();
+				while (iter.hasNext()) {
+					Integer i = iter.next();
+					//first chack if the ages match and their gender is what they are looking for
+					if ((userMap.get(i).getAge() == user.getAge()) && userMap.get(i).getGender().equals(gender)) {
+						//then check if the this user has matches, then check if these two users haven't been matched before.
+						if (userMatches.containsKey(user.getUserid()) && !userMatches.get(user.getUserid()).contains(i)) {
+							//if the criteria is matched then return this user
+							res.setResponse(userMap.get(i));
+						}
+					}
+				}
+			}
+		} else {
+			res.setError("You do not have sufficiant rights to perform this action.");
+		}
 		return res;
 	}
 
