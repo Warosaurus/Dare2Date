@@ -8,42 +8,41 @@ import java.rmi.NotBoundException;
 import java.net.MalformedURLException;
 
 public class BasicClient {
-	
+
 	public static void testUsers(){
 		BasicClient bc = new BasicClient();
-		UserServerInfo[] test = new UserServerInfo[5];
+		SignUp[] test = new SignUp[5];
 		
-		UserServerInfo user1 = new UserServerInfo();
-		user1.setEmail("example@example.com");
-		user1.setFName("John");
-		user1.setLName("Mc");
-		user1.setAge(33);
-		user1.setPass("123456");
+		SignUp user1 = new SignUp();
+		user1.setE_Mail("example1@example.com");
+		user1.setFirstName("Mike");
+		user1.setSurName("hen");
+		user1.setGender("Male");
+		user1.setLevel(2);
+		user1.setLocation("Amsterdam");
+		user1.setCard_Number("32155642135");
+		user1.setAge(20);
+		user1.setPassword("123456");
 		test[0] = user1;
 		
-		//user with same email as before to test existing email.
-		UserServerInfo user2 = new UserServerInfo();
-		user2.setEmail("example@example.com");
-		user2.setFName("Mike");
-		user2.setLName("hen");
-		user2.setAge(20);
-		user2.setPass("123456");
+		SignUp user2 = new SignUp();
+		user2.setE_Mail("example2@example.com");
+		user2.setFirstName("John");
+		user2.setSurName("Paul");
+		user2.setGender("Male");
+		user2.setLevel(3);
+		user2.setLocation("Haarlem");
+		user2.setCard_Number("32155642135");
+		user2.setAge(31);
+		user2.setPassword("12345678");
 		test[1] = user2;
-		
-		UserServerInfo user3 = new UserServerInfo();
-		user3.setEmail("example1@example.com");
-		user3.setFName("Mike");
-		user3.setLName("hen");
-		user3.setAge(20);
-		user3.setPass("123456");
-		test[2] = user3;
 
-		for (int i = 0; i < 3; i++){
+		for (int i = 0; i < 2; i++){
 			bc.signUp(test[i]);
 		}
 	}	
 	
-	public void signUp(UserServerInfo user) {
+	public void signUp(SignUp user) {
 		try {
 			//Create a reference to the service interface at the location.
 			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");

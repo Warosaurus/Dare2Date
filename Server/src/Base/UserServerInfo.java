@@ -1,6 +1,7 @@
 package Base;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 /**
  *
@@ -17,6 +18,13 @@ public class UserServerInfo extends User implements Serializable {
 	 */
 	public UserServerInfo() {
 		super();
+	}
+
+	public UserServerInfo(String email, String pass, String ccNumber, String fName, String lName, String gender, int userid, int level, int age, Calendar birthdate, String location) {
+		super(fName, lName, gender, userid, level, age, birthdate, location);
+		this.email = email;
+		this.pass = pass;
+		this.ccNumber = ccNumber;
 	}
 
 	/**

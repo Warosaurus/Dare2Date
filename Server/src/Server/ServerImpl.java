@@ -37,19 +37,17 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	@Override
 	public Response SignUp(SignUp signUp) throws RemoteException {
 		Response res = new Response();
+		//possible refator, check if hashmap is empty, otherwise check email address. reduce calls.
+		System.out.println(userServerMap.keySet());
 		if (!existingEmail(signUp.getE_Mail())) {
 			res.setError("This email address has already been registerd.");
 		} else {
 			//return the max userid so that the next one can be assigned to a new user
-			int userid = maxUserid() + 1;
+			int maxid = maxUserid();
+			int userid = (maxid == 0) ? 1 : maxid + 1;
 			User user = new User(signUp.getFirstName(), signUp.getSurName(),signUp.getGender(), userid, signUp.getLevel(),signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
-			//create a UserSerinfo object based on the SignUp object
-			UserServerInfo userserverinfo = (UserServerInfo) user;
-			//UserServerInfo userserverinfo = new UserServerInfo();
-			userserverinfo.setEmail(signUp.getE_Mail());
-			userserverinfo.setPass(signUp.getPassword());
-			//set the id for the user
-			userserverinfo.setUserid(userid);
+			//create a UserServerInfo object based on the SignUp object
+			UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(),signUp.getCard_Number(),signUp.getPassword(),signUp.getFirstName(), signUp.getSurName(),signUp.getGender(), userid, signUp.getLevel(),signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
 			//place the userserverinfo object into the hashmap
 			userServerMap.put(userid, userserverinfo);
 			//place the user object into the the hashmap
@@ -95,6 +93,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	}
 
 	/**
+	 * 
 	 * Check to see whether an email address has already been registered.
 	 *
 	 * @param email
@@ -105,12 +104,12 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		//if there are no users then there is no point in checking if a specific email address is in use.
 		if (!userServerMap.isEmpty()) {
 			Iterator<Integer> iter = userServerMap.keySet().iterator();
-			do {
+			while(iter.hasNext() && valid == true) {
 				Integer i = iter.next();
 				if (userServerMap.get(i).getEmail().equals(email)) {
 					valid = false;
 				}
-			} while (valid && iter.hasNext());
+			}
 		}
 		return valid;
 	}
@@ -140,13 +139,13 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 	/**
 	 *
-	 * Return the maximum userid to assign to a new user
+	 * Return the maximum userid
 	 *
 	 * @return int
 	 */
 	public int maxUserid() {
 		//if userServerMap is not empty ? (return maximum keyset(userids) + 1) : (else return 1)
-		return ((!userServerMap.isEmpty()) ? (Collections.max(userServerMap.keySet())) : 1);
+		return ((!userServerMap.isEmpty()) ? (Collections.max(userServerMap.keySet())) : 0);
 	}
 
 	/**
@@ -158,6 +157,27 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 */
 	public User getUser(int userid) {
 		return ((userMap.containsKey(userid)) ? userMap.get(userid) : null);
+	}
+
+	/**
+	 *
+	 * Return a list of all users of a specific preference
+	 *  - Note to self, possibly add bi-gender search
+	 *
+	 * @param gender
+	 * @return ArrayList<User>
+	 */
+	public ArrayList<User> viewProfiles(String gender) {
+		ArrayList<User> userlist = new ArrayList();
+		if (!userMap.isEmpty()) {
+			Iterator<Integer> iter = userServerMap.keySet().iterator();
+			while (iter.hasNext()) {
+				Integer i = iter.next();
+				if (userMap.get(i).getGender().equals(gender))
+					userlist.add(userMap.get(i));
+			}
+		}
+		return userlist;
 	}
 
 	/**
