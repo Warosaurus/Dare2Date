@@ -5,14 +5,13 @@ public class SignUp {
 
 	private String firstName;
 	private String surName;
-	private Calendar age;
+	private Calendar dob;
+	private int age;
 	private String gender;
 	private String location;
 	private String e_Mail;
 	private String password;
-	private String card_Name;
 	private String account_Number;
-	private String card_Number;
 
 	
 	@SuppressWarnings("unused")
@@ -20,19 +19,17 @@ public class SignUp {
 		
 	}
 
-	public SignUp(String first, String sur, Calendar ag, String gen, String loc, String e,	String pass, 
-		String card_Nam, String account_Num, String card_Num){
+	public SignUp(String first, String sur, Calendar DOB, int ag, String gen, String loc, String e,	String pass, String account_Num){
 		
 			this.firstName = first;
 			this.surName = sur; 
+			this.dob = DOB;
 			this.age = ag;
 			this.gender = gen;
 			this.location = loc;
 			this.e_Mail = e;
 			this.password = pass;
-			this.card_Name = card_Nam;
 			this.account_Number = account_Num;
-			this.card_Number = card_Num;
 		
 	}
 	
@@ -41,8 +38,8 @@ public class SignUp {
 		return "SignUp [firstName=" + firstName + ", surName=" + surName
 				+ ", age=" + age + ", gender=" + gender + ", location="
 				+ location + ", e_Mail=" + e_Mail + ", password=" + "********"
-				+ ", card_Name=" + card_Name + ", account_Number="
-				+ account_Number + ", card_Number=" + card_Number + "]";
+				+ ", account_Number="
+				+ account_Number + "]";
 	}
 
 	public String getFirstName() {
@@ -61,12 +58,20 @@ public class SignUp {
 		this.surName = surName;
 	}
 
-	public Calendar getAge() {
+	public int getAge() {
 		return age;
 	}
 
-	public void setAge(Calendar age) {
+	public void setAge(int age) {
 		this.age = age;
+	}
+	
+	public Calendar getDob() {
+		return dob;
+	}
+
+	public void setDob(Calendar dob) {
+		this.dob = dob;
 	}
 
 	public String getGender() {
@@ -101,28 +106,12 @@ public class SignUp {
 		this.password = password;
 	}
 
-	public String getCard_Name() {
-		return card_Name;
-	}
-
-	public void setCard_Name(String card_Name) {
-		this.card_Name = card_Name;
-	}
-
 	public String getAccount_Number() {
 		return account_Number;
 	}
 
 	public void setAccount_Number(String account_Number) {
 		this.account_Number = account_Number;
-	}
-
-	public String getCard_Number() {
-		return card_Number;
-	}
-
-	public void setCard_Number(String card_Number) {
-		this.card_Number = card_Number;
 	}
 	
 }

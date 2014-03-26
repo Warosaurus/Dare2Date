@@ -71,7 +71,7 @@ public class MainWindow extends JFrame {
 		lblNewLabel.setAutoscrolls(true);
 		frame.getContentPane().add(lblNewLabel);
 		
-		JLabel lblUsername = new JLabel("Username :");
+		JLabel lblUsername = new JLabel("E-mail :");
 		lblUsername.setBounds(150, 281, 96, 14);
 		frame.getContentPane().add(lblUsername);
 		
@@ -111,6 +111,8 @@ public class MainWindow extends JFrame {
 		JButton btnNewButton_2 = new JButton("Continue As\r\n Free User");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				new ProfileWindow();
 			}
 		});
 		btnNewButton_2.setBounds(490, 281, 160, 73);
@@ -125,6 +127,13 @@ public class MainWindow extends JFrame {
 		pwdPassword.setToolTipText("Password");
 		pwdPassword.setBounds(255, 303, 160, 17);
 		frame.getContentPane().add(pwdPassword);
+		
+		onDrawPictures();
+		
+		}
+	
+	
+	public void onDrawPictures(){
 		
 		JLabel pic_1 = new JLabel("");
 		pic_1.setIcon(new ImageIcon(MainWindow.class.getResource("/myImages/pic1.jpg")));
@@ -170,11 +179,18 @@ public class MainWindow extends JFrame {
 		pic_9.setIcon(new ImageIcon(MainWindow.class.getResource("/myImages/pic9.jpg")));
 		pic_9.setBounds(712, 382, 82, 90);
 		frame.getContentPane().add(pic_9);
-		
-		}
+	}
 	
 	public void signUp(){
 		
 		new FormDetailsWindow();
+	}
+	
+	public void signIn(){
+		
+		User user = new User();
+		user.setLevel(1);
+		
+		new ProfileWindow(user);
 	}
 }
