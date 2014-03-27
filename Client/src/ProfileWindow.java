@@ -19,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.ImageIcon;
+import javax.swing.DropMode;
+import javax.swing.JTextArea;
 
 
 public class ProfileWindow implements ActionListener{
@@ -27,6 +29,7 @@ public class ProfileWindow implements ActionListener{
 	private JFrame frame;
 	private int screenWidth;
 	private int screenHeight;
+	private int currentScreen;
 	//--------------------------------------Variables for 	
 	private JLayeredPane MainlayeredPane;
 	private JLayeredPane ProfilelayeredPane;
@@ -34,6 +37,8 @@ public class ProfileWindow implements ActionListener{
 	private User currentUser = new User();
 	
 	private JButton btnpanelProfileTitle_Home;
+	private String[] comboBoxSettings = {"Account Settings","Edit Personal Details","Edit Preferences","Edit Account Details","View Profile"};
+	private JComboBox<?> comboBoxpanelTitle_Settings;
 	
 	//---------------------------------Variables for the main search panel-----------------------------------------------------
 	
@@ -51,7 +56,6 @@ public class ProfileWindow implements ActionListener{
 	
 	private String[] comboBoxSearch = {"Firstname","Surname","Sport","Music","Film"};
 	private String[] comboBoxBlind = {"Age","Location"};
-	private String[] comboBoxSettings = {"Account Settings","Edit Personal Details","Edit Preferences","Edit Account Details","View Profile"};
 	
 	//----------------------------------Variables for setting the current profile being shown ------------------------------------------------------------//
 	
@@ -63,6 +67,7 @@ public class ProfileWindow implements ActionListener{
 	private String sex_Pref = "";
 	private String films = "";
 	private String sports = "";
+	private JTextField txtpanelMainInstantM_Message;
 	/**
 	 * Launch the application.
 	 */
@@ -85,6 +90,7 @@ public class ProfileWindow implements ActionListener{
 	public ProfileWindow() {
 		initialize();
 		frame.setVisible(true);
+		currentScreen = 1;
 	}
 	
 	public ProfileWindow(User user){
@@ -92,18 +98,25 @@ public class ProfileWindow implements ActionListener{
 		initialize();
 		frame.setVisible(true);
 		
+		currentUser = user;
+		currentScreen = 1;
 		
-		//if(user.getLevel() == 1){
-			panelMainSearch_Criteria2.setVisible(false);
-			panelMainSearch_Criteria3.setVisible(false);
-			panelMainSearch_Criteria4.setVisible(false);
-			panelMainSearch_Criteria5.setVisible(false);
+		if(user.getLevel() == 1){
+			panelMainSearch_Criteria2.setEnabled(false);
+			panelMainSearch_Criteria3.setEnabled(false);
+			panelMainSearch_Criteria4.setEnabled(false);
+			panelMainSearch_Criteria5.setEnabled(false);
 			
-			panelMainSearch_CB2.setVisible(false);
-			panelMainSearch_CB3.setVisible(false);
-			panelMainSearch_CB4.setVisible(false);
+			panelMainSearch_CB2.setEnabled(false);
+			panelMainSearch_CB3.setEnabled(false);
+			panelMainSearch_CB4.setEnabled(false);
 			panelMainSearch_CB5.setEnabled(false);
-		//}
+			
+			comboBoxpanelTitle_Settings.setEnabled(false);
+			comboBoxpanelTitle_Settings.setFocusable(false);
+			comboBoxpanelTitle_Settings.setVisible(false);
+			
+		}
 		
 		
 	}
@@ -137,12 +150,23 @@ public class ProfileWindow implements ActionListener{
 		lblpanelTitle_Dare2Date.setBounds(201, 20, 500, 60);
 		panelProfileTitle.add(lblpanelTitle_Dare2Date);
 		
-		JComboBox<?> comboBoxpanelTitle_Settings = new JComboBox<Object>(comboBoxSettings);
+		comboBoxpanelTitle_Settings = new JComboBox<Object>(comboBoxSettings);
 		comboBoxpanelTitle_Settings.setBounds(740, 54, 140, 25);
 		comboBoxpanelTitle_Settings.addActionListener(this);
 		panelProfileTitle.add(comboBoxpanelTitle_Settings);
 		
 		btnpanelProfileTitle_Home = new JButton("HOME");
+		btnpanelProfileTitle_Home.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if(currentScreen == 2){
+					changePanels(ProfilelayeredPane,MainlayeredPane);
+				}
+				else if(currentScreen == 3){
+					
+				}
+			}
+		});
 		btnpanelProfileTitle_Home.setBounds(20, 20, 80, 23);
 		btnpanelProfileTitle_Home.setVisible(false);
 		panelProfileTitle.add(btnpanelProfileTitle_Home);
@@ -182,56 +206,56 @@ public class ProfileWindow implements ActionListener{
 		JLabel lblpanelMainSearch_Title = new JLabel("Search Profiles");
 		lblpanelMainSearch_Title.setFont(new Font("Verdana", Font.BOLD, 15));
 		lblpanelMainSearch_Title.setHorizontalAlignment(SwingConstants.CENTER);
-		lblpanelMainSearch_Title.setBounds(10, 10, 430, 40);
+		lblpanelMainSearch_Title.setBounds(10, 10, 430, 30);
 		panelMainSearch.add(lblpanelMainSearch_Title);
 		
 		panelMainSearch_CB1 = new JComboBox<Object>(comboBoxSearch);
-		panelMainSearch_CB1.setBounds(20, 60, 150, 20);
+		panelMainSearch_CB1.setBounds(20, 50, 150, 20);
 		panelMainSearch.add(panelMainSearch_CB1);
 		
 		panelMainSearch_CB2 = new JComboBox<Object>(comboBoxSearch);
-		panelMainSearch_CB2.setBounds(20, 95, 150, 20);
+		panelMainSearch_CB2.setBounds(20, 80, 150, 20);
 		panelMainSearch.add(panelMainSearch_CB2);
 		
 		panelMainSearch_CB3 = new JComboBox<Object>(comboBoxSearch);
-		panelMainSearch_CB3.setBounds(20, 130, 150, 20);
+		panelMainSearch_CB3.setBounds(20, 110, 150, 20);
 		panelMainSearch.add(panelMainSearch_CB3);
 		
 		panelMainSearch_CB4 = new JComboBox<Object>(comboBoxSearch);
-		panelMainSearch_CB4.setBounds(20, 165, 150, 20);
+		panelMainSearch_CB4.setBounds(20, 140, 150, 20);
 		panelMainSearch.add(panelMainSearch_CB4);
 		
 		panelMainSearch_CB5 = new JComboBox<Object>(comboBoxSearch);
-		panelMainSearch_CB5.setBounds(20, 200, 150, 20);
+		panelMainSearch_CB5.setBounds(20, 170, 150, 20);
 		panelMainSearch.add(panelMainSearch_CB5);
 		
 		panelMainSearch_Criteria1 = new JTextField();
-		panelMainSearch_Criteria1.setBounds(230, 60, 150, 20);
+		panelMainSearch_Criteria1.setBounds(270, 50, 150, 20);
 		panelMainSearch.add(panelMainSearch_Criteria1);
 		panelMainSearch_Criteria1.setColumns(10);
 		
 		panelMainSearch_Criteria2 = new JTextField();
-		panelMainSearch_Criteria2.setBounds(230, 95, 150, 20);
+		panelMainSearch_Criteria2.setBounds(270, 80, 150, 20);
 		panelMainSearch.add(panelMainSearch_Criteria2);
 		panelMainSearch_Criteria2.setColumns(10);
 		
 		panelMainSearch_Criteria3 = new JTextField();
-		panelMainSearch_Criteria3.setBounds(230, 130, 150, 20);
+		panelMainSearch_Criteria3.setBounds(270, 110, 150, 20);
 		panelMainSearch.add(panelMainSearch_Criteria3);
 		panelMainSearch_Criteria3.setColumns(10);
 		
 		panelMainSearch_Criteria4 = new JTextField();
-		panelMainSearch_Criteria4.setBounds(230, 165, 150, 20);
+		panelMainSearch_Criteria4.setBounds(270, 140, 150, 20);
 		panelMainSearch.add(panelMainSearch_Criteria4);
 		panelMainSearch_Criteria4.setColumns(10);
 		
 		panelMainSearch_Criteria5 = new JTextField();
-		panelMainSearch_Criteria5.setBounds(230, 200, 150, 20);
+		panelMainSearch_Criteria5.setBounds(270, 170, 150, 20);
 		panelMainSearch.add(panelMainSearch_Criteria5);
 		panelMainSearch_Criteria5.setColumns(10);
 		
 		JButton btnpanelMainSearch_Match = new JButton("Search");
-		btnpanelMainSearch_Match.setBounds(230, 231, 150, 18);
+		btnpanelMainSearch_Match.setBounds(150, 219, 150, 30);
 		panelMainSearch.add(btnpanelMainSearch_Match);
 	}
 	
@@ -242,6 +266,22 @@ public class ProfileWindow implements ActionListener{
 		panelMainInstantM.setBounds(452, 100, 450, 260);
 		pane.add(panelMainInstantM);
 		panelMainInstantM.setLayout(null);
+		
+		txtpanelMainInstantM_Message = new JTextField();
+		txtpanelMainInstantM_Message.setText("Enter text here.....");
+		txtpanelMainInstantM_Message.setBounds(10, 200, 340, 50);
+		panelMainInstantM.add(txtpanelMainInstantM_Message);
+		txtpanelMainInstantM_Message.setColumns(10);
+		
+		JButton btnpanelMainInstantM_Send = new JButton("SEND");
+		btnpanelMainInstantM_Send.setBounds(360, 200, 80, 50);
+		panelMainInstantM.add(btnpanelMainInstantM_Send);
+		
+		JLabel lblpanelMainInstantM_Title = new JLabel("Instant Messenger");
+		lblpanelMainInstantM_Title.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpanelMainInstantM_Title.setFont(new Font("Verdana", Font.BOLD, 15));
+		lblpanelMainInstantM_Title.setBounds(10, 10, 430, 30);
+		panelMainInstantM.add(lblpanelMainInstantM_Title);
 	}
 	
 	public void onDrawPanelMain_Blind(JLayeredPane pane){
@@ -399,6 +439,7 @@ public class ProfileWindow implements ActionListener{
 		else if(choice == 4){
 			
 			setProfile(currentUser);
+			currentScreen = 2;
 			btnpanelProfileTitle_Home.setVisible(true);
 			changePanels(MainlayeredPane,ProfilelayeredPane);
 			cb.setSelectedIndex(0);
