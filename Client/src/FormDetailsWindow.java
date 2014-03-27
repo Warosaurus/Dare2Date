@@ -1,3 +1,4 @@
+import Base.*;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -390,9 +391,8 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		JButton btnNextPref = new JButton("Next");
 		btnNextPref.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				setPreferences(txtPreferences_Sport.getText());
-				//onClickNext(preferences,account);
+				//setPreferences(txtPreferences_Sport.getText());
+				onClickNext(preferences,account);
 			}
 		});
 		btnNextPref.setBounds(484, 350, 90, 24);
@@ -768,22 +768,23 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	
 	//puts the users details into a SignUp class
 	public void onConfirm(){
-		
-		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
-				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
+	
+		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),txtAccount_Password.getText(), txtAccount_AccountNumber.getText(), 2);
+//		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
+//				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
 		
 		onSignUp(signUp);
 	}
 	
 	
-	public void onSignUp (SignUp user) {
+	public void onSignUp (SignUp signUp) {
 		try {
 			//Create a reference to the service interface at the location.
 			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
 			//Create a response object
-			OnResponse res;
+			Response res = new Response();
 			//Invoke server SignUp method
-			res = service.SignUp(user);
+			res = service.SignUp(signUp);
 			//Test response
 			if (res.getError() != null) {
 				System.out.println(res.getError());

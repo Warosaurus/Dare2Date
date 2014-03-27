@@ -18,6 +18,9 @@ public class DateServer {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Server initialzing..");
+//		if (System.getSecurityManager() == null) {
+//            System.setSecurityManager(new SecurityManager());
+//        }
 		try {
 			/**
 			 * Create a local registry at port 1099.

@@ -2,7 +2,6 @@ package Base;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.io.Serializable;
 
 public interface ServiceInterface extends Remote {
 	//Each method should indicate it throws RemoteException

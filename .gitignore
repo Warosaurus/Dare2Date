@@ -3,3 +3,6 @@
 /Server/nbproject/
 /Server/test/
 /Server/build/
+/NBClient/Client/nbproject/private/
+/NBClient/Client/build/
+/NBClient/Client/dist/
