@@ -1,9 +1,6 @@
-import Base.*;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,9 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
-
+import javax.swing.text.DefaultStyledDocument;
 
 public class MainWindow extends JFrame {
 
@@ -26,6 +22,7 @@ public class MainWindow extends JFrame {
 	private JFrame frame;
 	private JTextField txtEmail;
 	private JPasswordField pwdPassword;
+	private DefaultStyledDocument doc = new DefaultStyledDocument();
 	
 
 	/**
