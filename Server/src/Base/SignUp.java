@@ -2,6 +2,7 @@ package Base;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Map;
 
 public class SignUp implements Serializable {
 
@@ -17,7 +18,7 @@ public class SignUp implements Serializable {
 	private String account_Number;
 	private String card_Number;
 	private int level;
-
+	private Map preferencesMap;
 	
 	@SuppressWarnings("unused")
 	public SignUp(){
@@ -41,11 +42,7 @@ public class SignUp implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "SignUp [firstName=" + firstName + ", surName=" + surName
-				+ ", age=" + age + ", gender=" + gender + ", location="
-				+ location + ", e_Mail=" + e_Mail + ", password=" + "********"
-				+ ", card_Name=" + card_Name + ", account_Number="
-				+ account_Number + ", card_Number=" + card_Number + "]";
+		return "SignUp{" + "firstName=" + firstName + ", surName=" + surName + ", birthdate=" + birthdate + ", age=" + age + ", gender=" + gender + ", location=" + location + ", e_Mail=" + e_Mail + ", password=" + password + ", card_Name=" + card_Name + ", account_Number=" + account_Number + ", card_Number=" + card_Number + ", level=" + level + ", preferencesMap=" + preferencesMap + '}';
 	}
 
 	public String getFirstName() {
@@ -143,5 +140,12 @@ public class SignUp implements Serializable {
 	public void setCard_Number(String card_Number) {
 		this.card_Number = card_Number;
 	}
-	
+
+	public Map getPreferencesMap() {
+		return preferencesMap;
+	}
+
+	public void setPreferencesMap(Map preferencesMap) {
+		this.preferencesMap = preferencesMap;
+	}
 }

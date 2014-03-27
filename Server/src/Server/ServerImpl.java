@@ -40,16 +40,15 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public Response SignUp(SignUp signUp) throws RemoteException {
 		Response res = new Response();
 		//possible refator, check if hashmap is empty, otherwise check email address. reduce calls.
-		System.out.println(userServerMap.keySet());
 		if (!existingEmail(signUp.getE_Mail())) {
 			res.setError("This email address has already been registerd.");
 		} else {
 			//return the max userid so that the next one can be assigned to a new user
 			int maxid = maxUserid();
 			int userid = (maxid == 0) ? 1 : maxid + 1;
-			User user = new User(signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
+			User user = new User(signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap());
 			//create a UserServerInfo object based on the SignUp object
-			UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(), signUp.getCard_Number(), signUp.getPassword(), signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
+			UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(), signUp.getCard_Number(), signUp.getPassword(), signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap());
 			//place the userserverinfo object into the hashmap
 			userServerMap.put(userid, userserverinfo);
 			//place the user object into the the hashmap
