@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -25,13 +26,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 
-
 public class FormDetailsWindow extends JFrame implements ItemListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4227172725150558754L;
+	
 	//--------------------variables : personal details page----------------------------------//
 	
 	private JPanel personal;
@@ -173,19 +174,19 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblPersonal_DOB.setBounds(150, 210, 90, 20);
 		personal.add(lblPersonal_DOB);
 		
-		txtPersonal_Firstname = new LimitField();
-		txtPersonal_Firstname.setToolTipText("First name : minimum of 2 characters and max length of 18 characters");
+		txtPersonal_Firstname = new JTextField();
+		txtPersonal_Firstname.setToolTipText("First name : minimum of 2 characters and max length of 24 characters");
 		txtPersonal_Firstname.setBounds(270, 150, 120, 20);
 		personal.add(txtPersonal_Firstname);
 		txtPersonal_Firstname.setColumns(10);
 		
-		txtPersonal_Surname = new LimitField();
-		txtPersonal_Surname.setToolTipText("Surname : minimum of 2 characters and max length of 18 characters");
+		txtPersonal_Surname = new JTextField();
+		txtPersonal_Surname.setToolTipText("Surname : minimum of 2 characters and max length of 24 characters");
 		txtPersonal_Surname.setBounds(270, 180, 120, 20);
 		personal.add(txtPersonal_Surname);
 		txtPersonal_Surname.setColumns(10);
 		
-		txtPersonal_Day = new LimitField();
+		txtPersonal_Day = new JTextField();
 		txtPersonal_Day.setToolTipText("Day : must contain a one/two digit number between 1-31");
 		txtPersonal_Day.setHorizontalAlignment(SwingConstants.CENTER);
 		txtPersonal_Day.setText("DD");
@@ -194,8 +195,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		personal.add(txtPersonal_Day);
 		txtPersonal_Day.setColumns(10);
 		
-		txtPersonal_Month = new LimitField();
-		txtPersonal_Month.setDocument(new LimitDocument(2));
+		txtPersonal_Month = new JTextField();
 		txtPersonal_Month.setToolTipText("Month : must contain a one/two digit number between 1-12");
 		txtPersonal_Month.setHorizontalAlignment(SwingConstants.CENTER);
 		txtPersonal_Month.setText("MM");
@@ -204,7 +204,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		personal.add(txtPersonal_Month);
 		txtPersonal_Month.setColumns(10);
 		
-		txtPersonal_Year = new LimitField(4);
+		txtPersonal_Year = new JTextField();
 		txtPersonal_Year.setToolTipText("Year");
 		txtPersonal_Year.setHorizontalAlignment(SwingConstants.CENTER);
 		txtPersonal_Year.setText("YYYY");
@@ -231,8 +231,8 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblPersonal_Location.setBounds(150, 270, 90, 20);
 		personal.add(lblPersonal_Location);
 		
-		txtPersonal_Town = new LimitField(18);
-		txtPersonal_Town.setToolTipText("Town or City : must contain a valid town or city maximum of 18 characters");
+		txtPersonal_Town = new JTextField();
+		txtPersonal_Town.setToolTipText("Town or City : must contain a valid town or city maximum of 24 characters");
 		txtPersonal_Town.setBounds(270, 268, 120, 21);
 		personal.add(txtPersonal_Town);
 		txtPersonal_Town.setColumns(10);
@@ -391,7 +391,6 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		JButton btnNextPref = new JButton("Next");
 		btnNextPref.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				//setPreferences(txtPreferences_Sport.getText());
 				onClickNext(preferences,account);
 			}
@@ -440,7 +439,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblAccount_AccountNumber.setBounds(110, 210, 130, 20);
 		account.add(lblAccount_AccountNumber);
 		
-		txtAccount_Email = new LimitField(18);
+		txtAccount_Email = new JTextField();
 		txtAccount_Email.setToolTipText("e-mail");
 		txtAccount_Email.setBounds(250, 150, 200, 20);
 		account.add(txtAccount_Email);
@@ -451,7 +450,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		account.add(txtAccount_Password);
 		txtAccount_Password.setColumns(10);
 		
-		txtAccount_AccountNumber = new LimitField(16);
+		txtAccount_AccountNumber = new JTextField();
 		txtAccount_AccountNumber.setBounds(250, 210, 200, 20);
 		account.add(txtAccount_AccountNumber);
 		txtAccount_AccountNumber.setColumns(10);
@@ -769,22 +768,23 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	
 	//puts the users details into a SignUp class
 	public void onConfirm(){
-		
-		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
-				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
+	
+		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),txtAccount_Password.getText(), txtAccount_AccountNumber.getText(), 2);
+//		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
+//				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
 		
 		onSignUp(signUp);
 	}
 	
 	
-	public void onSignUp (SignUp user) {
+	public void onSignUp (SignUp signUp) {
 		try {
 			//Create a reference to the service interface at the location.
-			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://192.168.50.102/DateServer");
 			//Create a response object
-			Response res;
+			Response res = new Response();
 			//Invoke server SignUp method
-			res = service.SignUp(user);
+			res = service.SignUp(signUp);
 			//Test response
 			if (res.getError() != null) {
 				System.out.println(res.getError());
@@ -794,7 +794,6 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 				System.out.println("Everything went okay.");
 				System.out.println(res.getResponse());
 			}
-			
 		} catch (NotBoundException ex) {
 			System.out.println(ex);
 		} catch (MalformedURLException ex) {
