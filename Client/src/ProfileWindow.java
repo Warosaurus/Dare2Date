@@ -1,4 +1,6 @@
-import Base.*;
+import Base.Response;
+import Base.ServiceInterface;
+import Base.User;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,7 +14,6 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Calendar;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -20,7 +21,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -195,34 +195,10 @@ public class ProfileWindow implements ActionListener{
 //			int choice5 = panelMainSearch_CB5.getSelectedIndex();
 			
 			if(panelMainSearch_Criteria1 != null&&((choice1 == 1)||(choice1 == 0))){
+				nameSearch(panelMainSearch_Criteria1.getText());
 				
-                       public void nameSearch ("gareth"){
-                        try {
-                            //Create a reference to the service interface at the location.
-                            ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://192.0.0.102/DateServer");
-                            //Create a response object
-                            Response res = new Response();
-                            //Invoke server SignUp method
-                            res = service.nameSearch(panelMainSearch_Criteria1.getText());
-                            //Test response
-                            if (res.getError() != null) {
-                                    System.out.println(res.getError());
-                                    System.out.println("There was an error.");
-                            }
-                            else {
-                                    System.out.println("Everything went okay.");
-                                    System.out.println(res.getResponse());
-                            }
-                        } catch (NotBoundException ex) {
-                                System.out.println(ex);
-                        } catch (MalformedURLException ex) {
-                                System.out.println(ex);
-                        } catch (RemoteException ex) {
-                                System.out.println(ex);
-                    }
-            
-                }
-		
+			}
+		}
 	}
 	
 	public void onDrawPanelTitle(JLayeredPane pane){
@@ -772,4 +748,31 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 		panelProfileMain.add(lblpanelProfileMain_Films);
 	}
 
+	public void nameSearch(String keyword){
+		try {
+            //Create a reference to the service interface at the location.
+            ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://192.168.50.102/DateServer");
+            //Create a response object
+            Response res = new Response();
+            //Invoke server SignUp method
+            res = service.nameSearch(keyword);
+            //Test response
+            if (res.getError() != null) {
+                    System.out.println(res.getError());
+                    System.out.println("There was an error.");
+            }
+            else {
+                    System.out.println("Everything went okay.");
+                    System.out.println(res.getResponse());
+            }
+        } catch (NotBoundException ex) {
+                System.out.println(ex);
+        } catch (MalformedURLException ex) {
+                System.out.println(ex);
+        } catch (RemoteException ex) {
+                System.out.println(ex);
+    }
+
+}
+	
 }
