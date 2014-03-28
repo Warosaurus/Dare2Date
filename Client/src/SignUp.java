@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.Calendar;
 
 
-public class SignUp {
+public class SignUp implements Serializable{
 
 	private String firstName;
 	private String surName;
