@@ -173,6 +173,25 @@ public class ProfileWindow implements ActionListener{
 		}
 	}
 	
+	public class MySearchListener implements ActionListener{
+		
+		
+		
+		public MySearchListener(){
+			
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+			int choice1 = panelMainSearch_CB1.getSelectedIndex();
+			int choice2 = panelMainSearch_CB2.getSelectedIndex();
+			int choice3 = panelMainSearch_CB3.getSelectedIndex();
+			int choice4 = panelMainSearch_CB4.getSelectedIndex();
+			int choice5 = panelMainSearch_CB5.getSelectedIndex();
+		}
+	}
+	
 	public void onDrawPanelTitle(JLayeredPane pane){
 		
 		JPanel panelProfileTitle = new JPanel();
@@ -250,22 +269,27 @@ public class ProfileWindow implements ActionListener{
 		
 		panelMainSearch_CB1 = new JComboBox<Object>(comboBoxSearch);
 		panelMainSearch_CB1.setBounds(20, 50, 150, 20);
+		
 		panelMainSearch.add(panelMainSearch_CB1);
 		
 		panelMainSearch_CB2 = new JComboBox<Object>(comboBoxSearch);
 		panelMainSearch_CB2.setBounds(20, 80, 150, 20);
+		//panelMainSearch_CB2.addActionListener(this);
 		panelMainSearch.add(panelMainSearch_CB2);
 		
 		panelMainSearch_CB3 = new JComboBox<Object>(comboBoxSearch);
 		panelMainSearch_CB3.setBounds(20, 110, 150, 20);
+		//panelMainSearch_CB3.addActionListener(this);
 		panelMainSearch.add(panelMainSearch_CB3);
 		
 		panelMainSearch_CB4 = new JComboBox<Object>(comboBoxSearch);
 		panelMainSearch_CB4.setBounds(20, 140, 150, 20);
+		//panelMainSearch_CB4.addActionListener(this);
 		panelMainSearch.add(panelMainSearch_CB4);
 		
 		panelMainSearch_CB5 = new JComboBox<Object>(comboBoxSearch);
 		panelMainSearch_CB5.setBounds(20, 170, 150, 20);
+		//panelMainSearch_CB5.addActionListener(this);
 		panelMainSearch.add(panelMainSearch_CB5);
 		
 		panelMainSearch_Criteria1 = new JTextField();
@@ -294,12 +318,7 @@ public class ProfileWindow implements ActionListener{
 		panelMainSearch_Criteria5.setColumns(10);
 		
 		JButton btnpanelMainSearch_Match = new JButton("Search");
-		btnpanelMainSearch_Match.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				
-			}
-		});
+		btnpanelMainSearch_Match.addActionListener(new MySearchListener());
 		btnpanelMainSearch_Match.setBounds(150, 219, 150, 30);
 		panelMainSearch.add(btnpanelMainSearch_Match);
 	}
@@ -467,6 +486,7 @@ public class ProfileWindow implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		
 		JComboBox<?> cb = (JComboBox<?>) e.getSource();
+		
 		int choice = cb.getSelectedIndex();
 		
 		if((choice == 1)||(choice == 2)||(choice == 3)){
@@ -718,4 +738,5 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 		lblpanelProfileMain_Films.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Films);
 	}
+
 }
