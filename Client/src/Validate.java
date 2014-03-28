@@ -85,7 +85,7 @@ public class Validate {
 		
 		boolean ans = true;
 		
-		if(email == ""){
+		if(!email.contains("@")){
 			e_error.setVisible(true);
 			ans = false;
 		}
@@ -100,7 +100,7 @@ public class Validate {
 		else
 			p_error.setVisible(false);
 		
-		if(accnumber == ""){
+		if(accnumber.length() != 16){
 			a_num_error.setVisible(true);
 			ans = false;
 		}
