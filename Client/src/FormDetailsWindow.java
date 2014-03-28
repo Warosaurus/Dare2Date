@@ -808,7 +808,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	public void onSignUp (SignUp signUp) {
 		try {
 			//Create a reference to the service interface at the location.
-			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://192.168.50.102/DateServer");
+			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
 			//Create a response object
 			Response res = new Response();
 			//Invoke server SignUp method

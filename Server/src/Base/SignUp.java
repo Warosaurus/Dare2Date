@@ -25,11 +25,7 @@ public class SignUp implements Serializable {
 		
 	}
 
-<<<<<<< HEAD
 	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String account_Number, int level, Map map) {
-=======
-	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String card_Name, String account_Number, String card_Number, int level, Map preferencesMap) {
->>>>>>> origin/Build-00
 		this.firstName = firstName;
 		this.surName = surName;
 		this.birthdate = birthdate;
@@ -40,18 +36,14 @@ public class SignUp implements Serializable {
 		this.password = password;
 		this.account_Number = account_Number;
 		this.level = level;
-<<<<<<< HEAD
-                this.preferencesMap = map;
+		this.preferencesMap = preferencesMap;
 	}
 	
 	@Override
 	public String toString() {
 		return "SignUp{" + "firstName=" + firstName + ", surName=" + surName + ", birthdate=" + birthdate + ", age=" + age + ", gender=" + gender + ", location=" + location + ", e_Mail=" + e_Mail + ", password=" + password + ", card_Name=" + card_Name + ", account_Number=" + account_Number + ", card_Number=" + card_Number + ", level=" + level + ", preferencesMap=" + preferencesMap + '}';
-=======
-		this.preferencesMap = preferencesMap;
->>>>>>> origin/Build-00
 	}
-
+	
 	public String getFirstName() {
 		return firstName;
 	}
