@@ -7,6 +7,10 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
@@ -185,11 +189,40 @@ public class ProfileWindow implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
 			
 			int choice1 = panelMainSearch_CB1.getSelectedIndex();
-			int choice2 = panelMainSearch_CB2.getSelectedIndex();
-			int choice3 = panelMainSearch_CB3.getSelectedIndex();
-			int choice4 = panelMainSearch_CB4.getSelectedIndex();
-			int choice5 = panelMainSearch_CB5.getSelectedIndex();
-		}
+//			int choice2 = panelMainSearch_CB2.getSelectedIndex();
+//			int choice3 = panelMainSearch_CB3.getSelectedIndex();
+//			int choice4 = panelMainSearch_CB4.getSelectedIndex();
+//			int choice5 = panelMainSearch_CB5.getSelectedIndex();
+			
+			if(panelMainSearch_Criteria1 != null&&((choice1 == 1)||(choice1 == 0))){
+				
+                       public void nameSearch ("gareth"){
+                        try {
+                            //Create a reference to the service interface at the location.
+                            ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://192.0.0.102/DateServer");
+                            //Create a response object
+                            Response res = new Response();
+                            //Invoke server SignUp method
+                            res = service.nameSearch(panelMainSearch_Criteria1.getText());
+                            //Test response
+                            if (res.getError() != null) {
+                                    System.out.println(res.getError());
+                                    System.out.println("There was an error.");
+                            }
+                            else {
+                                    System.out.println("Everything went okay.");
+                                    System.out.println(res.getResponse());
+                            }
+                        } catch (NotBoundException ex) {
+                                System.out.println(ex);
+                        } catch (MalformedURLException ex) {
+                                System.out.println(ex);
+                        } catch (RemoteException ex) {
+                                System.out.println(ex);
+                    }
+            
+                }
+		
 	}
 	
 	public void onDrawPanelTitle(JLayeredPane pane){
