@@ -1,5 +1,4 @@
 import Base.*;
-
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,6 +7,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -36,10 +36,17 @@ public class ProfileWindow implements ActionListener{
 	private JLayeredPane ProfilelayeredPane;
 	private JLayeredPane SearchlayeredPane;
 	
-	private User currentUser = new User();
-	private User testUser_01 = new User();
-	private User testUser_02 = new User();
-	private User testUser_03 = new User();
+	private JPanel panelSearchResults;
+	private JPanel panelProfileMain;
+	
+	private Calendar cal = Calendar.getInstance();
+	
+	private User currentUser = new User("gareth", "twat", "male", 1, 1, 34, cal, "Leiden");
+	private User testUser_01 = new User("gazza", "twat", "male", 1, 1, 34, cal, "Leiden");
+	private User testUser_02 = new User("jaimie", "twat", "male", 1, 1, 34, cal, "Leiden");
+	private User testUser_03 = new User("todd", "twat", "male", 1, 1, 34, cal, "Leiden");
+	
+	private User[] userArray = {currentUser,testUser_01,testUser_02,testUser_03};
 	
 	private JButton btnpanelProfileTitle_Home;
 	private String[] comboBoxSettings = {"Account Settings","Edit Personal Details","Edit Preferences","Edit Account Details","View Profile"};
@@ -109,7 +116,7 @@ public class ProfileWindow implements ActionListener{
 		initialize();
 		frame.setVisible(true);
 		
-		currentUser = user;
+		//currentUser = user;
 		currentScreen = 1;
 		
 		if(user.getLevel() == 1){
@@ -123,9 +130,9 @@ public class ProfileWindow implements ActionListener{
 			panelMainSearch_CB4.setEnabled(false);
 			panelMainSearch_CB5.setEnabled(false);
 			
-			comboBoxpanelTitle_Settings.setEnabled(false);
-			comboBoxpanelTitle_Settings.setFocusable(false);
-			comboBoxpanelTitle_Settings.setVisible(false);
+			//comboBoxpanelTitle_Settings.setEnabled(false);
+			//comboBoxpanelTitle_Settings.setFocusable(false);
+			//comboBoxpanelTitle_Settings.setVisible(false);
 			
 		}
 		
@@ -149,6 +156,23 @@ public class ProfileWindow implements ActionListener{
 		onDrawPanelSearchResults();
 	}
 	
+	public class MyButtonListener implements ActionListener{
+		
+		int number;
+		
+		public MyButtonListener(int number){
+			this.number = number;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			setProfile(userArray[this.number+1]);
+			//System.out.print(String.valueOf(number));
+			changePanels(SearchlayeredPane,ProfilelayeredPane);
+			
+		}
+	}
+	
 	public void onDrawPanelTitle(JLayeredPane pane){
 		
 		JPanel panelProfileTitle = new JPanel();
@@ -169,20 +193,20 @@ public class ProfileWindow implements ActionListener{
 		comboBoxpanelTitle_Settings.addActionListener(this);
 		panelProfileTitle.add(comboBoxpanelTitle_Settings);
 		
-		btnpanelProfileTitle_Home = new JButton("HOME");
+		JButton btnpanelProfileTitle_Home = new JButton("HOME");
 		btnpanelProfileTitle_Home.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				if(currentScreen == 2){
+				
 					changePanels(ProfilelayeredPane,MainlayeredPane);
-				}
-				else if(currentScreen == 3){
-					
-				}
+                                        changePanels(SearchlayeredPane,MainlayeredPane);
+                                        panelSearchResults.removeAll();
+                                        panelSearchResults.revalidate();
+				
 			}
 		});
 		btnpanelProfileTitle_Home.setBounds(20, 20, 80, 23);
-		btnpanelProfileTitle_Home.setVisible(false);
+		btnpanelProfileTitle_Home.setVisible(true);
 		panelProfileTitle.add(btnpanelProfileTitle_Home);
 		
 		JButton btnpanelProfileTitle_LogOut = new JButton("Log Out");
@@ -270,6 +294,12 @@ public class ProfileWindow implements ActionListener{
 		panelMainSearch_Criteria5.setColumns(10);
 		
 		JButton btnpanelMainSearch_Match = new JButton("Search");
+		btnpanelMainSearch_Match.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+			}
+		});
 		btnpanelMainSearch_Match.setBounds(150, 219, 150, 30);
 		panelMainSearch.add(btnpanelMainSearch_Match);
 	}
@@ -332,6 +362,7 @@ public class ProfileWindow implements ActionListener{
 			public void actionPerformed(ActionEvent arg0) {
 				
 				changePanels(MainlayeredPane,SearchlayeredPane);
+				onDrawSearchResults(panelSearchResults,userTests);
 			}
 		});
 		btnpanelMainBlind_Match.setBounds(90, 139, 110, 50);
@@ -366,11 +397,249 @@ public class ProfileWindow implements ActionListener{
 		
 		onDrawPanelTitle(ProfilelayeredPane);
 		
-		JPanel panelProfileMain = new JPanel();
+		panelProfileMain = new JPanel();
 		panelProfileMain.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panelProfileMain.setBounds(0, 100, 902, 460);
 		ProfilelayeredPane.add(panelProfileMain);
 		panelProfileMain.setLayout(null);
+	}
+
+	public void onDrawPanelSearchResults(){
+		
+		SearchlayeredPane = new JLayeredPane();
+		frame.getContentPane().add(SearchlayeredPane, "name_201721837465502");
+		
+		onDrawPanelTitle(SearchlayeredPane);
+		
+		panelSearchResults = new JPanel();
+		panelSearchResults.setBounds(10, 100, 902, 462);
+		SearchlayeredPane.add(panelSearchResults);
+		panelSearchResults.setLayout(null);
+		
+		
+		
+		//onDrawSearchResults();
+			
+			
+		
+		/*panelSearchResults.setVisible(false);
+		
+		table = new JTable(setTableData(userTests),columnNames);
+		table.setBounds(100, 50, 702, 96);
+		panelSearchResults.add(table);
+		
+		JScrollPane scrollPane = new JScrollPane(table);
+		table.setFillsViewportHeight(true);
+		scrollPane.setBounds(100, 247, 719, -103);
+		SearchlayeredPane.add(scrollPane);
+		
+		///JScrollPane scrollPane = new JScrollPane(table);
+		//table.setFillsViewportHeight(true);*/
+		
+		
+	}
+	
+	public void setScreenMargins(){
+		
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		screenHeight = (int)screen.getHeight();
+		screenWidth = (int)screen.getWidth(); 
+		
+	}
+	
+	public void changePanels(JLayeredPane panel1,JLayeredPane panel2){
+		
+		panel1.setVisible(false);
+		panel2.setVisible(true);
+	}
+	
+	public void setProfile(User user){
+		
+		firstname = user.getFName();
+		surname = user.getLName();
+		gender = user.getGender();
+		age = user.getAge();
+		location = user.getLocation();
+		onDrawProfile();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		JComboBox<?> cb = (JComboBox<?>) e.getSource();
+		int choice = cb.getSelectedIndex();
+		
+		if((choice == 1)||(choice == 2)||(choice == 3)){
+			
+			new FormDetailsWindow(currentUser,choice);
+			cb.setSelectedIndex(0);
+		}
+		else if(choice == 4){
+			
+			setProfile(currentUser);
+			currentScreen = 2;
+			changePanels(MainlayeredPane,ProfilelayeredPane);
+			cb.setSelectedIndex(0);
+		}
+		
+		
+	}
+	
+//	public void onDrawSearchResults(JLayeredPane pane,User[] users){
+//		
+//		int x = 0;
+//		
+//		JLabel[] label_array_first = new JLabel[users.length];
+//		JLabel[] label_array_sur = new JLabel[users.length];
+//		JLabel[] label_array_age = new JLabel[users.length];
+//		JLabel[] label_array_gender = new JLabel[users.length];
+//		JLabel[] label_array_loc = new JLabel[users.length];
+//		
+//		
+//		for(int i = 0;i < users.length;i++){
+//			
+//			label_array_first[i] = new JLabel(users[i].getFName());
+//			label_array_first[i].setBounds(100, 100+x, 120, 20);
+//			label_array_first[i].setOpaque(true);
+//			pane.add(label_array_first[i]);
+//			
+//			label_array_sur[i] = new JLabel(users[i].getLName());
+//			label_array_sur[i].setBounds(220, 100+x, 120, 20);
+//			label_array_sur[i].setOpaque(true);
+//			pane.add(label_array_sur[i]);
+//			
+//			label_array_age[i] = new JLabel(String.valueOf(users[i].getAge()));
+//			label_array_age[i].setBounds(340, 100+x, 70, 20);
+//			label_array_age[i].setOpaque(true);
+//			pane.add(label_array_age[i]);
+//			
+//			label_array_gender[i] = new JLabel(users[i].getGender());
+//			label_array_gender[i].setBounds(410, 100+x, 90, 20);
+//			label_array_gender[i].setOpaque(true);
+//			pane.add(label_array_gender[i]);
+//			
+//			label_array_loc[i] = new JLabel(users[i].getLocation());
+//			label_array_loc[i].setBounds(500, 100+x, 120, 20);
+//			label_array_loc[i].setOpaque(true);
+//			pane.add(label_array_loc[i]);
+//			
+////			JButton btnNewButton = new JButton("View Profile");
+////			btnNewButton.addActionListener(new ActionListener() {
+////				public void actionPerformed(ActionEvent arg0) {
+////					
+////					
+////					changePanels(SearchlayeredPane,ProfilelayeredPane);
+////					
+////				}
+////			});
+////			btnNewButton.setBounds(620, 100+x, 110, 20);
+////			pane.add(btnNewButton);
+//			
+//			x = x+20;
+//		}
+//	}
+	
+public void onDrawSearchResults(JPanel pane,User[] users){
+		
+		
+		JLabel lblpanelSearchResults_FirstNameTag = new JLabel("Firstname");
+		lblpanelSearchResults_FirstNameTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_FirstNameTag.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblpanelSearchResults_FirstNameTag.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpanelSearchResults_FirstNameTag.setBounds(100, 50, 120, 20);
+		panelSearchResults.add(lblpanelSearchResults_FirstNameTag);
+		
+		JLabel lblpanelSearchResults_AgeTag = new JLabel("Age");
+		lblpanelSearchResults_AgeTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_AgeTag.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblpanelSearchResults_AgeTag.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpanelSearchResults_AgeTag.setBounds(340, 50, 70, 20);
+		panelSearchResults.add(lblpanelSearchResults_AgeTag);
+		
+		JLabel lblpanelSearchResults_GenderTag = new JLabel("Gender");
+		lblpanelSearchResults_GenderTag.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpanelSearchResults_GenderTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_GenderTag.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblpanelSearchResults_GenderTag.setBounds(410, 50, 90, 20);
+		panelSearchResults.add(lblpanelSearchResults_GenderTag);
+		
+		JLabel lblpanelSearchResults_LocTag = new JLabel("Location");
+		lblpanelSearchResults_LocTag.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblpanelSearchResults_LocTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_LocTag.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpanelSearchResults_LocTag.setBounds(500, 50, 120, 20);
+		panelSearchResults.add(lblpanelSearchResults_LocTag);
+		
+		JLabel lblpanelSearchResults_ProfTag = new JLabel("Profile");
+		lblpanelSearchResults_ProfTag.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpanelSearchResults_ProfTag.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblpanelSearchResults_ProfTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_ProfTag.setBounds(620, 50, 110, 20);
+		panelSearchResults.add(lblpanelSearchResults_ProfTag);
+		
+		JLabel lblpanelSearchResults_SurNameTag = new JLabel("Surname");
+		lblpanelSearchResults_SurNameTag.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpanelSearchResults_SurNameTag.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblpanelSearchResults_SurNameTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_SurNameTag.setBounds(220, 50, 120, 20);
+		panelSearchResults.add(lblpanelSearchResults_SurNameTag);
+//		JLabel[] label_array_first = new JLabel[users.length];
+//		JLabel[] label_array_sur = new JLabel[users.length];
+//		JLabel[] label_array_age = new JLabel[users.length];
+//		JLabel[] label_array_gender = new JLabel[users.length];
+//		JLabel[] label_array_loc = new JLabel[users.length];
+		int x = 0;
+		
+		for(int i = 0;i < users.length;i++){
+			
+			JLabel label_10 = new JLabel(users[i].getFName());
+			label_10.setBounds(100, 100+x, 120, 20);
+			label_10.setOpaque(true);
+			label_10.setBackground(Color.WHITE);
+			label_10.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			pane.add(label_10);
+			
+			JLabel label_11 = new JLabel(users[i].getLName());
+			label_11.setBounds(220, 100+x, 120, 20);
+			label_11.setOpaque(true);
+			label_11.setBackground(Color.WHITE);
+			label_11.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			pane.add(label_11);
+			
+			JLabel label_12 = new JLabel(String.valueOf(users[i].getAge()));
+			label_12.setBounds(340, 100+x, 70, 20);
+			label_12.setOpaque(true);
+			label_12.setBackground(Color.WHITE);
+			label_12.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			pane.add(label_12);
+			
+			JLabel label_13 = new JLabel(users[i].getGender());
+			label_13.setBounds(410, 100+x, 90, 20);
+			label_13.setOpaque(true);
+			label_13.setBackground(Color.WHITE);
+			label_13.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			pane.add(label_13);
+			
+			JLabel label_14 = new JLabel(users[i].getLocation());
+			label_14.setBounds(500, 100+x, 120, 20);
+			label_14.setOpaque(true);
+			label_14.setBackground(Color.WHITE);
+			label_14.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			pane.add(label_14);
+			
+			JButton btnNewButton = new JButton("View Profile");
+			btnNewButton.addActionListener( new MyButtonListener(i));
+			btnNewButton.setBounds(620, 100+x, 110, 20);
+			pane.add(btnNewButton);
+			
+			x = x+20;
+		}
+	}
+
+	public void onDrawProfile(){
+		
+		panelProfileMain.removeAll();
+		panelProfileMain.revalidate();
 		
 		JLabel lblpanelProfileMain_Picture = new JLabel("PIC");
 		lblpanelProfileMain_Picture.setHorizontalAlignment(SwingConstants.CENTER);
@@ -407,7 +676,7 @@ public class ProfileWindow implements ActionListener{
 		lblpanelProfileMain_FilmTag.setBounds(300, 300, 130, 20);
 		panelProfileMain.add(lblpanelProfileMain_FilmTag);
 		
-		JLabel lblpanelProfileMain_Name = new JLabel(firstname+surname);
+		JLabel lblpanelProfileMain_Name = new JLabel(firstname+" "+surname);
 		lblpanelProfileMain_Name.setBackground(Color.WHITE);
 		lblpanelProfileMain_Name.setOpaque(true);
 		lblpanelProfileMain_Name.setBounds(480, 60, 240, 20);
@@ -448,136 +717,5 @@ public class ProfileWindow implements ActionListener{
 		lblpanelProfileMain_Films.setBounds(480, 300, 240, 20);
 		lblpanelProfileMain_Films.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Films);
-	}
-
-	public void onDrawPanelSearchResults(){
-		
-		SearchlayeredPane = new JLayeredPane();
-		frame.getContentPane().add(SearchlayeredPane, "name_201721837465502");
-		
-		onDrawPanelTitle(SearchlayeredPane);
-		
-		JPanel panelSearchResults = new JPanel();
-		panelSearchResults.setBounds(10, 100, 902, 462);
-		SearchlayeredPane.add(panelSearchResults);
-		panelSearchResults.setLayout(null);
-		
-		JLabel lblpanelSearchResults_FirstNameTag = new JLabel("Firstname");
-		lblpanelSearchResults_FirstNameTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		lblpanelSearchResults_FirstNameTag.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblpanelSearchResults_FirstNameTag.setHorizontalAlignment(SwingConstants.CENTER);
-		lblpanelSearchResults_FirstNameTag.setBounds(52, 396, 120, 20);
-		panelSearchResults.add(lblpanelSearchResults_FirstNameTag);
-		
-		JLabel lblpanelSearchResults_AgeTag = new JLabel("Age");
-		lblpanelSearchResults_AgeTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		lblpanelSearchResults_AgeTag.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblpanelSearchResults_AgeTag.setHorizontalAlignment(SwingConstants.CENTER);
-		lblpanelSearchResults_AgeTag.setBounds(264, 411, 70, 20);
-		panelSearchResults.add(lblpanelSearchResults_AgeTag);
-		
-		JLabel lblpanelSearchResults_GenderTag = new JLabel("Gender");
-		lblpanelSearchResults_GenderTag.setHorizontalAlignment(SwingConstants.CENTER);
-		lblpanelSearchResults_GenderTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		lblpanelSearchResults_GenderTag.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblpanelSearchResults_GenderTag.setBounds(383, 411, 70, 20);
-		panelSearchResults.add(lblpanelSearchResults_GenderTag);
-		
-		JLabel lblNewLabel = new JLabel("Location");
-		lblNewLabel.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblNewLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(480, 411, 102, 20);
-		panelSearchResults.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Profile");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblNewLabel_1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		lblNewLabel_1.setBounds(649, 411, 110, 20);
-		panelSearchResults.add(lblNewLabel_1);
-		
-		JLabel lblpanelSearchResults_SurNameTag = new JLabel("Surname");
-		lblpanelSearchResults_SurNameTag.setBounds(208, 400, 46, 14);
-		panelSearchResults.add(lblpanelSearchResults_SurNameTag);
-		
-		/*panelSearchResults.setVisible(false);
-		
-		table = new JTable(setTableData(userTests),columnNames);
-		table.setBounds(100, 50, 702, 96);
-		panelSearchResults.add(table);
-		
-		JScrollPane scrollPane = new JScrollPane(table);
-		table.setFillsViewportHeight(true);
-		scrollPane.setBounds(100, 247, 719, -103);
-		SearchlayeredPane.add(scrollPane);
-		
-		///JScrollPane scrollPane = new JScrollPane(table);
-		//table.setFillsViewportHeight(true);*/
-		
-		
-	}
-	
-	public void setScreenMargins(){
-		
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		screenHeight = (int)screen.getHeight();
-		screenWidth = (int)screen.getWidth(); 
-		
-	}
-	
-	public void changePanels(JLayeredPane panel1,JLayeredPane panel2){
-		
-		panel1.setVisible(false);
-		panel2.setVisible(true);
-	}
-	
-	public void setProfile(User user){
-		
-		firstname = user.getFName();
-		surname = user.getLName();
-		gender = user.getGender();
-		age = user.getAge();
-		location = user.getLocation();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-		JComboBox<?> cb = (JComboBox<?>) e.getSource();
-		int choice = cb.getSelectedIndex();
-		
-		if((choice == 1)||(choice == 2)||(choice == 3)){
-			
-			new FormDetailsWindow(currentUser,choice);
-			cb.setSelectedIndex(0);
-		}
-		else if(choice == 4){
-			
-			setProfile(currentUser);
-			currentScreen = 2;
-			btnpanelProfileTitle_Home.setVisible(true);
-			changePanels(MainlayeredPane,ProfilelayeredPane);
-			cb.setSelectedIndex(0);
-		}
-		
-		
-	}
-	
-	public Object[][] setTableData(User[] userArray){
-		
-		Object[][] people = new Object[userArray.length][5];
-		
-		for(int i = 0;i < userArray.length;i++){
-			
-			people[i][0] = userArray[i].getFName();
-			people[i][1] = userArray[i].getLName();
-			people[i][2] = userArray[i].getAge();
-			people[i][3] = userArray[i].getGender();
-			people[i][4] = userArray[i].getLocation();
-		}
-		
-		return people;
-				
 	}
 }

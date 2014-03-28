@@ -121,8 +121,7 @@ public class MainWindow extends JFrame {
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				signIn();
-				cancelWindow();
+				new ProfileWindow();
 			}
 		});
 		btnNewButton_2.setBounds(490, 281, 160, 73);

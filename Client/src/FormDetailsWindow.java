@@ -797,7 +797,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	//puts the users details into a SignUp class
 	public void onConfirm(){
 	
-		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),String.valueOf(txtAccount_Password.getPassword()), txtAccount_AccountNumber.getText(), 2, prefMap);
+		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),"pass", txtAccount_AccountNumber.getText(), 2, prefMap);
 //		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
 //				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
 		
