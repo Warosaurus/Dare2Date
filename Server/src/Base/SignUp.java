@@ -2,6 +2,7 @@ package Base;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Map;
 
 public class SignUp implements Serializable {
 
@@ -17,14 +18,14 @@ public class SignUp implements Serializable {
 	private String account_Number;
 	private String card_Number;
 	private int level;
-
+	private Map preferencesMap;
 	
 	@SuppressWarnings("unused")
 	public SignUp(){
 		
 	}
 
-	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String card_Name, String account_Number, String card_Number, int level) {
+	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String card_Name, String account_Number, String card_Number, int level, Map preferencesMap) {
 		this.firstName = firstName;
 		this.surName = surName;
 		this.birthdate = birthdate;
@@ -37,15 +38,7 @@ public class SignUp implements Serializable {
 		this.account_Number = account_Number;
 		this.card_Number = card_Number;
 		this.level = level;
-	}
-	
-	@Override
-	public String toString() {
-		return "SignUp [firstName=" + firstName + ", surName=" + surName
-				+ ", age=" + age + ", gender=" + gender + ", location="
-				+ location + ", e_Mail=" + e_Mail + ", password=" + "********"
-				+ ", card_Name=" + card_Name + ", account_Number="
-				+ account_Number + ", card_Number=" + card_Number + "]";
+		this.preferencesMap = preferencesMap;
 	}
 
 	public String getFirstName() {
@@ -120,22 +113,6 @@ public class SignUp implements Serializable {
 		this.password = password;
 	}
 
-	public String getCard_Name() {
-		return card_Name;
-	}
-
-	public void setCard_Name(String card_Name) {
-		this.card_Name = card_Name;
-	}
-
-	public String getAccount_Number() {
-		return account_Number;
-	}
-
-	public void setAccount_Number(String account_Number) {
-		this.account_Number = account_Number;
-	}
-
 	public String getCard_Number() {
 		return card_Number;
 	}
@@ -143,5 +120,12 @@ public class SignUp implements Serializable {
 	public void setCard_Number(String card_Number) {
 		this.card_Number = card_Number;
 	}
-	
+
+	public Map getPreferencesMap() {
+		return preferencesMap;
+	}
+
+	public void setPreferencesMap(Map preferencesMap) {
+		this.preferencesMap = preferencesMap;
+	}
 }

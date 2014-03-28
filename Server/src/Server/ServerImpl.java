@@ -40,16 +40,15 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public Response SignUp(SignUp signUp) throws RemoteException {
 		Response res = new Response();
 		//possible refator, check if hashmap is empty, otherwise check email address. reduce calls.
-		System.out.println(userServerMap.keySet());
 		if (!existingEmail(signUp.getE_Mail())) {
 			res.setError("This email address has already been registerd.");
 		} else {
 			//return the max userid so that the next one can be assigned to a new user
 			int maxid = maxUserid();
 			int userid = (maxid == 0) ? 1 : maxid + 1;
-			User user = new User(signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
+			User user = new User(signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap());
 			//create a UserServerInfo object based on the SignUp object
-			UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(), signUp.getCard_Number(), signUp.getPassword(), signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation());
+			UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(), signUp.getCard_Number(), signUp.getPassword(), signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap());
 			//place the userserverinfo object into the hashmap
 			userServerMap.put(userid, userserverinfo);
 			//place the user object into the the hashmap
@@ -196,17 +195,21 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	@Override
 	public Response nameSearch(String keyword) {
 		Response res = new Response();
-		ArrayList<User> userlist = new ArrayList();
-		if (!userMap.isEmpty()) {
-			Iterator<Integer> iter = userServerMap.keySet().iterator();
-			while (iter.hasNext()) {
-				Integer i = iter.next();
-				if (userMap.get(i).getFName().matches(keyword) || userMap.get(i).getLName().matches(keyword)) {
-					userlist.add(userMap.get(i));
+		if (keyword != null) {
+			ArrayList<User> userlist = new ArrayList();
+			if (!userMap.isEmpty()) {
+				Iterator<Integer> iter = userServerMap.keySet().iterator();
+				while (iter.hasNext()) {
+					Integer i = iter.next();
+					if (userMap.get(i).getFName().matches(keyword) || userMap.get(i).getLName().matches(keyword)) {
+						userlist.add(userMap.get(i));
+					}
 				}
 			}
+			res.setResponse(userlist);
+		} else {
+			res.setError("No keyword supplied.");
 		}
-		res.setResponse(userlist);
 		return res;
 	}
 
@@ -240,7 +243,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
-	
+
 	/**
 	 *
 	 * Match users based on their age
@@ -269,6 +272,30 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		} else {
 			res.setError("You do not have sufficiant rights to perform this action.");
 		}
+		return res;
+	}
+
+	/**
+	 *
+	 * Match users based on a selection
+	 *
+	 * @param user User
+	 * @return Response - User
+	 */
+	public Response selectionMatch(User user) {
+		Response res = new Response();
+		return res;
+	}
+
+	/**
+	 *
+	 * Match users based a certain criteria
+	 *
+	 * @param user User
+	 * @return Response - User
+	 */
+	public Response criteriaMatch(User user) {
+		Response res = new Response();
 		return res;
 	}
 
