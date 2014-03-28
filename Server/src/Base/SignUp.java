@@ -36,14 +36,14 @@ public class SignUp implements Serializable {
 		this.password = password;
 		this.account_Number = account_Number;
 		this.level = level;
-                this.preferencesMap = map;
+		this.preferencesMap = preferencesMap;
 	}
 	
 	@Override
 	public String toString() {
 		return "SignUp{" + "firstName=" + firstName + ", surName=" + surName + ", birthdate=" + birthdate + ", age=" + age + ", gender=" + gender + ", location=" + location + ", e_Mail=" + e_Mail + ", password=" + password + ", card_Name=" + card_Name + ", account_Number=" + account_Number + ", card_Number=" + card_Number + ", level=" + level + ", preferencesMap=" + preferencesMap + '}';
 	}
-
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -114,22 +114,6 @@ public class SignUp implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getCard_Name() {
-		return card_Name;
-	}
-
-	public void setCard_Name(String card_Name) {
-		this.card_Name = card_Name;
-	}
-
-	public String getAccount_Number() {
-		return account_Number;
-	}
-
-	public void setAccount_Number(String account_Number) {
-		this.account_Number = account_Number;
 	}
 
 	public String getCard_Number() {

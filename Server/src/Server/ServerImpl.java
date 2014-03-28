@@ -195,17 +195,21 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	@Override
 	public Response nameSearch(String keyword) {
 		Response res = new Response();
-		ArrayList<User> userlist = new ArrayList();
-		if (!userMap.isEmpty()) {
-			Iterator<Integer> iter = userServerMap.keySet().iterator();
-			while (iter.hasNext()) {
-				Integer i = iter.next();
-				if (userMap.get(i).getFName().matches(keyword) || userMap.get(i).getLName().matches(keyword)) {
-					userlist.add(userMap.get(i));
+		if (keyword != null) {
+			ArrayList<User> userlist = new ArrayList();
+			if (!userMap.isEmpty()) {
+				Iterator<Integer> iter = userServerMap.keySet().iterator();
+				while (iter.hasNext()) {
+					Integer i = iter.next();
+					if (userMap.get(i).getFName().matches(keyword) || userMap.get(i).getLName().matches(keyword)) {
+						userlist.add(userMap.get(i));
+					}
 				}
 			}
+			res.setResponse(userlist);
+		} else {
+			res.setError("No keyword supplied.");
 		}
-		res.setResponse(userlist);
 		return res;
 	}
 
@@ -239,7 +243,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
-	
+
 	/**
 	 *
 	 * Match users based on their age
@@ -268,6 +272,30 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		} else {
 			res.setError("You do not have sufficiant rights to perform this action.");
 		}
+		return res;
+	}
+
+	/**
+	 *
+	 * Match users based on a selection
+	 *
+	 * @param user User
+	 * @return Response - User
+	 */
+	public Response selectionMatch(User user) {
+		Response res = new Response();
+		return res;
+	}
+
+	/**
+	 *
+	 * Match users based a certain criteria
+	 *
+	 * @param user User
+	 * @return Response - User
+	 */
+	public Response criteriaMatch(User user) {
+		Response res = new Response();
 		return res;
 	}
 
