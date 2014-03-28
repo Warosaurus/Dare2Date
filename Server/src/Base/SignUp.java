@@ -25,7 +25,7 @@ public class SignUp implements Serializable {
 		
 	}
 
-	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String account_Number, int level) {
+	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String account_Number, int level, Map map) {
 		this.firstName = firstName;
 		this.surName = surName;
 		this.birthdate = birthdate;
@@ -34,10 +34,9 @@ public class SignUp implements Serializable {
 		this.location = location;
 		this.e_Mail = e_Mail;
 		this.password = password;
-		this.card_Name = card_Name;
 		this.account_Number = account_Number;
-		this.card_Number = card_Number;
 		this.level = level;
+                this.preferencesMap = map;
 	}
 	
 	@Override

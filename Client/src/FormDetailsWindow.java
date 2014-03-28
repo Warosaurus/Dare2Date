@@ -13,7 +13,9 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -66,12 +68,12 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	private JLabel lblPreferences_Education;
 	private JLabel lblPreferences_Sports;
 	private JTextField txtPersonal_Town;
-	private JTextField txtPrefernces_Film;
+	private JTextField txtPreferences_Film;
 	private JTextField txtPreferences_Music;
 	private JTextField txtPreferences_Education;
 	private JTextField txtPreferences_Sport;
 	private JTextField txtAccount_Email;
-	private JTextField txtAccount_Password;
+	private JPasswordField txtAccount_Password;
 	private JTextField txtAccount_AccountNumber;
 	
 	//-----------------------------------Variables for confirm panel section---------------------------//
@@ -103,6 +105,8 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	private String password = "";
 	private String accountNumber = "";
 	
+        private Map<String, ArrayList<String>> prefMap = new HashMap<String, ArrayList<String>>();
+        
 	private JLabel test_pref;
 
 	
@@ -359,10 +363,10 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		chckbxPreferences_Both.setBounds(425, 150, 80, 23);
 		preferences.add(chckbxPreferences_Both);
 		
-		txtPrefernces_Film = new JTextField();
-		txtPrefernces_Film.setBounds(283, 180, 367, 20);
-		preferences.add(txtPrefernces_Film);
-		txtPrefernces_Film.setColumns(10);
+		txtPreferences_Film = new JTextField();
+		txtPreferences_Film.setBounds(283, 180, 367, 20);
+		preferences.add(txtPreferences_Film);
+		txtPreferences_Film.setColumns(10);
 		
 		txtPreferences_Music = new JTextField();
 		txtPreferences_Music.setBounds(283, 210, 367, 20);
@@ -394,7 +398,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		btnNextPref.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				//setPreferences(txtPreferences_Sport.getText());
+				setPreferences(txtPreferences_Sport.getText(),txtPreferences_Film.getText(),txtPreferences_Music.getText());
 				onClickNext(preferences,account);
 			}
 		});
@@ -489,7 +493,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		btnNextAcc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				setAccount(txtAccount_Email.getText(), txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
+				setAccount(txtAccount_Email.getText(), String.valueOf(txtAccount_Password.getPassword()), txtAccount_AccountNumber.getText());
 				
 				boolean go = validate.onValidate(email, password, accountNumber, lblEmailerror, lblPassworderror, lblAccounterror);
 				
@@ -749,17 +753,40 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		accountNumber = a_num;
 	}
 	
-	public void setPreferences(String sport){
+	public void setPreferences(String sport, String film, String musics){
 		
-		String[] new_sports = sport.split(",");
-		
-		for(int i=0;i<new_sports.length;i++){
-			
-			sports.add(new_sports[i]);
-		}
-		
-		test_pref.setText(sports.toString());
-		
+            try{
+                    String[] new_sports = sport.split(",");
+                    String[] new_music = musics.split(",");
+                    String[] new_film = film.split(",");
+
+                    for(int i=0;i<new_sports.length;i++){
+
+                            sports.add(new_sports[i]);
+                    }
+
+                    for(int i=0;i<new_music.length;i++){
+
+                            music.add(new_music[i]);
+                    }
+
+                    for(int i=0;i<new_film.length;i++){
+
+                            films.add(new_film[i]);
+                    }
+
+                    prefMap.put("films",films);
+                    prefMap.put("music", music);
+                    prefMap.put("sport", sports);
+            }
+            catch(NullPointerException e){
+                  return;  
+            }   
+            finally{
+                test_pref.setVisible(false);
+            }    
+                
+                
 	}
 	
 	public void setConfirm(){
@@ -770,7 +797,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	//puts the users details into a SignUp class
 	public void onConfirm(){
 	
-		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),txtAccount_Password.getText(), txtAccount_AccountNumber.getText(), 2);
+		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),String.valueOf(txtAccount_Password.getPassword()), txtAccount_AccountNumber.getText(), 2, prefMap);
 //		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
 //				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
 		

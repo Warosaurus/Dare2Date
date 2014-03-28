@@ -5,6 +5,10 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,6 +29,9 @@ public class MainWindow extends JFrame {
 	private JTextField txtEmail;
 	private JPasswordField pwdPassword;
 	private DefaultStyledDocument doc = new DefaultStyledDocument();
+        private String finalPassword;
+        private String finalEmail;
+        
 	
 
 	/**
@@ -89,6 +96,8 @@ public class MainWindow extends JFrame {
 		JButton btnNewButton = new JButton("Log in");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+                            setLogin();
+                            signIn();
 			}
 		});
 		btnNewButton.setBounds(150, 331, 107, 23);
@@ -189,11 +198,35 @@ public class MainWindow extends JFrame {
 	
 	public void signIn(){
 		
-		User user = new User();
-		user.setLevel(1);
-		
-		new ProfileWindow(user);
+		try {
+			//Create a reference to the service interface at the location.
+			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://192.168.50.102/DateServer");
+			//Create a response object
+			Response res = new Response();
+			//Invoke server SignUp method
+			res = service.Login(finalEmail,finalPassword);
+			//Test response
+			if (res.getError() != null) {
+				System.out.println(res.getError());
+				System.out.println("There was an error.");
+			} else {
+				System.out.println("Everything went okay.");
+				System.out.println(res.getResponse());
+			}
+		} catch (NotBoundException ex) {
+			System.out.println(ex);
+		} catch (MalformedURLException ex) {
+			System.out.println(ex);
+		} catch (RemoteException ex) {
+			System.out.println(ex);
+		}
 	}
+        
+        public void setLogin(){
+            
+            finalPassword = String.valueOf(pwdPassword.getPassword());
+            finalEmail = txtEmail.getText();
+        }
 	
 	//Method to be called that will close the current window
 	private void cancelWindow(){
