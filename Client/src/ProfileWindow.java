@@ -23,6 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -45,7 +46,7 @@ public class ProfileWindow implements ActionListener{
 	
 	private JPanel panelSearchResults;
 	private JPanel panelProfileMain;
-	
+        
 	private Calendar cal = Calendar.getInstance();
         private HashMap prefMap;
 	
@@ -71,6 +72,8 @@ public class ProfileWindow implements ActionListener{
 	private JComboBox<?> panelMainSearch_CB3;
 	private JComboBox<?> panelMainSearch_CB4;
 	private JComboBox<?> panelMainSearch_CB5;
+        
+        private JComboBox<?> panelMainBlind_CB1;
         
         private ArrayList<String> sports1 = new ArrayList<String>();
 	private ArrayList<String> music1 = new ArrayList<String>();
@@ -127,9 +130,6 @@ public class ProfileWindow implements ActionListener{
 		frame.setVisible(true);
 		
 		currentUser = user;
-                System.out.print(user.getPreferencesMap().toString());
-                //prefMap = user.getPreferencesMap();
-		//currentScreen = 1;
 		
 		if(user.getLevel() == 1){
 			panelMainSearch_Criteria2.setEnabled(false);
@@ -179,7 +179,6 @@ public class ProfileWindow implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			setProfile(this.user);
-			//System.out.print(String.valueOf(number));
 			changePanels(SearchlayeredPane,ProfilelayeredPane);
 			
 		}
@@ -187,15 +186,17 @@ public class ProfileWindow implements ActionListener{
 	
 	public class MySearchListener implements ActionListener{
 		
+		int number;
 		
-		
-		public MySearchListener(){
-			
+		public MySearchListener(int number){
+                    this.number = number;
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
+		public void actionPerformed(ActionEvent e) {
 			
+                    
+                    if(number == 0){
 			int choice1 = panelMainSearch_CB1.getSelectedIndex();
 //			int choice2 = panelMainSearch_CB2.getSelectedIndex();
 //			int choice3 = panelMainSearch_CB3.getSelectedIndex();
@@ -206,6 +207,56 @@ public class ProfileWindow implements ActionListener{
 				nameSearch(panelMainSearch_Criteria1.getText());
 				
 			}
+                    }
+                    if (number == 1){
+                        int choice = panelMainBlind_CB1.getSelectedIndex();
+                        
+                        
+                            try {
+                            //Create a reference to the service interface at the location.
+                            ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+                            //Create a response object
+                            Response res = new Response();
+                            if(choice == 0){
+                                //Invoke server blindAgeMatch method
+                                res = service.blindAgeMatch(currentUser,"male");
+                            }
+                            if(choice == 1){
+                                //Invoke server blindAgeMatch method
+                                res = service.blindLocationMatch(currentUser,"female");
+                            }
+                                //Test response
+                                if (res.getError() != null) {
+                                        System.out.println(res.getError());
+                                        System.out.println("There was an error.");
+                                }
+                                else {
+                                        System.out.println("Everything went okay.");
+                                        System.out.println(res.getResponse());
+                                        ArrayList<User> usersFound = (ArrayList<User>)res.getResponse();
+                                        if(usersFound != null){
+                                            usersFound = (ArrayList<User>) res.getResponse();
+                                            User[] userArray = new User[usersFound.size()];
+                                            onDrawSearchResults(panelSearchResults,userArray);
+                                        }
+                                        else
+                                            noResults();
+                                }
+                            } catch (NotBoundException ex) {
+                                    System.out.println(ex);
+                            } catch (MalformedURLException ex) {
+                                    System.out.println(ex);
+                            } catch (RemoteException ex) {
+                                    System.out.println(ex);
+                            }
+                            
+                        
+                        
+                            
+                        
+                    }
+                    
+                    
 		}
 	}
 	
@@ -247,6 +298,11 @@ public class ProfileWindow implements ActionListener{
 		
 		JButton btnpanelProfileTitle_LogOut = new JButton("Log Out");
 		btnpanelProfileTitle_LogOut.setBounds(740, 20, 140, 25);
+                btnpanelProfileTitle_LogOut.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e){
+                        LogOff();
+                    }
+                });
 		panelProfileTitle.add(btnpanelProfileTitle_LogOut);
 	
 	}
@@ -335,7 +391,7 @@ public class ProfileWindow implements ActionListener{
 		panelMainSearch_Criteria5.setColumns(10);
 		
 		JButton btnpanelMainSearch_Match = new JButton("Search");
-		btnpanelMainSearch_Match.addActionListener(new MySearchListener());
+		btnpanelMainSearch_Match.addActionListener(new MySearchListener(0));
 		btnpanelMainSearch_Match.setBounds(150, 219, 150, 30);
 		panelMainSearch.add(btnpanelMainSearch_Match);
 	}
@@ -389,17 +445,12 @@ public class ProfileWindow implements ActionListener{
 		lblpanelMainBlind_Title.setBounds(10, 11, 280, 40);
 		panelMainBlind.add(lblpanelMainBlind_Title);
 		
-		JComboBox<?> panelMainBlind_CB1 = new JComboBox<Object>(comboBoxBlind);
+		panelMainBlind_CB1 = new JComboBox<Object>(comboBoxBlind);
 		panelMainBlind_CB1.setBounds(69, 70, 155, 40);
 		panelMainBlind.add(panelMainBlind_CB1);
 		
 		JButton btnpanelMainBlind_Match = new JButton("MATCH");
-		btnpanelMainBlind_Match.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				//onDrawSearchResults(panelSearchResults,userTests);
-			}
-		});
+		btnpanelMainBlind_Match.addActionListener(new MySearchListener(1));
 		btnpanelMainBlind_Match.setBounds(90, 139, 110, 50);
 		panelMainBlind.add(btnpanelMainBlind_Match);
 	}
@@ -512,7 +563,7 @@ public class ProfileWindow implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		JComboBox<?> cb = (JComboBox<?>) e.getSource();
+		JComboBox<String> cb = (JComboBox<String>) e.getSource();
 		
 		int choice = cb.getSelectedIndex();
 		
@@ -797,14 +848,43 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                     onDrawSearchResults(panelSearchResults,userArray);
                     
             }
-        } catch (NotBoundException ex) {
-                System.out.println(ex);
-        } catch (MalformedURLException ex) {
-                System.out.println(ex);
-        } catch (RemoteException ex) {
-                System.out.println(ex);
-    }
+            } catch (NotBoundException ex) {
+                    System.out.println(ex);
+            } catch (MalformedURLException ex) {
+                    System.out.println(ex);
+            } catch (RemoteException ex) {
+                    System.out.println(ex);
+            }
 
-}
+        }
+        
+        public void noResults(){
+            
+            JOptionPane.showMessageDialog(null, "No matches were found, please check Account Settings>>Edit preferences and make sure details are entered", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+        public void LogOff(){
+            
+            try{
+                 ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+                 
+                 Response res = new Response();
+                 
+                 res = service.Logoff(currentUser.getUserid());
+                 
+                 if((boolean)res.getResponse()){
+                     new MainWindow();
+                     frame.dispose();
+                 }
+                 else
+                     return;
+            }
+            catch(Exception e){
+                
+            }
+        }
+
+             
+        
 	
 }

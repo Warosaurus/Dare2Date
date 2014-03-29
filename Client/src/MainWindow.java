@@ -56,6 +56,7 @@ public class MainWindow extends JFrame {
 	 */
 	public MainWindow() {
 		initialize();
+                frame.setVisible(true);
 	}
 
 	/**
@@ -214,7 +215,6 @@ public class MainWindow extends JFrame {
 				System.out.println(res.getResponse());
                                 user = (User)res.getResponse();
                                 new ProfileWindow(user);
-                                System.out.print(user.toString());
                                 cancelWindow();
 			}
 		} catch (NotBoundException ex) {

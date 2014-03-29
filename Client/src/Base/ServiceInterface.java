@@ -2,6 +2,7 @@ package Base;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.io.Serializable;
 
 public interface ServiceInterface extends Remote {
 	//Each method should indicate it throws RemoteException
@@ -10,4 +11,6 @@ public interface ServiceInterface extends Remote {
 	public Response Logoff(int userid) throws RemoteException;
 	public Response nameSearch(String keyword) throws RemoteException;
 	public Response viewProfiles(String gender) throws RemoteException;
+        public Response blindAgeMatch(User user,String gender) throws RemoteException;
+        public Response blindLocationMatch(User user, String gender) throws RemoteException;
 }
