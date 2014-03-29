@@ -2,10 +2,11 @@ package Base;
 
 import java.util.Calendar;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  *
- * 
+ *
  */
 public class User implements Serializable {
 
@@ -17,13 +18,14 @@ public class User implements Serializable {
 	private int age;
 	private Calendar birthdate;
 	private String location;
+	private Map preferencesMap;
 
 	/**
 	 *
 	 * Default constructor
 	 *
 	 * Default level of user is 1, for guests.
-	 * 
+	 *
 	 */
 	public User() {
 		level = 1;
@@ -32,6 +34,7 @@ public class User implements Serializable {
 	/**
 	 *
 	 * Constructor
+	 *
 	 * @param fName
 	 * @param lName
 	 * @param gender
@@ -40,8 +43,9 @@ public class User implements Serializable {
 	 * @param age
 	 * @param birthdate
 	 * @param location
+	 * @param preferencesMap
 	 */
-	public User(String fName, String lName, String gender, int userid, int level, int age, Calendar birthdate, String location) {
+	public User(String fName, String lName, String gender, int userid, int level, int age, Calendar birthdate, String location, Map preferencesMap) {
 		this.fName = fName;
 		this.lName = lName;
 		this.gender = gender;
@@ -50,6 +54,7 @@ public class User implements Serializable {
 		this.age = age;
 		this.birthdate = birthdate;
 		this.location = location;
+		this.preferencesMap = preferencesMap;
 	}
 
 	/**
@@ -125,9 +130,18 @@ public class User implements Serializable {
 	}
 
 	/**
+	 * Get the preferences of the user
+	 *
+	 * @return Map<String, ArrayList>
+	 */
+	public Map getPreferencesMap() {
+		return preferencesMap;
+	}
+
+	/**
 	 * Set the user id of the user
 	 *
-	 * @param userid
+	 * @param userid int
 	 */
 	public void setUserid(int userid) {
 		this.userid = userid;
@@ -136,7 +150,7 @@ public class User implements Serializable {
 	/**
 	 * Set the first name of the user
 	 *
-	 * @param fName
+	 * @param fName String
 	 */
 	public void setFName(String fName) {
 		this.fName = fName;
@@ -145,7 +159,7 @@ public class User implements Serializable {
 	/**
 	 * Set the Last name of the user
 	 *
-	 * @param lName
+	 * @param lName String
 	 */
 	public void setLName(String lName) {
 		this.lName = lName;
@@ -154,7 +168,7 @@ public class User implements Serializable {
 	/**
 	 * Set the gender of the user
 	 *
-	 * @param gender
+	 * @param gender String
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
@@ -163,7 +177,7 @@ public class User implements Serializable {
 	/**
 	 * Set the age of the user
 	 *
-	 * @param age
+	 * @param age int
 	 */
 	public void setAge(int age) {
 		this.age = age;
@@ -172,7 +186,7 @@ public class User implements Serializable {
 	/**
 	 * Set the birthdate of the user
 	 *
-	 * @param birthdate
+	 * @param birthdate Calendar
 	 */
 	public void setBirthdate(Calendar birthdate) {
 		this.birthdate = birthdate;
@@ -181,7 +195,7 @@ public class User implements Serializable {
 	/**
 	 * Set the level of the user
 	 *
-	 * @param level
+	 * @param level int
 	 */
 	public void setLevel(int level) {
 		this.level = level;
@@ -190,14 +204,23 @@ public class User implements Serializable {
 	/**
 	 * Set the location of the user
 	 *
-	 * @param location
+	 * @param location String
 	 */
 	public void setLocation(String location) {
 		this.location = location;
 	}
 
+	/**
+	 * Set the preferences of the user
+	 *
+	 * @param preferencesMap Map<String, ArrayList>
+	 */
+	public void setPreferencesMap(Map preferencesMap) {
+		this.preferencesMap = preferencesMap;
+	}
+
 	@Override
 	public String toString() {
-		return "User{" + "fName=" + fName + ", lName=" + lName + ", gender=" + gender + ", userid=" + userid + ", level=" + level + ", age=" + age + ", birthdate=" + birthdate + ", location=" + location + '}';
+		return "User{" + "fName=" + fName + ", lName=" + lName + ", gender=" + gender + ", userid=" + userid + ", level=" + level + ", age=" + age + ", birthdate=" + birthdate + ", location=" + location + ", map" + preferencesMap+'}';
 	}
 }

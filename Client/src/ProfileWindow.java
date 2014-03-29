@@ -13,7 +13,10 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -44,11 +47,12 @@ public class ProfileWindow implements ActionListener{
 	private JPanel panelProfileMain;
 	
 	private Calendar cal = Calendar.getInstance();
+        private HashMap prefMap;
 	
-	private User currentUser = new User("gareth", "twat", "male", 1, 1, 34, cal, "Leiden");
-	private User testUser_01 = new User("gazza", "twat", "male", 1, 1, 34, cal, "Leiden");
-	private User testUser_02 = new User("jaimie", "twat", "male", 1, 1, 34, cal, "Leiden");
-	private User testUser_03 = new User("todd", "twat", "male", 1, 1, 34, cal, "Leiden");
+	private User currentUser; //= new User("gareth", "twat", "male", 1, 1, 34, cal, "Leiden",prefMap);
+	private User testUser_01 = new User("gazza", "twat", "male", 1, 1, 34, cal, "Leiden",prefMap);
+	private User testUser_02 = new User("jaimie", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap);
+	private User testUser_03 = new User("todd", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap);
 	
 	private User[] userArray = {currentUser,testUser_01,testUser_02,testUser_03};
 	
@@ -69,7 +73,11 @@ public class ProfileWindow implements ActionListener{
 	private JComboBox<?> panelMainSearch_CB3;
 	private JComboBox<?> panelMainSearch_CB4;
 	private JComboBox<?> panelMainSearch_CB5;
-	
+        
+        private ArrayList<String> sports1 = new ArrayList<String>();
+	private ArrayList<String> music1 = new ArrayList<String>();
+	private ArrayList<String> films1 = new ArrayList<String>();
+        
 	private String[] comboBoxSearch = {"Firstname","Surname","Sport","Music","Film"};
 	private String[] comboBoxBlind = {"Age","Location"};
 	
@@ -89,22 +97,21 @@ public class ProfileWindow implements ActionListener{
 	
 	private String[] columnNames = {"Firstname", "Surname", "Age", "Gender", "Location"};
 	private User[] userTests = {testUser_01,testUser_02,testUser_03};
-	private Object[][] test;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ProfileWindow window = new ProfileWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ProfileWindow window = new ProfileWindow();
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
@@ -120,8 +127,10 @@ public class ProfileWindow implements ActionListener{
 		initialize();
 		frame.setVisible(true);
 		
-		//currentUser = user;
-		currentScreen = 1;
+		currentUser = user;
+                System.out.print(user.getPreferencesMap().toString());
+                //prefMap = user.getPreferencesMap();
+		//currentScreen = 1;
 		
 		if(user.getLevel() == 1){
 			panelMainSearch_Criteria2.setEnabled(false);
@@ -488,6 +497,16 @@ public class ProfileWindow implements ActionListener{
 		gender = user.getGender();
 		age = user.getAge();
 		location = user.getLocation();
+                try{
+                System.out.println(user.getPreferencesMap().size());}
+                catch(NullPointerException e){
+                    if(user.getPreferencesMap()== null)
+                        System.out.print("false");
+                    else
+                        System.out.print("true");
+                }
+                //films = String.valueOf(user.getPreferencesMap().containsKey("films"));
+                //sports = currentUser.getPreferencesMap().get("sport").toString();
 		onDrawProfile();
 	}
 

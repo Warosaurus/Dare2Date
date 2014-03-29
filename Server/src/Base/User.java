@@ -221,6 +221,6 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User{" + "fName=" + fName + ", lName=" + lName + ", gender=" + gender + ", userid=" + userid + ", level=" + level + ", age=" + age + ", birthdate=" + birthdate + ", location=" + location + '}';
+		return "User{" + "fName=" + fName + ", lName=" + lName + ", gender=" + gender + ", userid=" + userid + ", level=" + level + ", age=" + age + ", birthdate=" + birthdate + ", location=" + location + ", map" + preferencesMap+'}';
 	}
 }

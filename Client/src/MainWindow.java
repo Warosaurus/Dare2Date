@@ -31,6 +31,7 @@ public class MainWindow extends JFrame {
 	private DefaultStyledDocument doc = new DefaultStyledDocument();
         private String finalPassword;
         private String finalEmail;
+        private User user;
         
 	
 
@@ -199,7 +200,7 @@ public class MainWindow extends JFrame {
 		
 		try {
 			//Create a reference to the service interface at the location.
-			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://192.168.50.102/DateServer");
+			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
 			//Create a response object
 			Response res = new Response();
 			//Invoke server SignUp method
@@ -211,6 +212,10 @@ public class MainWindow extends JFrame {
 			} else {
 				System.out.println("Everything went okay.");
 				System.out.println(res.getResponse());
+                                user = (User)res.getResponse();
+                                new ProfileWindow(user);
+                                System.out.print(user.toString());
+                                cancelWindow();
 			}
 		} catch (NotBoundException ex) {
 			System.out.println(ex);
@@ -219,6 +224,7 @@ public class MainWindow extends JFrame {
 		} catch (RemoteException ex) {
 			System.out.println(ex);
 		}
+               
 	}
         
         public void setLogin(){

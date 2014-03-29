@@ -4,13 +4,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Server/ServerImpl.java</file>
-            <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Base/Login.java</file>
             <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Base/SignUp.java</file>
-            <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Base/ServiceInterface.java</file>
-            <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Base/User.java</file>
-            <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Base/UserServerInfoImpl.java</file>
+            <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Base/Response.java</file>
             <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Server/DateServer.java</file>
-            <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Client/BasicClient.java</file>
             <file>file:/C:/Users/gareth/Documents/GitHub/Dare2Date/Server/src/Base/UserServerInfo.java</file>
         </group>
     </open-files>

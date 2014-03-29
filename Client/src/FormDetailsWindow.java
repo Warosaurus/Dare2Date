@@ -751,6 +751,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		email = e;
 		password = p;
 		accountNumber = a_num;
+                System.out.print(prefMap.toString());
 	}
 	
 	public void setPreferences(String sport, String film, String musics){
@@ -778,9 +779,12 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
                     prefMap.put("films",films);
                     prefMap.put("music", music);
                     prefMap.put("sport", sports);
+                    
             }
             catch(NullPointerException e){
-                  return;  
+                    
+                  System.out.print("null pointer fuck");
+                  return;
             }   
             finally{
                 test_pref.setVisible(false);
@@ -801,6 +805,8 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 //		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
 //				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
 		
+                
+                System.out.print(signUp.toString());
 		onSignUp(signUp);
 	}
 	
