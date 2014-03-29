@@ -106,8 +106,6 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	private String accountNumber = "";
 	
         private Map<String, ArrayList<String>> prefMap = new HashMap<String, ArrayList<String>>();
-        
-	private JLabel test_pref;
 
 	
 	public FormDetailsWindow(){
@@ -415,10 +413,6 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		preferences.add(btnCancelPref);
 		
 		onDrawPictures(preferences);
-		
-		test_pref = new JLabel("New label");
-		test_pref.setBounds(33, 107, 744, 36);
-		preferences.add(test_pref);
 	}
 	
 	
@@ -751,7 +745,6 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		email = e;
 		password = p;
 		accountNumber = a_num;
-                System.out.print(prefMap.toString());
 	}
 	
 	public void setPreferences(String sport, String film, String musics){
@@ -783,12 +776,9 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
             }
             catch(NullPointerException e){
                     
-                  System.out.print("null pointer fuck");
+                  System.out.print("no preferences entered you lazy basterd");
                   return;
             }   
-            finally{
-                test_pref.setVisible(false);
-            }    
                 
                 
 	}
@@ -805,9 +795,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 //		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
 //				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
 		
-                
-                System.out.print(signUp.toString());
-		onSignUp(signUp);
+                onSignUp(signUp);
 	}
 	
 	

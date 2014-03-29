@@ -54,8 +54,6 @@ public class ProfileWindow implements ActionListener{
 	private User testUser_02 = new User("jaimie", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap);
 	private User testUser_03 = new User("todd", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap);
 	
-	private User[] userArray = {currentUser,testUser_01,testUser_02,testUser_03};
-	
 	private JButton btnpanelProfileTitle_Home;
 	private String[] comboBoxSettings = {"Account Settings","Edit Personal Details","Edit Preferences","Edit Account Details","View Profile"};
 	private JComboBox<?> comboBoxpanelTitle_Settings;
@@ -91,6 +89,7 @@ public class ProfileWindow implements ActionListener{
 	private String sex_Pref = "";
 	private String films = "";
 	private String sports = "";
+        private String music = "";
 	private JTextField txtpanelMainInstantM_Message;
 	private JTable table;
 	
@@ -171,15 +170,15 @@ public class ProfileWindow implements ActionListener{
 	
 	public class MyButtonListener implements ActionListener{
 		
-		int number;
+		User user;
 		
-		public MyButtonListener(int number){
-			this.number = number;
+		public MyButtonListener(User user){
+			this.user = user;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			setProfile(userArray[this.number+1]);
+			setProfile(this.user);
 			//System.out.print(String.valueOf(number));
 			changePanels(SearchlayeredPane,ProfilelayeredPane);
 			
@@ -398,8 +397,7 @@ public class ProfileWindow implements ActionListener{
 		btnpanelMainBlind_Match.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				changePanels(MainlayeredPane,SearchlayeredPane);
-				onDrawSearchResults(panelSearchResults,userTests);
+				//onDrawSearchResults(panelSearchResults,userTests);
 			}
 		});
 		btnpanelMainBlind_Match.setBounds(90, 139, 110, 50);
@@ -505,8 +503,9 @@ public class ProfileWindow implements ActionListener{
                     else
                         System.out.print("true");
                 }
-                //films = String.valueOf(user.getPreferencesMap().containsKey("films"));
-                //sports = currentUser.getPreferencesMap().get("sport").toString();
+                films = user.getPreferencesMap().get("films").toString();
+                music = user.getPreferencesMap().get("music").toString();
+                sports = user.getPreferencesMap().get("sport").toString();
 		onDrawProfile();
 	}
 
@@ -587,9 +586,17 @@ public class ProfileWindow implements ActionListener{
 //		}
 //	}
 	
+    /**
+     *
+     * @param pane
+     * @param users
+     */
+    	
 public void onDrawSearchResults(JPanel pane,User[] users){
 		
 		
+                changePanels(MainlayeredPane,SearchlayeredPane);
+    
 		JLabel lblpanelSearchResults_FirstNameTag = new JLabel("Firstname");
 		lblpanelSearchResults_FirstNameTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lblpanelSearchResults_FirstNameTag.setFont(new Font("Verdana", Font.BOLD, 12));
@@ -676,7 +683,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 			pane.add(label_14);
 			
 			JButton btnNewButton = new JButton("View Profile");
-			btnNewButton.addActionListener( new MyButtonListener(i));
+			btnNewButton.addActionListener( new MyButtonListener(users[i]));
 			btnNewButton.setBounds(620, 100+x, 110, 20);
 			pane.add(btnNewButton);
 			
@@ -782,7 +789,13 @@ public void onDrawSearchResults(JPanel pane,User[] users){
             }
             else {
                     System.out.println("Everything went okay.");
-                    System.out.println(res.getResponse());
+                    ArrayList<User> usersFound = new ArrayList<User>();
+                    usersFound = (ArrayList<User>) res.getResponse();
+                    User[] userArray = new User[usersFound.size()];
+                    usersFound.toArray(userArray);
+                    
+                    onDrawSearchResults(panelSearchResults,userArray);
+                    
             }
         } catch (NotBoundException ex) {
                 System.out.println(ex);
