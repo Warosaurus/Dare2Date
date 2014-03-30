@@ -51,9 +51,9 @@ public class ProfileWindow implements ActionListener{
         private HashMap prefMap;
 	
 	private User currentUser; //= new User("gareth", "twat", "male", 1, 1, 34, cal, "Leiden",prefMap);
-	private User testUser_01 = new User("gazza", "twat", "male", 1, 1, 34, cal, "Leiden",prefMap);
-	private User testUser_02 = new User("jaimie", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap);
-	private User testUser_03 = new User("todd", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap);
+	private User testUser_01 = new User("gazza", "twat", "male", 1, 1, 34, cal, "Leiden",prefMap,"Female");
+	private User testUser_02 = new User("jaimie", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap,"Male");
+	private User testUser_03 = new User("todd", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap,"Both");
 	
 	private JButton btnpanelProfileTitle_Home;
 	private String[] comboBoxSettings = {"Account Settings","Edit Personal Details","Edit Preferences","Edit Account Details","View Profile"};
@@ -89,7 +89,7 @@ public class ProfileWindow implements ActionListener{
 	private String gender = "";
 	private int age = 0;
 	private String location = "";
-	private String sex_Pref = "";
+	private String sexPref = "";
 	private String films = "";
 	private String sports = "";
         private String music = "";
@@ -546,6 +546,7 @@ public class ProfileWindow implements ActionListener{
 		gender = user.getGender();
 		age = user.getAge();
 		location = user.getLocation();
+                sexPref = user.getSexPref();
                 try{
                 System.out.println(user.getPreferencesMap().size());}
                 catch(NullPointerException e){
@@ -555,8 +556,14 @@ public class ProfileWindow implements ActionListener{
                         System.out.print("true");
                 }
                 films = user.getPreferencesMap().get("films").toString();
+                films = films.replace("[","");
+                films = films.replace("]","");
                 music = user.getPreferencesMap().get("music").toString();
+                music = music.replace("[","");
+                music = music.replace("]","");
                 sports = user.getPreferencesMap().get("sport").toString();
+                sports = sports.replace("[","");
+                sports = sports.replace("]","");
 		onDrawProfile();
 	}
 
@@ -806,7 +813,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 		lblpanelProfileMain_Location.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Location);
 		
-		JLabel lblpanelProfileMain_SexPref = new JLabel(sex_Pref);
+		JLabel lblpanelProfileMain_SexPref = new JLabel(sexPref);
 		lblpanelProfileMain_SexPref.setBackground(Color.WHITE);
 		lblpanelProfileMain_SexPref.setBounds(480, 220, 240, 20);
 		lblpanelProfileMain_SexPref.setOpaque(true);

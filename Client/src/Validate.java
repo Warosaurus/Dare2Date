@@ -81,7 +81,7 @@ public class Validate {
 		return ans;
 	}
 	
-	public Boolean onValidate(String email, String password, String accnumber, JLabel e_error, JLabel p_error, JLabel a_num_error){
+	public Boolean onValidate(String email, String password, String accnumber, int level, JLabel e_error, JLabel p_error, JLabel a_num_error, JLabel l_error){
 		
 		boolean ans = true;
 		
@@ -106,7 +106,28 @@ public class Validate {
 		}
 		else
 			a_num_error.setVisible(false);
+		
+		if(level == 0){
+			l_error.setVisible(true);
+			ans = false;
+		}
+		else
+			l_error.setVisible(false);
 					
+		return ans;
+	}
+	
+	public Boolean onValidate(String sex, JLabel sex_error){
+		
+		boolean ans = true;
+		
+		if(sex == ""){
+			sex_error.setVisible(true);
+			ans = false;
+		}
+		else
+			sex_error.setVisible(false);
+		
 		return ans;
 	}
 	

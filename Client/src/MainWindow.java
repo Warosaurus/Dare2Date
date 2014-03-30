@@ -90,7 +90,6 @@ public class MainWindow extends JFrame {
 		
 		txtEmail = new JTextField();
 		txtEmail.setToolTipText("E-mail");
-		txtEmail.setHorizontalAlignment(SwingConstants.CENTER);
 		txtEmail.setBounds(255, 281, 160, 20);
 		frame.getContentPane().add(txtEmail);
 		txtEmail.setColumns(10);

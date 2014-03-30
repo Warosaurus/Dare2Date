@@ -14,9 +14,8 @@ public class SignUp implements Serializable {
 	private String location;
 	private String e_Mail;
 	private String password;
-	private String card_Name;
 	private String account_Number;
-	private String card_Number;
+	private String sexPref;
 	private int level;
 	private Map preferencesMap;
 	
@@ -25,7 +24,7 @@ public class SignUp implements Serializable {
 		
 	}
 
-	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String account_Number, int level, Map map) {
+	public SignUp(String firstName, String surName, Calendar birthdate, int age, String gender, String location, String e_Mail, String password, String account_Number, int level, Map map, String sexPref) {
 		this.firstName = firstName;
 		this.surName = surName;
 		this.birthdate = birthdate;
@@ -37,6 +36,7 @@ public class SignUp implements Serializable {
 		this.account_Number = account_Number;
 		this.level = level;
 		this.preferencesMap = map;
+                this.sexPref = sexPref;
 	}
 	
 	@Override
@@ -116,13 +116,21 @@ public class SignUp implements Serializable {
 		this.password = password;
 	}
 
-	public String getCard_Number() {
-		return card_Number;
+	public String getSexPref() {
+		return sexPref;
 	}
 
-	public void setCard_Number(String card_Number) {
-		this.card_Number = card_Number;
+	public void setSexPref(String sexPref) {
+		this.sexPref = sexPref;
 	}
+        
+        public String getAccountNumber(){
+            return account_Number;
+        }
+        
+        public void setAccountNumber(String account_Number){
+            this.account_Number = account_Number;
+        }
 
 	public Map getPreferencesMap() {
 		return preferencesMap;

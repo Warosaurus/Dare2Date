@@ -19,6 +19,7 @@ public class User implements Serializable {
 	private Calendar birthdate;
 	private String location;
 	private Map preferencesMap;
+        private String sexPref;
 
 	/**
 	 *
@@ -45,7 +46,7 @@ public class User implements Serializable {
 	 * @param location
 	 * @param preferencesMap
 	 */
-	public User(String fName, String lName, String gender, int userid, int level, int age, Calendar birthdate, String location, Map preferencesMap) {
+	public User(String fName, String lName, String gender, int userid, int level, int age, Calendar birthdate, String location, Map preferencesMap, String sexPref) {
 		this.fName = fName;
 		this.lName = lName;
 		this.gender = gender;
@@ -55,6 +56,7 @@ public class User implements Serializable {
 		this.birthdate = birthdate;
 		this.location = location;
 		this.preferencesMap = preferencesMap;
+                this.sexPref = sexPref;
 	}
 
 	/**
@@ -137,6 +139,10 @@ public class User implements Serializable {
 	public Map getPreferencesMap() {
 		return preferencesMap;
 	}
+        
+        public String getSexPref(){
+                return sexPref;
+        }
 
 	/**
 	 * Set the user id of the user
@@ -218,6 +224,10 @@ public class User implements Serializable {
 	public void setPreferencesMap(Map preferencesMap) {
 		this.preferencesMap = preferencesMap;
 	}
+        
+        public void setSexPref(String sexPref){
+                this.sexPref = sexPref;
+        }
 
 	@Override
 	public String toString() {

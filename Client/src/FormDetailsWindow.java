@@ -1,7 +1,14 @@
 import Base.*;
+
+import Base.Response;
+import Base.ServiceInterface;
+import Base.SignUp;
 import java.awt.CardLayout;
+import java.awt.Checkbox;
+import java.awt.CheckboxGroup;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -13,11 +20,9 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
-import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -28,7 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 
-public class FormDetailsWindow extends JFrame implements ItemListener {
+public class FormDetailsWindow extends JFrame {
 
 	/**
 	 * 
@@ -42,11 +47,15 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	private JPanel account;
 	private JPanel confirm;
 	
-	private JCheckBox chckbxPersonal_Male = new JCheckBox("Male");
-	private JCheckBox chckbxPersonal_Female = new JCheckBox("Female");
+	CheckboxGroup cbgPref = new CheckboxGroup();
+	CheckboxGroup cbgGen = new CheckboxGroup();
+	CheckboxGroup cbgAcc = new CheckboxGroup();
 	
 	private Validate validate = new Validate();
 	SimpleDateFormat formatCal = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat formatday = new SimpleDateFormat("dd");
+        SimpleDateFormat formatmonth = new SimpleDateFormat("MM");
+        SimpleDateFormat formatyear = new SimpleDateFormat("yyyy");
 	
 	JLabel lblFirstnameerror;
 	JLabel lblSurnameerror;
@@ -55,9 +64,12 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	JLabel lblGendererror;
 	JLabel lblthisFieldMust;
 	
+	JLabel lblSexpreferror;
+	
 	JLabel lblEmailerror;
 	JLabel lblPassworderror;
 	JLabel lblAccounterror;
+	JLabel lblLevelerror;
 	
 	private JFrame frame;
 	private JTextField txtPersonal_Firstname;
@@ -91,11 +103,12 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	private String day = "";
 	private String month = "";
 	private String year = "";
-	private Calendar dob;
+	private Calendar dob = Calendar.getInstance();
 	private int age;
-	private int level;
+	private int level = 0;
 	private String gender = "";
 	private String location = "";
+	private String sexPref = "";
 	
 	private ArrayList<String> sports = new ArrayList<String>();
 	private ArrayList<String> music = new ArrayList<String>();
@@ -120,7 +133,16 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		frame.setVisible(true);
 		
 		if(number == 1){
-			onDrawPanelPersonal();
+			firstName = currentUser.getFName();
+			surName = currentUser.getLName();
+			dob.clear();
+			dob = currentUser.getBirthdate();
+			gender = currentUser.getGender();
+			location = currentUser.getLocation();
+                        if(gender.contains("Male")){
+                            number = 2;
+                        }
+			onDrawPanelPersonal(number);
 		}
 		else if(number == 2){
 			onDrawPanelPreferences();
@@ -136,7 +158,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	private void initialize() {
 		onDrawFrame();
 		
-		onDrawPanelPersonal();
+		onDrawPanelPersonal(0);
 		
 		onDrawPanelPreferences();
 		
@@ -152,7 +174,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 	}
 	//-----------------------------------Draws the panel for personal details---------------------------------------------------//]
-	public void onDrawPanelPersonal(){
+	public void onDrawPanelPersonal(int number){
 		
 		personal = new JPanel();
 		frame.getContentPane().add(personal, "name_212104587205202");
@@ -177,41 +199,41 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblPersonal_DOB.setBounds(150, 210, 90, 20);
 		personal.add(lblPersonal_DOB);
 		
-		txtPersonal_Firstname = new LimitField();
+		txtPersonal_Firstname = new LimitField(firstName);
 		txtPersonal_Firstname.setToolTipText("First name : minimum of 2 characters and max length of 18 characters");
 		txtPersonal_Firstname.setBounds(270, 150, 120, 20);
 		personal.add(txtPersonal_Firstname);
 		txtPersonal_Firstname.setColumns(10);
 		
-		txtPersonal_Surname = new LimitField();
+		txtPersonal_Surname = new LimitField(surName);
 		txtPersonal_Surname.setToolTipText("Surname : minimum of 2 characters and max length of 18 characters");
 		txtPersonal_Surname.setBounds(270, 180, 120, 20);
 		personal.add(txtPersonal_Surname);
 		txtPersonal_Surname.setColumns(10);
 		
-		txtPersonal_Day = new LimitField();
+		txtPersonal_Day = new LimitField(formatday.format(dob.getTime()));
 		txtPersonal_Day.setToolTipText("Day : must contain a one/two digit number between 1-31");
 		txtPersonal_Day.setHorizontalAlignment(SwingConstants.CENTER);
-		txtPersonal_Day.setText("DD");
+		//txtPersonal_Day.setText("DD");
 		//txtPersonal_Day.setInputVerifier( verifier_number );
 		txtPersonal_Day.setBounds(270, 210, 30, 20);
 		personal.add(txtPersonal_Day);
 		txtPersonal_Day.setColumns(10);
 		
-		txtPersonal_Month = new LimitField();
-		txtPersonal_Month.setDocument(new LimitDocument(2));
+		txtPersonal_Month = new LimitField(formatmonth.format(dob.getTime()));
+		//txtPersonal_Month.setDocument(new LimitDocument(2));
 		txtPersonal_Month.setToolTipText("Month : must contain a one/two digit number between 1-12");
 		txtPersonal_Month.setHorizontalAlignment(SwingConstants.CENTER);
-		txtPersonal_Month.setText("MM");
+		//txtPersonal_Month.setText("MM");
 		//txtPersonal_Month.setInputVerifier( verifier_number );
 		txtPersonal_Month.setBounds(310, 210, 30, 20);
 		personal.add(txtPersonal_Month);
 		txtPersonal_Month.setColumns(10);
 		
-		txtPersonal_Year = new LimitField(4);
+		txtPersonal_Year = new LimitField(formatyear.format(dob.getTime()));
 		txtPersonal_Year.setToolTipText("Year");
 		txtPersonal_Year.setHorizontalAlignment(SwingConstants.CENTER);
-		txtPersonal_Year.setText("YYYY");
+		//txtPersonal_Year.setText("YYYY");
 		//txtPersonal_Year.setInputVerifier( verifier_number );
 		txtPersonal_Year.setBounds(350, 210, 40, 20);
 		personal.add(txtPersonal_Year);
@@ -221,21 +243,23 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblPersonal_Gender.setBounds(150, 240, 90, 20);
 		personal.add(lblPersonal_Gender);
 		
+		Checkbox chckbxPersonal_Male = new Checkbox("Male",cbgGen,false); 
+                if(number == 2)
+                    chckbxPersonal_Male.setState(true);
 		chckbxPersonal_Male.setBounds(270, 237, 59, 24);
-		chckbxPersonal_Male.addItemListener(this);
-		chckbxPersonal_Male.setSelected(false);
 		personal.add(chckbxPersonal_Male);
 		
+		Checkbox chckbxPersonal_Female = new Checkbox("Female",cbgGen,false);
+                if(number == 1)
+                    chckbxPersonal_Female.setState(true);
 		chckbxPersonal_Female.setBounds(331, 237, 80, 24);
-		chckbxPersonal_Female.addItemListener(this);
-		chckbxPersonal_Female.setSelected(false);
 		personal.add(chckbxPersonal_Female);
 		
 		JLabel lblPersonal_Location = new JLabel("*Town/City :");
 		lblPersonal_Location.setBounds(150, 270, 90, 20);
 		personal.add(lblPersonal_Location);
 		
-		txtPersonal_Town = new LimitField(18);
+		txtPersonal_Town = new LimitField(location);
 		txtPersonal_Town.setToolTipText("Town or City : must contain a valid town or city maximum of 18 characters");
 		txtPersonal_Town.setBounds(270, 268, 120, 21);
 		personal.add(txtPersonal_Town);
@@ -282,27 +306,41 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblTownerror.setVisible(false);
 		personal.add(lblTownerror);
 		
-		JButton btnNextPers = new JButton("Next");
-		btnNextPers.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
-				
-				setPersonal(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), txtPersonal_Day.getText(), txtPersonal_Month.getText(),
-						txtPersonal_Year.getText(), txtPersonal_Town.getText());
-				
-				boolean go = validate.onValidate(firstName, surName, day, month, year, gender, location, lblFirstnameerror,
-						lblSurnameerror, lblDOBerror, lblGendererror, lblTownerror);
-				
-				if(go){
-					dob = validate.getCalendar();
-					age = validate.getAge();
-					onClickNext(personal,preferences);
-				}
-			}
-		});
+                if(number == 0){
+                    JButton btnNextPers = new JButton("Next");
+                    btnNextPers.addActionListener(new ActionListener(){
+                            public void actionPerformed(ActionEvent arg0){
+
+                                    setPersonal(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), txtPersonal_Day.getText(), txtPersonal_Month.getText(),
+                                                    txtPersonal_Year.getText(), txtPersonal_Town.getText());
+
+                                    boolean go = validate.onValidate(firstName, surName, day, month, year, gender, location, lblFirstnameerror,
+                                                    lblSurnameerror, lblDOBerror, lblGendererror, lblTownerror);
+
+                                    if(go){
+                                            dob = validate.getCalendar();
+                                            age = validate.getAge();
+                                            onClickNext(personal,preferences);
+                                    }
+                            }
+                    });
 		
 		btnNextPers.setBounds(484, 350, 90, 24);
 		personal.add(btnNextPers);
-		
+                }
+                else{
+                    JButton btnNextPers = new JButton("Confirm");
+                    btnNextPers.addActionListener(new ActionListener(){
+                            public void actionPerformed(ActionEvent arg0){
+                                
+                                
+                            }
+                    }); 
+                btnNextPers.setBounds(484, 350, 90, 24);
+		personal.add(btnNextPers);
+                }
+                    
+                		
 		JButton btnCancelPers = new JButton("Cancel");
 		btnCancelPers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -337,8 +375,8 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblPreferences_Sports.setBounds(150, 270, 80, 20);
 		preferences.add(lblPreferences_Sports);
 		
-		JLabel lblPreferences_SexualPreference = new JLabel("Sexual Preference :");
-		lblPreferences_SexualPreference.setBounds(150, 150, 100, 20);
+		JLabel lblPreferences_SexualPreference = new JLabel("*Sexual Preference :");
+		lblPreferences_SexualPreference.setBounds(150, 150, 127, 20);
 		preferences.add(lblPreferences_SexualPreference);
 		
 		JLabel lblPreferences_Films = new JLabel("Films :");
@@ -348,16 +386,16 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		JLabel lblPreferences_Music = new JLabel("Music :");
 		lblPreferences_Music.setBounds(150, 210, 100, 20);
 		preferences.add(lblPreferences_Music);
-		
-		JCheckBox chckbxPreferences_Male = new JCheckBox("Male");
+			
+		Checkbox chckbxPreferences_Male = new Checkbox("Male",cbgPref,false);
 		chckbxPreferences_Male.setBounds(283, 150, 60, 23);
 		preferences.add(chckbxPreferences_Male);
 		
-		JCheckBox chckbxPreferences_Female = new JCheckBox("Female");
+		Checkbox chckbxPreferences_Female = new Checkbox("Female",cbgPref,false);
 		chckbxPreferences_Female.setBounds(345, 150, 80, 23);
 		preferences.add(chckbxPreferences_Female);
 		
-		JCheckBox chckbxPreferences_Both = new JCheckBox("Both");
+		Checkbox chckbxPreferences_Both = new Checkbox("Both",cbgPref,false);
 		chckbxPreferences_Both.setBounds(425, 150, 80, 23);
 		preferences.add(chckbxPreferences_Both);
 		
@@ -397,7 +435,12 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 			public void actionPerformed(ActionEvent e) {
 				
 				setPreferences(txtPreferences_Sport.getText(),txtPreferences_Film.getText(),txtPreferences_Music.getText());
-				onClickNext(preferences,account);
+				
+				boolean go = validate.onValidate(sexPref, lblSexpreferror);
+				
+				if(go){
+					onClickNext(preferences,account);
+				}
 			}
 		});
 		btnNextPref.setBounds(484, 350, 90, 24);
@@ -413,6 +456,19 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		preferences.add(btnCancelPref);
 		
 		onDrawPictures(preferences);
+		
+		JLabel label = new JLabel("*These field's must be filled in.");
+		label.setForeground(Color.BLACK);
+		label.setFont(new Font("Verdana", Font.BOLD | Font.ITALIC, 10));
+		label.setBounds(150, 300, 240, 20);
+		preferences.add(label);
+		
+		lblSexpreferror = new JLabel("*No sexual preference selected");
+		lblSexpreferror.setForeground(Color.RED);
+		lblSexpreferror.setVisible(false);
+		lblSexpreferror.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+		lblSexpreferror.setBounds(510, 150, 250, 20);
+		preferences.add(lblSexpreferror);
 	}
 	
 	
@@ -440,13 +496,13 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblAccount_AccountNumber.setBounds(110, 210, 130, 20);
 		account.add(lblAccount_AccountNumber);
 		
-		txtAccount_Email = new JTextField();
+		txtAccount_Email = new JTextField(email);
 		txtAccount_Email.setToolTipText("e-mail");
 		txtAccount_Email.setBounds(250, 150, 200, 20);
 		account.add(txtAccount_Email);
 		txtAccount_Email.setColumns(10);
 		
-		txtAccount_Password = new JPasswordField();
+		txtAccount_Password = new JPasswordField(password);
 		txtAccount_Password.setBounds(250, 180, 200, 20);
 		account.add(txtAccount_Password);
 		txtAccount_Password.setColumns(10);
@@ -459,7 +515,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		JLabel thisFieldMust_01 = new JLabel("*These field's must be filled in.");
 		thisFieldMust_01.setForeground(Color.BLACK);
 		thisFieldMust_01.setFont(new Font("Verdana", Font.BOLD | Font.ITALIC, 10));
-		thisFieldMust_01.setBounds(110, 240, 240, 20);
+		thisFieldMust_01.setBounds(110, 270, 240, 20);
 		account.add(thisFieldMust_01);
 		
 		lblEmailerror = new JLabel("*The E-mail entered is invalid.");
@@ -489,7 +545,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 				
 				setAccount(txtAccount_Email.getText(), String.valueOf(txtAccount_Password.getPassword()), txtAccount_AccountNumber.getText());
 				
-				boolean go = validate.onValidate(email, password, accountNumber, lblEmailerror, lblPassworderror, lblAccounterror);
+				boolean go = validate.onValidate(email, password, accountNumber, level, lblEmailerror, lblPassworderror, lblAccounterror, lblLevelerror);
 				
 				if(go){
 					onDrawPanelConfirm();
@@ -520,6 +576,29 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		account.add(btnBackAcc);
 		
 		onDrawPictures(account);
+		
+		JLabel lblAccount_Level = new JLabel("*Subscription Type :");
+		lblAccount_Level.setBounds(110, 241, 130, 20);
+		account.add(lblAccount_Level);
+		
+		Checkbox chckbxAccount_Level1 = new Checkbox("Standard",cbgAcc,false);
+		chckbxAccount_Level1.setBounds(250, 240, 70, 20);
+		account.add(chckbxAccount_Level1);
+		
+		Checkbox chckbxAccount_Level2 = new Checkbox("Advanced",cbgAcc,false);
+		chckbxAccount_Level2.setBounds(330, 240, 75, 20);
+		account.add(chckbxAccount_Level2);
+		
+		Checkbox checkbox = new Checkbox("V.I.P.",cbgAcc,false);
+		checkbox.setBounds(410, 240, 65, 20);
+		account.add(checkbox);
+		
+		lblLevelerror = new JLabel("*No subscription was chosen.");
+		lblLevelerror.setForeground(Color.RED);
+                lblLevelerror.setVisible(false);
+		lblLevelerror.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+		lblLevelerror.setBounds(485, 240, 280, 20);
+		account.add(lblLevelerror);
 	}
 	
 	
@@ -580,7 +659,7 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		lblConfirm_Town.setBounds(120, 241, 80, 20);
 		confirm.add(lblConfirm_Town);
 		
-		lblFinal_name = new JLabel(firstName+surName);
+		lblFinal_name = new JLabel(firstName+" "+surName);
 		lblFinal_name.setEnabled(false);
 		lblFinal_name.setBackground(new Color(192, 192, 192));
 		lblFinal_name.setForeground(Color.BLACK);
@@ -603,31 +682,40 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		confirm.add(lblFinal_Location);
 		
 		JLabel lblConfirm_Email = new JLabel("E-mail :");
-		lblConfirm_Email.setBounds(410, 150, 100, 20);
+		lblConfirm_Email.setBounds(410, 150, 120, 20);
 		confirm.add(lblConfirm_Email);
 		
 		JLabel lblConfirm_Password = new JLabel("Password :");
-		lblConfirm_Password.setBounds(410, 180, 100, 20);
+		lblConfirm_Password.setBounds(410, 180, 120, 20);
 		confirm.add(lblConfirm_Password);
 		
 		JLabel lblConfirm_AccountNumber = new JLabel("Account Number :");
-		lblConfirm_AccountNumber.setBounds(410, 210, 100, 20);
+		lblConfirm_AccountNumber.setBounds(410, 210, 120, 20);
 		confirm.add(lblConfirm_AccountNumber);
+		
+		JLabel lblConfirm_Level = new JLabel("Subscription Type :");
+		lblConfirm_Level.setBounds(410, 240, 120, 20);
+		confirm.add(lblConfirm_Level);
 		
 		JLabel lblFinal_Email = new JLabel(email);
 		lblFinal_Email.setEnabled(false);
-		lblFinal_Email.setBounds(550, 150, 170, 20);
+		lblFinal_Email.setBounds(570, 150, 170, 20);
 		confirm.add(lblFinal_Email);
 		
 		JLabel lblFinal_Password = new JLabel(password);
 		lblFinal_Password.setEnabled(false);
-		lblFinal_Password.setBounds(550, 180, 170, 20);
+		lblFinal_Password.setBounds(570, 180, 170, 20);
 		confirm.add(lblFinal_Password);
 		
 		JLabel lblFinal_AccountNumber = new JLabel(accountNumber);
 		lblFinal_AccountNumber.setEnabled(false);
-		lblFinal_AccountNumber.setBounds(550, 210, 170, 20);
+		lblFinal_AccountNumber.setBounds(570, 210, 170, 20);
 		confirm.add(lblFinal_AccountNumber);
+		
+		JLabel lblFinal_Level = new JLabel(cbgAcc.getSelectedCheckbox().getLabel());
+		lblFinal_Level.setEnabled(false);
+		lblFinal_Level.setBounds(570, 240, 170, 20);
+		confirm.add(lblFinal_Level);
 		
 		JButton btnEditPersonalDetails = new JButton("Edit Personal Details..");
 		btnEditPersonalDetails.addActionListener(new ActionListener() {
@@ -711,22 +799,6 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		
 		frame.dispose();
 	}
-
-	//makes sure that only one checkbox can be ticked at any given time
-	public void itemStateChanged(ItemEvent e) {
-		
-		Object source = e.getItemSelectable();
-		
-		if (source == chckbxPersonal_Male){
-			chckbxPersonal_Female.setSelected(false);
-			gender = "Male";
-		}
-		else if (source == chckbxPersonal_Female){
-			chckbxPersonal_Male.setSelected(false);
-			gender = "Female";
-		}
-		
-	}
 	
 	public void setPersonal(String first, String sur, String da, String mon, String yea, String town){
 	
@@ -736,7 +808,12 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		month = mon;
 		year = yea;
 		location = town;
-		
+		try{
+			gender = cbgGen.getSelectedCheckbox().getLabel();
+		}
+		catch(NullPointerException e){
+			gender = "";
+		}
 		
 	}
 	
@@ -745,11 +822,27 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 		email = e;
 		password = p;
 		accountNumber = a_num;
+		try{
+			if(cbgAcc.getSelectedCheckbox().getLabel() == "Standard")
+				level = 1;
+			else if(cbgAcc.getSelectedCheckbox().getLabel() == "Advanced")
+				level = 2;
+			else if(cbgAcc.getSelectedCheckbox().getLabel() == "V.I.P.")
+				level = 3;
+		}
+		catch(NullPointerException ex){
+			level = 0;
+                        System.out.print("no level assigned causing null pointer exception line 815");
+		}
 	}
 	
 	public void setPreferences(String sport, String film, String musics){
 		
             try{
+                    //sport = sport.replace(" ", "");
+                    //film = film.replace(" ","");
+                    //musics = musics.replace(" ","");
+                            
                     String[] new_sports = sport.split(",");
                     String[] new_music = musics.split(",");
                     String[] new_film = film.split(",");
@@ -774,13 +867,17 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
                     prefMap.put("sport", sports);
                     
             }
-            catch(NullPointerException e){
+            catch(Exception e){
                     
                   System.out.print("no preferences entered you lazy basterd");
                   return;
-            }   
-                
-                
+            }
+            try{
+            	sexPref = cbgPref.getSelectedCheckbox().getLabel();                
+            }
+            catch(NullPointerException e){
+            	sexPref = "";
+            }
 	}
 	
 	public void setConfirm(){
@@ -791,11 +888,9 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 	//puts the users details into a SignUp class
 	public void onConfirm(){
 	
-		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),password, txtAccount_AccountNumber.getText(), 2, prefMap);
-//		SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),	
-//				txtAccount_Password.getText(), txtAccount_AccountNumber.getText());
+            SignUp signUp = new SignUp(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), dob, age, gender, txtPersonal_Town.getText(), txtAccount_Email.getText(),password, txtAccount_AccountNumber.getText(), level, prefMap, sexPref);
 		
-                onSignUp(signUp);
+            onSignUp(signUp);
 	}
 	
 	
@@ -815,6 +910,8 @@ public class FormDetailsWindow extends JFrame implements ItemListener {
 			else {
 				System.out.println("Everything went okay.");
 				System.out.println(res.getResponse());
+                                cancelWindow();
+                                
 			}
 		} catch (NotBoundException ex) {
 			System.out.println(ex);

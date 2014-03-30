@@ -21,8 +21,8 @@ public class UserServerInfo extends User implements Serializable {
 		super();
 	}
 
-	public UserServerInfo(String email, String ccNumber, String pass, String fName, String lName, String gender, int userid, int level, int age, Calendar birthdate, String location, Map preferencesMap) {
-		super(fName, lName, gender, userid, level, age, birthdate, location, preferencesMap);
+	public UserServerInfo(String email, String ccNumber, String pass, String fName, String lName, String gender, int userid, int level, int age, Calendar birthdate, String location, Map preferencesMap, String sexPref) {
+		super(fName, lName, gender, userid, level, age, birthdate, location, preferencesMap, sexPref);
 		this.email = email;
 		this.pass = pass;
 		this.ccNumber = ccNumber;

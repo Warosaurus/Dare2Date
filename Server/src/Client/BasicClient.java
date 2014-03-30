@@ -20,7 +20,7 @@ public class BasicClient {
 		user1.setGender("Male");
 		user1.setLevel(2);
 		user1.setLocation("Amsterdam");
-		user1.setCard_Number("32155642135");
+		user1.setAccountNumber("32155642135");
 		user1.setAge(20);
 		user1.setPassword("123456");
 		test[0] = user1;
@@ -32,7 +32,7 @@ public class BasicClient {
 		user2.setGender("Male");
 		user2.setLevel(3);
 		user2.setLocation("Haarlem");
-		user2.setCard_Number("32155642135");
+		user2.setAccountNumber("32155642135");
 		user2.setAge(31);
 		user2.setPassword("12345678");
 		test[1] = user2;

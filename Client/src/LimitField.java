@@ -11,6 +11,10 @@ public class LimitField extends JTextField {
 		 super();
 	 }
 	 
+	 public LimitField(String text){
+		 super(text);
+	 }
+	 
      public LimitField(int limit) {
     	 super();
     	 this.limit = limit;    	 
