@@ -32,7 +32,6 @@ public class MainWindow extends JFrame {
         private String finalPassword;
         private String finalEmail;
         private User user;
-        
 	
 
 	/**
@@ -42,6 +41,7 @@ public class MainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+                                        
 					MainWindow window = new MainWindow();
 					window.frame.setVisible(true);
 				} catch (Exception e) {

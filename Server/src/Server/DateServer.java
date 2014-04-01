@@ -30,7 +30,9 @@ public class DateServer {
 			 * Create local instance of Service Interface called service.
 			 */
 			ServiceInterface service = new ServerImpl();
+                        /*
 			/**
+                         * 
 			 * Set the alias of the registry to "DateServer".
 			 */
 			Naming.rebind("DateServer", service);

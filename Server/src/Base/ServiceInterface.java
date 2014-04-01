@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.io.Serializable;
 
 public interface ServiceInterface extends Remote {
+        
 	//Each method should indicate it throws RemoteException
 	public Response SignUp(SignUp signUp) throws RemoteException;
 	public Response Login(String email, String pass) throws RemoteException;
@@ -13,4 +14,5 @@ public interface ServiceInterface extends Remote {
 	public Response viewProfiles(String gender) throws RemoteException;
         public Response blindAgeMatch(User user,String gender) throws RemoteException;
         public Response blindLocationMatch(User user, String gender) throws RemoteException;
+        public Response getOnlineUsers(User user) throws RemoteException;
 }
