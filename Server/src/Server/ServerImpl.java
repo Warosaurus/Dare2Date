@@ -1,9 +1,6 @@
 package Server;
 
 import Base.*;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -224,6 +221,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param gender String
 	 * @return Response - ArrayList - User
 	 */
+	@Override
 	public Response blindLocationMatch(User user, String gender) {
 		Response res = new Response();
 		if (user.getLevel() > 1) {
@@ -255,6 +253,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param gender String
 	 * @return Response - ArrayList - User
 	 */
+	@Override
 	public Response blindAgeMatch(User user, String gender) {
 		Response res = new Response();
 		if (user.getLevel() > 1) {
@@ -333,31 +332,37 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public void endSession(int userid) {
 		sessions.put(userid, false);
 	}
-        
-        //get all of the currently online users
-        public Response getOnlineUsers(User user){
-            
-            ArrayList<User> onlineUsers = new ArrayList();
-            Response res = new Response();
-            System.out.println("error 5 :     "+ sessions.toString());
-            if(sessions.isEmpty()){
-                for(int i = 1;i<sessions.size();i++){
-                    System.out.println("error 1 :     "+ onlineUsers.toString());
-                    if(sessions.get(i)){
-                        System.out.println("error 2 :  "+onlineUsers.toString());
-                        if(user.getUserid() != i)
-                            onlineUsers.add(userMap.get(i));
-                        System.out.println("error 3 :   "+onlineUsers.toString());
-                    }
-                }
-                System.out.print("error 4 :   "+ onlineUsers.toString());
-                res.setResponse(onlineUsers);
-                return res;
-            }
-            System.out.print(onlineUsers.toString());
-            
-            res.setError("There are no other users logged in!");
-            return res;
-        }
+
+	/**
+	 *
+	 * Get all of the currently online users
+	 *
+	 * @param user
+	 * @return Response - User
+	 */
+	@Override
+	public Response getOnlineUsers(User user) {
+		ArrayList<User> onlineUsers = new ArrayList();
+		Response res = new Response();
+		System.out.println("error 5 :     " + sessions.toString());
+		if (!sessions.isEmpty()) {
+			for (int i = 1; i < sessions.size(); i++) {
+				System.out.println("error 1 :     " + onlineUsers.toString());
+				if (sessions.get(i)) {
+					System.out.println("error 2 :  " + onlineUsers.toString());
+					if (user.getUserid() != i) {
+						onlineUsers.add(userMap.get(i));
+					}
+					System.out.println("error 3 :   " + onlineUsers.toString());
+				}
+			}
+			System.out.print("error 4 :   " + onlineUsers.toString());
+			res.setResponse(onlineUsers);
+		}
+		else
+			res.setError("There are no other users logged in!");
+		System.out.print(onlineUsers.toString());
+		return res;
+	}
         
 }
