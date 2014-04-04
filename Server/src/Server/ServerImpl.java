@@ -1,14 +1,18 @@
 package Server;
 
 import Base.*;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -20,6 +24,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	private final ConcurrentHashMap<Integer, Boolean> sessions;
 	private final ConcurrentHashMap<Integer, UserServerInfo> userServerMap;
 	private final ConcurrentHashMap<Integer, ArrayList> userMatches;
+        private final ConcurrentHashMap<Integer, String> clientIps;
 
 	/**
 	 *
@@ -30,6 +35,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		sessions = new ConcurrentHashMap();
 		userServerMap = new ConcurrentHashMap();
 		userMatches = new ConcurrentHashMap();
+                clientIps = new ConcurrentHashMap();
 	}
 
 	/**
@@ -223,7 +229,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param map
 	 * @return Response - ArrayList - User
 	 */
-	public Response search(Map<String, ArrayList> map) {
+	public Response search(Map<Integer, ArrayList> map) {
 		Response res = new Response();
 		ArrayList<User> userArr = new ArrayList();
 		res.setResponse(userArr);
@@ -236,22 +242,19 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				//First check if the current user has set that preference.
 				if (userMap.get(i).getPreferencesMap().containsKey(cat)) {
 					//Then check to see if the current user has this value in their preferences.
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+
 					//for (int x = 0; x < map.values().size(); x++) {
 					if (userMap.get(i).getPreferencesMap().get(map.keySet()).contains(map.values())) {
 						userArr.add(userMap.get(i));
-=======
-=======
->>>>>>> 06306744322ce784573762bab0ce583fe042134c
+
+
+
 					for (int x = 0; x < map.values().size(); x++) {
 						if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
 							userArr.add(userMap.get(i));
-						}
-<<<<<<< HEAD
->>>>>>> ae33a72... Updated search again
-=======
->>>>>>> 06306744322ce784573762bab0ce583fe042134c
+
+
 					}
 				}
 			}
@@ -260,6 +263,13 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
+               
+    }
+                return res;
+    }
+        
+                        
+                
 
 	/**
 	 *
@@ -410,5 +420,34 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		System.out.print(onlineUsers.toString());
 		return res;
 	}
+        
+        
+        public Response setClientRmi(String ip,User user){
+            
+            Response res = new Response();
+            
+            clientIps.put(user.getUserid(), ip);
+            
+            res.setResponse(true);
+            
+            return res;
+        }
+        
+        public void receiveMail(Mail mail){
+            
+            try{
+                String ip = clientIps.get(mail.getReciever().getUserid());
+            
+                ClientInterface client = (ClientInterface) Naming.lookup(ip);
+                
+                client.sendMail(mail);
+            }
+            catch(NotBoundException exp){
+                
+            }
+            catch(IOException exp){
+                
+            }
+        }
 
 }
