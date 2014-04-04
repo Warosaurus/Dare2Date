@@ -35,7 +35,7 @@ public class BasicChatReciever {
 			
 			String ip = InetAddress.getLocalHost().getHostAddress();
 			LocateRegistry.createRegistry(1098);
-			ClientChatInterface chat = new ClientChatImpl();
+			ClientInterface chat = new ClientChatImpl();
 			service.setClientRmi(ip,user);
 			Naming.rebind("DateClient", chat);
 		}
