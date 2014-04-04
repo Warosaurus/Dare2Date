@@ -11,11 +11,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
 import static java.security.AccessController.getContext;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,15 +50,15 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.border.CompoundBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.SoftBevelBorder;
 
 
-public class ProfileWindow implements ActionListener{
+public class ProfileWindow extends UnicastRemoteObject implements ActionListener,ClientInterface{
 
 	//-----------------------------------Variables for screen dimensions and drawing content----------------------------------------------//
 	static ServiceInterface serviceInstance;
@@ -60,6 +66,8 @@ public class ProfileWindow implements ActionListener{
 	private int screenWidth;
 	private int screenHeight;
 	private int currentScreen;
+        int leftMargin;
+        int topMargin;
 	private int x_im = 10;
 	private int y_im = 10;
 	private JTextArea textArea_Enter;
@@ -151,18 +159,19 @@ public class ProfileWindow implements ActionListener{
 	/**
 	 * Create the application.
 	 */
-	public ProfileWindow() {
+	public ProfileWindow() throws RemoteException{
 		initialize();
 		frame.setVisible(true);
 		currentScreen = 1;
 	}
 	
-	public ProfileWindow(User user){
+	public ProfileWindow(User user, int number) throws RemoteException{
 		
+            if(number == 2){
+                    
+                
 		initialize();
 		frame.setVisible(true);
-		
-		currentUser = user;
 		
 		if(user.getLevel() == 1){
 			panelMainSearch_Criteria2.setEnabled(false);
@@ -179,7 +188,15 @@ public class ProfileWindow implements ActionListener{
 			//comboBoxpanelTitle_Settings.setFocusable(false);
 			//comboBoxpanelTitle_Settings.setVisible(false);
 			
-		}
+                }
+            }
+            
+            currentUser = user;
+            
+            if(number == 1){
+                
+                setRmiClient();
+            }
 		
 		
 	}
@@ -190,8 +207,12 @@ public class ProfileWindow implements ActionListener{
 	private void initialize() {
 		frame = new JFrame();
 		setScreenMargins();
-		frame.setBounds(0, 0, 918, 600);
+                leftMargin = (screenWidth-918)/2;
+                topMargin = (screenHeight-600)/5;
+                
+		frame.setBounds(0, 0, screenWidth, screenHeight);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 	
 		onDrawPanelMain();
@@ -201,7 +222,8 @@ public class ProfileWindow implements ActionListener{
 		onDrawPanelSearchResults();
         }
 	
-		public class MyButtonListener implements ActionListener{
+        
+        public class MyButtonListener implements ActionListener{
 		
 		User user;
 		
@@ -296,9 +318,9 @@ public class ProfileWindow implements ActionListener{
 	public void onDrawPanelTitle(JLayeredPane pane){
 		
 		JPanel panelProfileTitle = new JPanel();
-		panelProfileTitle.setBackground(new Color(250, 235, 215));
-		panelProfileTitle.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panelProfileTitle.setBounds(0, 0, 902, 99);
+		panelProfileTitle.setBackground(new Color(242, 62, 62));
+		panelProfileTitle.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		panelProfileTitle.setBounds(0+leftMargin, 0+topMargin, 902, 99);
 		pane.add(panelProfileTitle);
 		panelProfileTitle.setLayout(null);
 		
@@ -343,6 +365,8 @@ public class ProfileWindow implements ActionListener{
 	public void onDrawPanelMain(){
 		
 		MainlayeredPane = new JLayeredPane();
+                MainlayeredPane.setOpaque(true);
+                MainlayeredPane.setBackground(new Color(212,54,54));
 		frame.getContentPane().add(MainlayeredPane, "name_93516581179371");
 		
 		onDrawPanelTitle(MainlayeredPane);
@@ -361,9 +385,9 @@ public class ProfileWindow implements ActionListener{
 	public void onDrawPanelMain_Search(JLayeredPane pane){
 		
 		JPanel panelMainSearch = new JPanel();
-		panelMainSearch.setBackground(new Color(100, 149, 237));
-		panelMainSearch.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panelMainSearch.setBounds(0, 100, 360, 260);
+		panelMainSearch.setBackground(new Color(255, 216, 216));
+		panelMainSearch.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		panelMainSearch.setBounds(0+leftMargin, 100+topMargin, 360, 260);
 		pane.add(panelMainSearch);
 		panelMainSearch.setLayout(null);
 		
@@ -433,9 +457,9 @@ public class ProfileWindow implements ActionListener{
 		
 		
 		JPanel panelMainInstantM = new JPanel();
-		panelMainInstantM.setBackground(new Color(65, 105, 225));
-		panelMainInstantM.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panelMainInstantM.setBounds(361, 100, 541, 260);
+		panelMainInstantM.setBackground(new Color(255, 216, 216));
+		panelMainInstantM.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		panelMainInstantM.setBounds(361+leftMargin, 100+topMargin, 541, 260);
 		pane.add(panelMainInstantM);
 		panelMainInstantM.setLayout(null);
 		
@@ -450,6 +474,7 @@ public class ProfileWindow implements ActionListener{
 		
 		textArea_Enter = new JTextArea(2,10);
 		textArea_Enter.setDocument(new LimitDocument(80));
+                textArea_Enter.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		textArea_Enter.setBounds(10, 210, 300, 40);
 		textArea_Enter.setWrapStyleWord(true);
 		textArea_Enter.setLineWrap(true);
@@ -565,6 +590,7 @@ public class ProfileWindow implements ActionListener{
 		list = new JList(listModel);
 		list.setVisibleRowCount(3);
 		list.setBounds(450, 50, 80, 150);
+                list.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		panelMainInstantM.add(list);
 		
 		JButton btnNewButton_1 = new JButton("REFRESH");
@@ -583,9 +609,9 @@ public class ProfileWindow implements ActionListener{
 	public void onDrawPanelMain_Blind(JLayeredPane pane){
 		
 		JPanel panelMainBlind = new JPanel();
-		panelMainBlind.setBackground(new Color(65, 105, 225));
+		panelMainBlind.setBackground(new Color(255, 232, 232));
 		panelMainBlind.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		panelMainBlind.setBounds(0, 362, 300, 200);
+		panelMainBlind.setBounds(0+leftMargin, 362+topMargin, 300, 200);
 		pane.add(panelMainBlind);
 		panelMainBlind.setLayout(null);
 		
@@ -609,19 +635,21 @@ public class ProfileWindow implements ActionListener{
 
 		
 		JPanel panelMainVipSearch = new JPanel();
-		panelMainVipSearch.setBackground(new Color(0, 0, 139));
-		panelMainVipSearch.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panelMainVipSearch.setBounds(301, 362, 300, 200);
+		panelMainVipSearch.setBackground(new Color(255, 232, 232));
+		panelMainVipSearch.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		panelMainVipSearch.setBounds(301+leftMargin, 362+topMargin, 300, 200);
 		pane.add(panelMainVipSearch);
 		panelMainVipSearch.setLayout(null);
+                
+                
 	}
 	
 	public void onDrawPanelMain_Inbox(JLayeredPane pane){
 		
 		JPanel panelMainInbox = new JPanel();
-		panelMainInbox.setBackground(new Color(0, 0, 255));
-		panelMainInbox.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panelMainInbox.setBounds(602, 362, 300, 200);
+		panelMainInbox.setBackground(new Color(255, 232, 232));
+		panelMainInbox.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		panelMainInbox.setBounds(602+leftMargin, 362+topMargin, 300, 200);
 		pane.add(panelMainInbox);
 		panelMainInbox.setLayout(null);
 	}
@@ -630,12 +658,14 @@ public class ProfileWindow implements ActionListener{
 		
 		ProfilelayeredPane = new JLayeredPane();
 		frame.getContentPane().add(ProfilelayeredPane, "name_102424516773931");
+                ProfilelayeredPane.setBackground(new Color(212,54,54));
+                ProfilelayeredPane.setOpaque(true);
 		
 		onDrawPanelTitle(ProfilelayeredPane);
 		
 		panelProfileMain = new JPanel();
 		panelProfileMain.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panelProfileMain.setBounds(0, 100, 902, 460);
+		panelProfileMain.setBounds(0+leftMargin, 100+topMargin, 902, 460);
 		ProfilelayeredPane.add(panelProfileMain);
 		panelProfileMain.setLayout(null);
 	}
@@ -644,11 +674,13 @@ public class ProfileWindow implements ActionListener{
 		
 		SearchlayeredPane = new JLayeredPane();
 		frame.getContentPane().add(SearchlayeredPane, "name_201721837465502");
+                SearchlayeredPane.setBackground(new Color(212,54,54));
+                SearchlayeredPane.setOpaque(true);
 		
 		onDrawPanelTitle(SearchlayeredPane);
 		
 		panelSearchResults = new JPanel();
-		panelSearchResults.setBounds(10, 100, 902, 462);
+		panelSearchResults.setBounds(10+leftMargin, 100+topMargin, 902, 462);
 		SearchlayeredPane.add(panelSearchResults);
 		panelSearchResults.setLayout(null);
 		
@@ -1126,4 +1158,30 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                     System.out.println(ex);
             }
         }
+        
+        public void setRmiClient(){
+            
+            try{
+                ServerSocket port = new ServerSocket(0);
+            
+                LocateRegistry.createRegistry(port.getLocalPort());
+                
+                ClientInterface client = new ProfileWindow(currentUser,2);
+                
+                Naming.rebind("DateClient", client);
+                
+                String ip = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
+                
+                
+                
+            }
+            catch(IOException exp){
+                
+            }
+        }
+        
+         @Override
+        public void updateUsers(ArrayList<User> users) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

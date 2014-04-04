@@ -5,24 +5,24 @@ package Base;
  */
 public class Mail {
 
-	private int sender;
-	private int reciever;
+	private User sender;
+	private User reciever;
 	private String content;
 	
 	public Mail() {
 	}
 
-	public Mail(int sender, int reciever, String content) {
+	public Mail(User sender, User reciever, String content) {
 		this.sender = sender;
 		this.reciever = reciever;
 		this.content = content;
 	}
 
-	public int getSender() {
+	public User getSender() {
 		return sender;
 	}
 
-	public int getReciever() {
+	public User getReciever() {
 		return reciever;
 	}
 
@@ -30,11 +30,11 @@ public class Mail {
 		return content;
 	}
 
-	public void setSender(int sender) {
+	public void setSender(User sender) {
 		this.sender = sender;
 	}
 
-	public void setReciever(int reciever) {
+	public void setReciever(User reciever) {
 		this.reciever = reciever;
 	}
 

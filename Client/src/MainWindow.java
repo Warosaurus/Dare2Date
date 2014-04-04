@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -122,7 +124,11 @@ public class MainWindow extends JFrame {
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				new ProfileWindow();
+                            try {
+                                new ProfileWindow();
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 			}
 		});
 		btnNewButton_2.setBounds(490, 281, 160, 73);
@@ -213,7 +219,7 @@ public class MainWindow extends JFrame {
 				System.out.println("Everything went okay.");
 				System.out.println(res.getResponse());
                                 user = (User)res.getResponse();
-                                new ProfileWindow(user);
+                                new ProfileWindow(user,1);
                                 cancelWindow();
 			}
 		} catch (NotBoundException ex) {
