@@ -8,7 +8,7 @@ import java.rmi.registry.LocateRegistry;
 
 /**
  *
- *
+ * @author Warwick Louw
  */
 public class DateServer {
 
