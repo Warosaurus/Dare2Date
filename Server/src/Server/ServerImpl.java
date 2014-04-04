@@ -455,16 +455,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		try {
 			String ip = clientIps.get(mail.getReciever().getUserid());
 			//ip = "127.0.0.1"; //Error in setting ip address. For me, setting Virtualbox ip address.
-<<<<<<< HEAD
-                        System.out.println(ip);
+			System.out.println(ip);
 			ClientInterface chat = (ClientInterface) Naming.lookup(ip);
 			chat.receiveMail(mail);
 		} catch (MalformedURLException | NotBoundException | RemoteException | NullPointerException e) {
-=======
-			ClientInterface chat = (ClientInterface) Naming.lookup(ip);
-			chat.recieveMail(mail);
-		} catch (MalformedURLException | NotBoundException | RemoteException e) {
->>>>>>> a2ae6f79b18bfd1765373666588f1301a017aa41
 			System.out.println(e);
 		}
 	}
