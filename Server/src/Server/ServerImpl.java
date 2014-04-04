@@ -349,8 +349,9 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 						}
 					}
 				}
-				if (res.getResponse() == null)
+				if (res.getResponse() == null) {
 					res.setError("Sorry there are no matches right now.");
+				}
 			} else {
 				res.setError("Sorry there are no matches right now.");
 			}
@@ -447,20 +448,4 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 		return res;
 	}
-
-//	@Override
-//	public void receiveMail(Mail mail) {
-//
-//		try {
-//			String ip = clientIps.get(mail.getReciever().getUserid());
-//
-//			ClientInterface client = (ClientInterface) Naming.lookup(ip);
-//
-//			client.sendMail(mail);
-//		} catch (NotBoundException exp) {
-//
-//		} catch (IOException exp) {
-//
-//		}
-//	}
 }
