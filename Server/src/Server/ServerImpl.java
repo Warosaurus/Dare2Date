@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
- *
+ * @author Warwick Louw
  */
 public class ServerImpl extends UnicastRemoteObject implements ServiceInterface {
 
@@ -214,11 +214,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			Iterator<Integer> iter = userMap.keySet().iterator();
 			while (iter.hasNext()) {
 				Integer i = iter.next();
-				Collection<ArrayList> mapVals = map.values();
 				//First check if the current user has set that preference.
 				if (userMap.get(i).getPreferencesMap().containsKey(cat)) {
 					//Then check to see if the current user has this value in their preferences.
-					for (int x = 0; x < map.values().size(); x++) {//maybe edit map.get(cat).values().size()
+					for (int x = 0; x < map.get(cat).size(); x++) {//maybe edit map.get(cat).values().size()
 						if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
 							userArr.add(userMap.get(i));
 						}
@@ -302,6 +301,19 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 */
 	public Response selectionMatch(User user) {
 		Response res = new Response();
+		if (user.getLevel() == 2) {
+			if (!userMap.isEmpty()) {
+				Iterator<Integer> iter = userMap.keySet().iterator();
+				while (iter.hasNext()) {
+					Integer i = iter.next();
+
+				}
+			} else {
+				res.setError("Sorry there are no matches");
+			}
+		} else {
+			res.setError("You do not have sufficiant rights to perform this action.");
+		}
 		return res;
 	}
 
@@ -310,10 +322,41 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * Match users based a certain criteria
 	 *
 	 * @param user User
+	 * @param map Map
 	 * @return Response - User
 	 */
-	public Response criteriaMatch(User user) {
+	public Response criteriaMatch(User user, Map<String, ArrayList> map) {
 		Response res = new Response();
+		if (user.getLevel() == 2) {
+			if (!userMap.isEmpty() && !map.isEmpty()) {
+				String cat = map.keySet().toString();
+				Iterator<Integer> iter = userMap.keySet().iterator();
+				while (iter.hasNext()) {
+					Integer i = iter.next();
+					//check to see if they have been matched previously.
+					if (!userMatches.get(user.getUserid()).contains(userMap.get(i))) {
+						//check if they are interested in each other.
+						if (userMap.get(i).getGender().equals(user.getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
+							//check to see if the current user has a preference in this field.
+							if (userMap.get(i).getPreferencesMap().containsKey(cat)) {
+								//Then check to see if the current user has this value in their preferences.
+								for (int x = 0; x < map.get(cat).size(); x++) {
+									if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
+										res.setResponse(userMap.get(i));//we are done here.
+									}
+								}
+							}
+						}
+					}
+				}
+				if (res.getResponse().equals(null))
+					res.setError("Sorry there are no matches right now.");
+			} else {
+				res.setError("Sorry there are no matches right now.");
+			}
+		} else {
+			res.setError("You do not have sufficiant rights to perform this action.");
+		}
 		return res;
 	}
 
@@ -376,27 +419,26 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
-	
+
 	@Override
 	public void chatSignIn(int userid, String ip) {
 		clientIps.put(userid, ip);
-		System.err.println(clientIps);
+		System.out.println(clientIps);
 	}
-	
+
 	@Override
 	public void chatSignOut(int userid) {
 		clientIps.remove(userid);
 	}
-	
+
 	@Override
 	public void sendMail(Mail mail) {
 		try {
-		String ip = clientIps.get(mail.getReciever().getUserid());
-		ip = "127.0.0.1"; //Error in setting ip address. For me, setting Virtualbox ip address.
-		ClientChatInterface chat = (ClientChatInterface) Naming.lookup("rmi://"+ip+"/DateClient");
-		chat.recieveMail(mail);
-		} 
-		catch (MalformedURLException | NotBoundException | RemoteException e) {
+			String ip = clientIps.get(mail.getReciever().getUserid());
+			ip = "127.0.0.1"; //Error in setting ip address. For me, setting Virtualbox ip address.
+			ClientChatInterface chat = (ClientChatInterface) Naming.lookup("rmi://" + ip + "/DateClient");
+			chat.recieveMail(mail);
+		} catch (MalformedURLException | NotBoundException | RemoteException e) {
 			System.out.println(e);
 		}
 	}
@@ -407,7 +449,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		Response res = new Response();
 
 		//clientIps.put(user.getUserid(), ip);
-
 		res.setResponse(true);
 
 		return res;
@@ -428,5 +469,4 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 //
 //		}
 //	}
-
 }
