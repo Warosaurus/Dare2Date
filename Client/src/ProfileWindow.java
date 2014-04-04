@@ -160,9 +160,9 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 	 * Create the application.
 	 */
 	public ProfileWindow() throws RemoteException{
-		initialize();
-		frame.setVisible(true);
-		currentScreen = 1;
+		//initialize();
+		//frame.setVisible(true);
+		//currentScreen = 1;
 	}
 	
 	public ProfileWindow(User user, int number) throws RemoteException{
@@ -170,8 +170,8 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
             if(number == 2){
                     
                 
-		initialize();
-		frame.setVisible(true);
+		//initialize();
+		//frame.setVisible(true);
 		
 		if(user.getLevel() == 1){
 			panelMainSearch_Criteria2.setEnabled(false);
@@ -196,6 +196,8 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
             if(number == 1){
                 
                 setRmiClient();
+                initialize();
+		frame.setVisible(true);
             }
 		
 		
@@ -366,7 +368,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		
 		MainlayeredPane = new JLayeredPane();
                 MainlayeredPane.setOpaque(true);
-                MainlayeredPane.setBackground(new Color(212,54,54));
+                MainlayeredPane.setBackground(new Color(171,37,37));
 		frame.getContentPane().add(MainlayeredPane, "name_93516581179371");
 		
 		onDrawPanelTitle(MainlayeredPane);
@@ -517,7 +519,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                                 
                                 Mail mail = new Mail(currentUser,testUser_01,this.mess);  	
 
-				
+				testMail(mail);
 				
 			}
 			
@@ -596,6 +598,15 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		pane.add(panelMainVipSearch);
 		panelMainVipSearch.setLayout(null);
                 
+                JLabel panelMainVipSearch_label = new JLabel("V.I.P. SEARCH");
+                panelMainVipSearch_label.setBounds(90, 50, 120, 50);
+                panelMainVipSearch_label.setFont(new Font("Verdana", Font.BOLD, 15));
+                panelMainVipSearch.add(panelMainVipSearch_label);
+                
+                JButton panelMainVipSearch_button = new JButton("FULL MATCH");
+                panelMainVipSearch_button.setBounds(80, 120, 140, 50);
+                panelMainVipSearch.add(panelMainVipSearch_button);
+                
                 
 	}
 	
@@ -619,7 +630,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		onDrawPanelTitle(ProfilelayeredPane);
 		
 		panelProfileMain = new JPanel();
-		panelProfileMain.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panelProfileMain.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.setBounds(0+leftMargin, 100+topMargin, 902, 460);
 		ProfilelayeredPane.add(panelProfileMain);
 		panelProfileMain.setLayout(null);
@@ -635,7 +646,8 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		onDrawPanelTitle(SearchlayeredPane);
 		
 		panelSearchResults = new JPanel();
-		panelSearchResults.setBounds(10+leftMargin, 100+topMargin, 902, 462);
+		panelSearchResults.setBounds(leftMargin, 100+topMargin, 902, 462);
+                panelSearchResults.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		SearchlayeredPane.add(panelSearchResults);
 		panelSearchResults.setLayout(null);
 		
@@ -1117,11 +1129,11 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         public void setRmiClient(){
             
             try{
-<<<<<<< HEAD
+
                 Response res = new Response();
                 
-=======
->>>>>>> 83dd76ce6bc5e15095c3b4790d22ed3cff5aee61
+
+
                 ServerSocket port = new ServerSocket(0);
             
                 LocateRegistry.createRegistry(port.getLocalPort());
@@ -1130,23 +1142,21 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                 
                 Naming.rebind("DateClient", client);
                 
-<<<<<<< HEAD
-                String ip = InetAddress.getLocalHost().getHostAddress();
+
+                String ip = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
                 
                 ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
                 
                 res = service.setClientRmi(ip, currentUser);
-=======
-                String ip = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
                 
                 
->>>>>>> 83dd76ce6bc5e15095c3b4790d22ed3cff5aee61
+
                 
             }
             catch(IOException exp){
                 
             }
-<<<<<<< HEAD
+
             catch(NotBoundException exp){
                 
             }
@@ -1187,24 +1197,36 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 					
                 y_im = y_im+65;
             }
-				label.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-				textArea.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-				textArea.setVisible(true);
-				textArea.setOpaque(true);
 				
-				if(y_im > 140)
-					panelMainInstantM_Output.setPreferredSize(new Dimension(430,y_im+65));
+            label.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 				
-				textArea_Enter.setText("");
-				panelMainInstantM_Output.add(label);
-				panelMainInstantM_Output.add(textArea);
+            textArea.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+	
+            textArea.setVisible(true);
+	
+            textArea.setOpaque(true);
+	
+            if(y_im > 140)
+                    panelMainInstantM_Output.setPreferredSize(new Dimension(430,y_im+65));
 				
-				panelMainInstantM_Output.repaint();
-				panelMainInstantM_Output.validate();
-				panelMainInstantM_Output.revalidate();
-				panelMainInstantM_Output.scrollRectToVisible(new Rectangle(x_im,y_im,430,140));
-=======
->>>>>>> 83dd76ce6bc5e15095c3b4790d22ed3cff5aee61
+
+            textArea_Enter.setText("");
+	
+            panelMainInstantM_Output.add(label);
+	
+            panelMainInstantM_Output.add(textArea);
+				
+	
+            panelMainInstantM_Output.repaint();
+	
+            panelMainInstantM_Output.validate();
+	
+            panelMainInstantM_Output.revalidate();
+				
+            panelMainInstantM_Output.scrollRectToVisible(new Rectangle(x_im,y_im,430,140));
+                                
+
+
         }
         
          @Override
