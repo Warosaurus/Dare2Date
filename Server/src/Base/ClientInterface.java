@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public interface ClientInterface extends Remote{
     
-    public void sendMail(Mail mail) throws RemoteException;
+    public void receiveMail(Mail mail) throws RemoteException;
     public void updateUsers(ArrayList<User> users) throws RemoteException;
     
 }
