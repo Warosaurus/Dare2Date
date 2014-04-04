@@ -161,9 +161,9 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 	 * Create the application.
 	 */
 	public ProfileWindow() throws RemoteException{
-		//initialize();
-		//frame.setVisible(true);
-		//currentScreen = 1;
+		initialize();
+		frame.setVisible(true);
+		currentScreen = 1;
 	}
 	
 	public ProfileWindow(User user, int number) throws RemoteException{
@@ -1058,7 +1058,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         public void refreshList(ArrayList<User> usersOnline){
         	
         	onlineUsers.clear();
-                
+                listModel.clear();
                 onlineUsers = (ArrayList<User>) usersOnline.clone();
                 
         	try{
@@ -1175,7 +1175,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
             textArea.setWrapStyleWord(true);
             textArea.setLineWrap(true);
             if(mail.getSender().getUserid() != currentUser.getUserid()){
-                x_im = 80;
+                x_im = 120;
                 if(mail.getSender().getGender() == "Female")
                     label.setBackground(Color.PINK);
                 else
@@ -1183,22 +1183,22 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                 label.setText("From : "+mail.getSender().getFName());
             }
             else{
-		x_im = 10;
+		x_im = 40;
 		label.setBackground(Color.GREEN);
 		label.setText("To : "+mail.getReciever().getFName());
 	    }
 				
             if(mail.getContent().length() <= 50){
-		label.setBounds(x_im, y_im, 120, 20);
-		textArea.setBounds(x_im, y_im+20, 340, 20);
+		label.setBounds(x_im, y_im, 100, 20);
+		textArea.setBounds(x_im, y_im+20, 300, 20);
 		y_im = y_im+45;
             }
 				
             else if(mail.getContent().length() > 50){
 					
-                label.setBounds(x_im, y_im, 120, 20);
+                label.setBounds(x_im, y_im, 100, 20);
 					
-                textArea.setBounds(x_im, y_im+20, 340, 40);
+                textArea.setBounds(x_im, y_im+20, 300, 40);
 					
                 y_im = y_im+65;
             }
