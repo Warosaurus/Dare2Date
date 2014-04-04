@@ -208,20 +208,23 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		Response res = new Response();
 		ArrayList<User> userArr = new ArrayList();
 		res.setResponse(userArr);
-		String cat = map.keySet().toString();
+		//String cat = map.keySet().toString();
 		if (!map.isEmpty() && !userMap.isEmpty()) {
 			Iterator<Integer> iter = userMap.keySet().iterator();
 			while (iter.hasNext()) {
 				Integer i = iter.next();
-				//First check if the current user has set that preference.
-				if (userMap.get(i).getPreferencesMap().containsKey(cat)) {
-					//Then check to see if the current user has this value in their preferences.
-					for (int x = 0; x < map.get(cat).size(); x++) {//maybe edit map.get(cat).values().size()
-						if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
-							userArr.add(userMap.get(i));
+				for (String key : map.keySet()) {
+					//First check if the current user has set that preference.
+					if (userMap.get(i).getPreferencesMap().containsKey(key)) {
+						//Then check to see if the current user has this value in their preferences.
+						for (int x = 0; x < map.get(key).size(); x++) {//maybe edit map.get(cat).values().size()
+							if (userMap.get(i).getPreferencesMap().get(key).contains(map.get(key).get(x))) {
+								userArr.add(userMap.get(i));
+							}
 						}
 					}
 				}
+
 			}
 		} else {
 			res.setError("no keyword specified");
