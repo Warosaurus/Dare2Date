@@ -1058,7 +1058,10 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         public void refreshList(ArrayList<User> usersOnline){
         	
         	onlineUsers.clear();
+<<<<<<< HEAD
                 listModel.clear();
+=======
+>>>>>>> b6efe01880596923ed0542a4024129d554b076f0
                 
                 onlineUsers = (ArrayList<User>) usersOnline.clone();
                 

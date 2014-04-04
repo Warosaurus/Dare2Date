@@ -4,7 +4,7 @@ import Client.BasicChatReciever;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ClientChatImpl extends UnicastRemoteObject implements ClientChatInterface {
+public class ClientChatImpl extends UnicastRemoteObject implements ClientInterface {
 	
 	public ClientChatImpl() throws RemoteException {
 	}
