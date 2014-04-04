@@ -428,12 +428,12 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public Response getOnlineUsers(User user) {
 		ArrayList<User> onlineUsers = new ArrayList();
 		Response res = new Response();
-		if (!sessions.isEmpty()) {
+		if (!sessions.isEmpty() && !userMap.isEmpty()) {
 			Iterator<Integer> iter = userMap.keySet().iterator();
 			while (iter.hasNext()) {
 				Integer i = iter.next();
 				if (sessions.get(userMap.get(i).getUserid())) {
-					if (user.getUserid() != userMap.get(i).getUserid()) {
+					if (userMap.get(i).getUserid() != i) {
 						onlineUsers.add(userMap.get(i));
 					}
 				}
