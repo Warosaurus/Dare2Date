@@ -223,7 +223,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param map
 	 * @return Response - ArrayList - User
 	 */
-	public Response search(Map<String, ArrayList> map) {
+	public Response search(Map<Integer, ArrayList> map) {
 		Response res = new Response();
 		ArrayList<User> userArr = new ArrayList();
 		res.setResponse(userArr);
