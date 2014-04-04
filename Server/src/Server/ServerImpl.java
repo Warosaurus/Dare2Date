@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -298,35 +299,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * Match users based on a selection
 	 *
 	 * @param user User
+	 * @param map Map<String, ArrayList>
 	 * @return Response - User
 	 */
-	public Response selectionMatch(User user) {
-		Response res = new Response();
-		if (user.getLevel() == 2) {
-			if (!userMap.isEmpty()) {
-				Iterator<Integer> iter = userMap.keySet().iterator();
-				while (iter.hasNext()) {
-					Integer i = iter.next();
-
-				}
-			} else {
-				res.setError("Sorry there are no matches");
-			}
-		} else {
-			res.setError("You do not have sufficiant rights to perform this action.");
-		}
-		return res;
-	}
-
-	/**
-	 *
-	 * Match users based a certain criteria
-	 *
-	 * @param user User
-	 * @param map Map
-	 * @return Response - User
-	 */
-	public Response criteriaMatch(User user, Map<String, ArrayList> map) {
+	public Response selectionMatch(User user, Map<String, ArrayList> map) {
 		Response res = new Response();
 		if (user.getLevel() == 2) {
 			if (!userMap.isEmpty() && !map.isEmpty()) {
@@ -359,6 +335,52 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		} else {
 			res.setError("You do not have sufficiant rights to perform this action.");
 		}
+		return res;
+	}
+
+	/**
+	 *
+	 * Match users based a certain criteria
+	 *
+	 * @param user User
+	 * @return Response - User
+	 */
+	public Response criteriaMatch(User user) {
+		Response res = new Response();
+		Map<Integer, Integer> ranking = new HashMap();
+		if (user.getLevel() == 2) {
+			if (!userMap.isEmpty()) {
+				Iterator<Integer> iter = userMap.keySet().iterator();
+				while (iter.hasNext()) {
+					Integer i = iter.next();
+					//check if these people have been matched previously.
+					if (!userMatches.get(user.getUserid()).contains(userMap.get(i).getUserid())) {
+						//check if they are interested in each other.
+						if (user.getSexPref().equals(userMap.get(i).getGender()) && userMap.get(i).getSexPref().equals(user.getGender())) {
+							int rank = 0;//rank will be used to determine the best match
+							//if they have the same location then rank +1
+							rank += (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation())) ? 1 : 0;
+							//if they are the same age then rank +1
+							rank += (userMap.get(i).getAge() == user.getAge()) ? 1 : 0;
+							//now check their preferences map. for each category
+							for (String cat : user.getPreferencesMap().keySet()) {
+								for (int x = 0; i < user.getPreferencesMap().get(cat).size(); i++) {
+									rank += (userMap.get(i).getPreferencesMap().get(cat).contains(user.getPreferencesMap().get(cat).get(x))) ? 1 : 0;
+								}
+							}
+							//now place the user in the map.
+							ranking.put(userMap.get(i).getUserid(), rank);
+						}
+					}
+				}
+			}
+		}
+		int max = 0;
+		//get the highest rank.
+		for (int i : ranking.keySet()) {
+			max = (ranking.get(i) > max) ? i : max;
+		}
+		res.setResponse(getUser(ranking.get(max)));
 		return res;
 	}
 
@@ -433,10 +455,16 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		try {
 			String ip = clientIps.get(mail.getReciever().getUserid());
 			//ip = "127.0.0.1"; //Error in setting ip address. For me, setting Virtualbox ip address.
+<<<<<<< HEAD
                         System.out.println(ip);
 			ClientInterface chat = (ClientInterface) Naming.lookup(ip);
 			chat.receiveMail(mail);
 		} catch (MalformedURLException | NotBoundException | RemoteException | NullPointerException e) {
+=======
+			ClientInterface chat = (ClientInterface) Naming.lookup(ip);
+			chat.recieveMail(mail);
+		} catch (MalformedURLException | NotBoundException | RemoteException e) {
+>>>>>>> a2ae6f79b18bfd1765373666588f1301a017aa41
 			System.out.println(e);
 		}
 	}
