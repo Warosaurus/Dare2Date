@@ -41,14 +41,14 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	/**
 	 *
 	 * @param signUp
-	 * @return Response
+	 * @return Response - boolean
 	 * @throws RemoteException
 	 */
 	@Override
 	public Response SignUp(SignUp signUp) throws RemoteException {
 		Response res = new Response();
 		//possible refator, check if hashmap is empty, otherwise check email address. reduce calls.
-		if (!existingEmail(signUp.getE_Mail())) {
+		if (!existingEmail(signUp.getE_Mail())) {//check if it is a vlid email address
 			res.setError("This email address has already been registerd.");
 		} else {
 			//return the max userid so that the next one can be assigned to a new user
@@ -63,7 +63,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			userMap.put(userid, user);
 			res.setResponse(true);
 		}
-		System.out.println("userArray: " + userServerMap);
 		return res;
 	}
 
@@ -71,7 +70,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 *
 	 * @param email
 	 * @param pass
-	 * @return Response
+	 * @return Response - User
 	 * @throws RemoteException
 	 */
 	@Override
@@ -91,7 +90,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	/**
 	 *
 	 * @param userid
-	 * @return Response
+	 * @return Response - boolean
 	 */
 	@Override
 	public Response Logoff(int userid) {
@@ -373,12 +372,16 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				}
 			}
 		}
+		int id = 0;
 		int max = 0;
 		//get the highest rank.
 		for (int i : ranking.keySet()) {
-			max = (ranking.get(i) > max) ? i : max;
+			if (ranking.get(i) > max) {
+				max = ranking.get(i);
+				id = i;
+			}
 		}
-		res.setResponse(getUser(ranking.get(max)));
+		res.setResponse(getUser(ranking.get(id)));
 		return res;
 	}
 
@@ -452,8 +455,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public void sendMail(Mail mail) {
 		try {
 			String ip = clientIps.get(mail.getReciever().getUserid());
-			//ip = "127.0.0.1"; //Error in setting ip address. For me, setting Virtualbox ip address.
-			System.out.println(ip);
 			ClientInterface chat = (ClientInterface) Naming.lookup(ip);
 			chat.receiveMail(mail);
 		} catch (MalformedURLException | NotBoundException | RemoteException | NullPointerException e) {
