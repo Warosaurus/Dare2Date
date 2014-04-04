@@ -392,7 +392,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public void sendMail(Mail mail) {
 		try {
 		String ip = clientIps.get(mail.getReciever().getUserid());
-		ip = "127.0.0.1";
+		ip = "127.0.0.1"; //Error in setting ip address. For me, setting Virtualbox ip address.
 		ClientChatInterface chat = (ClientChatInterface) Naming.lookup("rmi://"+ip+"/DateClient");
 		chat.recieveMail(mail);
 		} 
