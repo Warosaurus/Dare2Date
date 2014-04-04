@@ -20,5 +20,4 @@ public interface ServiceInterface extends Remote {
 	public Response getOnlineUsers(User user) throws RemoteException;
 	public Response setClientRmi(String ip,User user) throws RemoteException;
 	public void sendMail(Mail mail) throws RemoteException;
-	public void chatSignOut(int userid) throws RemoteException;
 }

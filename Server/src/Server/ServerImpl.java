@@ -98,6 +98,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public Response Logoff(int userid) {
 		Response res = new Response();
 		endSession(userid);
+		clientIps.remove(userid);
 		res.setResponse(true);
 		return res;
 	}
@@ -421,11 +422,12 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		return res;
 	}
 
-	@Override
-	public void chatSignOut(int userid) {
-		clientIps.remove(userid);
-	}
-
+	/**
+	 *
+	 * Get all of the currently online users
+	 *
+	 * @param mail
+	 */
 	@Override
 	public void sendMail(Mail mail) {
 		try {
@@ -438,14 +440,19 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 	}
 
+	/**
+	 *
+	 * Get all of the currently online users
+	 *
+	 * @param ip String
+	 * @param user User
+	 * @return Response - boolean
+	 */
 	@Override
 	public Response setClientRmi(String ip, User user) {
-
 		Response res = new Response();
-
 		clientIps.put(user.getUserid(), ip);
 		res.setResponse(true);
-
 		return res;
 	}
 }
