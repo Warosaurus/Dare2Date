@@ -238,17 +238,22 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				if (userMap.get(i).getPreferencesMap().containsKey(cat)) {
 					//Then check to see if the current user has this value in their preferences.
 <<<<<<< HEAD
+<<<<<<< HEAD
 					//for (int x = 0; x < map.values().size(); x++) {
 					if (userMap.get(i).getPreferencesMap().get(map.keySet()).contains(map.values())) {
 						userArr.add(userMap.get(i));
 =======
+=======
+>>>>>>> 06306744322ce784573762bab0ce583fe042134c
 					for (int x = 0; x < map.values().size(); x++) {
 						if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
 							userArr.add(userMap.get(i));
 						}
+<<<<<<< HEAD
 >>>>>>> ae33a72... Updated search again
+=======
+>>>>>>> 06306744322ce784573762bab0ce583fe042134c
 					}
-					//}
 				}
 			}
 		} else {

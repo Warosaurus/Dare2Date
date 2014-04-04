@@ -45,6 +45,11 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.border.SoftBevelBorder;
 
 
 public class ProfileWindow implements ActionListener{
@@ -94,9 +99,9 @@ public class ProfileWindow implements ActionListener{
 	private JComboBox<?> panelMainSearch_CB4;
 	private JComboBox<?> panelMainSearch_CB5;
         
-   private JComboBox<?> panelMainBlind_CB1;
+        private JComboBox<?> panelMainBlind_CB1;
         
-    private ArrayList<String> sports1 = new ArrayList<String>();
+        private ArrayList<String> sports1 = new ArrayList<String>();
 	private ArrayList<String> music1 = new ArrayList<String>();
 	private ArrayList<String> films1 = new ArrayList<String>();
         
@@ -113,7 +118,7 @@ public class ProfileWindow implements ActionListener{
 	private String sexPref = "";
 	private String films = "";
 	private String sports = "";
-    private String music = "";
+        private String music = "";
 	private JTextField txtpanelMainInstantM_Message;
 	private JTable table;
 	
@@ -128,7 +133,7 @@ public class ProfileWindow implements ActionListener{
 	//private User[] userTests = {testUser_01,testUser_02,testUser_03};
 	/**
 	 * Launch the application.
-     * @param args
+        * @param args
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -196,7 +201,7 @@ public class ProfileWindow implements ActionListener{
 		onDrawPanelSearchResults();
         }
 	
-	public class MyButtonListener implements ActionListener{
+		public class MyButtonListener implements ActionListener{
 		
 		User user;
 		
@@ -365,7 +370,7 @@ public class ProfileWindow implements ActionListener{
 		JLabel lblpanelMainSearch_Title = new JLabel("Search Profiles");
 		lblpanelMainSearch_Title.setFont(new Font("Verdana", Font.BOLD, 15));
 		lblpanelMainSearch_Title.setHorizontalAlignment(SwingConstants.CENTER);
-		lblpanelMainSearch_Title.setBounds(10, 10, 430, 30);
+		lblpanelMainSearch_Title.setBounds(10, 10, 340, 30);
 		panelMainSearch.add(lblpanelMainSearch_Title);
 		
 		panelMainSearch_CB1 = new JComboBox<Object>(comboBoxSearch);
@@ -579,7 +584,7 @@ public class ProfileWindow implements ActionListener{
 		
 		JPanel panelMainBlind = new JPanel();
 		panelMainBlind.setBackground(new Color(65, 105, 225));
-		panelMainBlind.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panelMainBlind.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelMainBlind.setBounds(0, 362, 300, 200);
 		pane.add(panelMainBlind);
 		panelMainBlind.setLayout(null);
