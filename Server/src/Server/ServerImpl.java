@@ -256,9 +256,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		return res;
 	}
         
-                        
-                
-
 	/**
 	 *
 	 * Match users based on their location and gender preference
@@ -388,27 +385,22 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public Response getOnlineUsers(User user) {
 		ArrayList<User> onlineUsers = new ArrayList();
 		Response res = new Response();
-		System.out.println("error 5 :     " + sessions.toString());
 		if (!sessions.isEmpty()) {
-			for (int i = 1; i < sessions.size(); i++) {
-				System.out.println("error 1 :     " + onlineUsers.toString());
-				if (sessions.get(i)) {
-					System.out.println("error 2 :  " + onlineUsers.toString());
-					if (user.getUserid() != i) {
+			Iterator<Integer> iter = userMap.keySet().iterator();
+			while (iter.hasNext()) {
+				Integer i = iter.next();
+				if (sessions.get(userMap.get(i).getUserid())) {
+					if (user.getUserid() != userMap.get(i).getUserid()) {
 						onlineUsers.add(userMap.get(i));
 					}
-					System.out.println("error 3 :   " + onlineUsers.toString());
 				}
 			}
-			System.out.print("error 4 :   " + onlineUsers.toString());
 			res.setResponse(onlineUsers);
 		} else {
 			res.setError("There are no other users logged in!");
 		}
-		System.out.print(onlineUsers.toString());
 		return res;
 	}
-        
         
         public Response setClientRmi(String ip,User user){
             
