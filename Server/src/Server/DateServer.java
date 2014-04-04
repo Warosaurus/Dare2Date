@@ -18,9 +18,6 @@ public class DateServer {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Server initialzing..");
-//		if (System.getSecurityManager() == null) {
-//            System.setSecurityManager(new SecurityManager());
-//        }
 		try {
 			/**
 			 * Create a local registry at port 1099.
@@ -30,9 +27,8 @@ public class DateServer {
 			 * Create local instance of Service Interface called service.
 			 */
 			ServiceInterface service = new ServerImpl();
-                        /*
 			/**
-                         * 
+			 * 
 			 * Set the alias of the registry to "DateServer".
 			 */
 			Naming.rebind("DateServer", service);

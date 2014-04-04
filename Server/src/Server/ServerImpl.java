@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.Collection;
 
 /**
  *
@@ -39,6 +41,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	@Override
 	public Response SignUp(SignUp signUp) throws RemoteException {
 		Response res = new Response();
+		System.out.println(signUp.getPreferencesMap().keySet());
 		//possible refator, check if hashmap is empty, otherwise check email address. reduce calls.
 		if (!existingEmail(signUp.getE_Mail())) {
 			res.setError("This email address has already been registerd.");
@@ -173,7 +176,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		Response res = new Response();
 		ArrayList<User> userlist = new ArrayList();
 		if (!userMap.isEmpty()) {
-			Iterator<Integer> iter = userServerMap.keySet().iterator();
+			Iterator<Integer> iter = userMap.keySet().iterator();
 			while (iter.hasNext()) {
 				Integer i = iter.next();
 				if (userMap.get(i).getGender().equals(gender)) {
@@ -198,7 +201,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		if (keyword != null) {
 			ArrayList<User> userlist = new ArrayList();
 			if (!userMap.isEmpty()) {
-				Iterator<Integer> iter = userServerMap.keySet().iterator();
+				Iterator<Integer> iter = userMap.keySet().iterator();
 				while (iter.hasNext()) {
 					Integer i = iter.next();
 					if (userMap.get(i).getFName().matches(keyword) || userMap.get(i).getLName().matches(keyword)) {
@@ -217,20 +220,51 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 *
 	 * Match users based on their location and gender preference
 	 *
+	 * @param map
+	 * @return Response - ArrayList - User
+	 */
+	public Response search(Map<Integer, ArrayList> map) {
+		Response res = new Response();
+		ArrayList<User> userArr = new ArrayList();
+		res.setResponse(userArr);
+		if (!map.isEmpty() && !userMap.isEmpty()) {
+			Iterator<Integer> iter = userMap.keySet().iterator();
+			while (iter.hasNext()) {
+				Integer i = iter.next();
+				Collection<ArrayList> mapVals = map.values();
+				//First check if the current user has set that preference.
+				if (userMap.get(i).getPreferencesMap().containsKey(map.keySet())) {
+					//Then check to see if the current user has this value in their preferences.
+					//for (int x = 0; x < map.values().size(); x++) {
+					if (userMap.get(i).getPreferencesMap().get(map.keySet()).contains(map.values())) {
+						userArr.add(userMap.get(i));
+					}
+					//}
+				}
+			}
+		} else {
+			res.setError("no keyword specified");
+		}
+		return res;
+	}
+
+	/**
+	 *
+	 * Match users based on their location and gender preference
+	 *
 	 * @param user User
-	 * @param gender String
 	 * @return Response - ArrayList - User
 	 */
 	@Override
-	public Response blindLocationMatch(User user, String gender) {
+	public Response blindLocationMatch(User user) {
 		Response res = new Response();
 		if (user.getLevel() > 1) {
 			if (!userMap.isEmpty()) {
 				Iterator<Integer> iter = userServerMap.keySet().iterator();
 				while (iter.hasNext()) {
 					Integer i = iter.next();
-					//first chack if the locations match and their gender is what they are looking for
-					if (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation()) && userMap.get(i).getGender().equals(gender)) {
+					//first chack if the locations match and their gender is what they are looking for and that the person in question is the gender type they are looking for.
+					if (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation()) && userMap.get(i).getGender().equals(userMap.get(i).getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
 						//then check if the this user has matches, then check if these two users haven't been matched before.
 						if (userMatches.containsKey(user.getUserid()) && !userMatches.get(user.getUserid()).contains(i)) {
 							//if the criteria is matched then return this user
@@ -250,11 +284,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * Match users based on their age
 	 *
 	 * @param user User
-	 * @param gender String
 	 * @return Response - ArrayList - User
 	 */
 	@Override
-	public Response blindAgeMatch(User user, String gender) {
+	public Response blindAgeMatch(User user) {
 		Response res = new Response();
 		if (user.getLevel() > 1) {
 			if (!userMap.isEmpty()) {
@@ -262,7 +295,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				while (iter.hasNext()) {
 					Integer i = iter.next();
 					//first chack if the ages match and their gender is what they are looking for
-					if ((userMap.get(i).getAge() == user.getAge()) && userMap.get(i).getGender().equals(gender)) {
+					if ((userMap.get(i).getAge() == user.getAge()) && userMap.get(i).getGender().equals(user.getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
 						//then check if the this user has matches, then check if these two users haven't been matched before.
 						if (userMatches.containsKey(user.getUserid()) && !userMatches.get(user.getUserid()).contains(i)) {
 							//if the criteria is matched then return this user
@@ -335,7 +368,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 	/**
 	 *
-	 * Get all of the currently online users
+	 * Get all of the currently online users -On todo list.
 	 *
 	 * @param user
 	 * @return Response - User
@@ -358,11 +391,11 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			}
 			System.out.print("error 4 :   " + onlineUsers.toString());
 			res.setResponse(onlineUsers);
-		}
-		else
+		} else {
 			res.setError("There are no other users logged in!");
+		}
 		System.out.print(onlineUsers.toString());
 		return res;
 	}
-        
+
 }

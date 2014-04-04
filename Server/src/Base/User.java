@@ -2,6 +2,7 @@ package Base;
 
 import java.util.Calendar;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ public class User implements Serializable {
 	private Calendar birthdate;
 	private String location;
 	private Map preferencesMap;
-        private String sexPref;
+    private String sexPref;
 
 	/**
 	 *
@@ -56,7 +57,7 @@ public class User implements Serializable {
 		this.birthdate = birthdate;
 		this.location = location;
 		this.preferencesMap = preferencesMap;
-                this.sexPref = sexPref;
+		this.sexPref = sexPref;
 	}
 
 	/**
@@ -136,13 +137,13 @@ public class User implements Serializable {
 	 *
 	 * @return Map<String, ArrayList>
 	 */
-	public Map getPreferencesMap() {
+	public Map<Integer, ArrayList> getPreferencesMap() {
 		return preferencesMap;
 	}
         
-        public String getSexPref(){
-                return sexPref;
-        }
+	public String getSexPref(){
+		return sexPref;
+	}
 
 	/**
 	 * Set the user id of the user
@@ -221,13 +222,13 @@ public class User implements Serializable {
 	 *
 	 * @param preferencesMap Map<String, ArrayList>
 	 */
-	public void setPreferencesMap(Map preferencesMap) {
+	public void setPreferencesMap(Map<Integer, ArrayList> preferencesMap) {
 		this.preferencesMap = preferencesMap;
 	}
         
-        public void setSexPref(String sexPref){
-                this.sexPref = sexPref;
-        }
+	public void setSexPref(String sexPref){
+		this.sexPref = sexPref;
+	}
 
 	@Override
 	public String toString() {
