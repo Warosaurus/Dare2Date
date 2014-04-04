@@ -137,7 +137,7 @@ public class User implements Serializable {
 	 *
 	 * @return Map<String, ArrayList>
 	 */
-	public Map<Integer, ArrayList> getPreferencesMap() {
+	public Map<String, ArrayList> getPreferencesMap() {
 		return preferencesMap;
 	}
         
@@ -222,7 +222,7 @@ public class User implements Serializable {
 	 *
 	 * @param preferencesMap Map<String, ArrayList>
 	 */
-	public void setPreferencesMap(Map<Integer, ArrayList> preferencesMap) {
+	public void setPreferencesMap(Map<String, ArrayList> preferencesMap) {
 		this.preferencesMap = preferencesMap;
 	}
         

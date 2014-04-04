@@ -1,8 +1,10 @@
 package Base;
 
 import java.rmi.Remote;
+import java.util.Map;
+import java.util.ArrayList;
 import java.rmi.RemoteException;
-import java.io.Serializable;
+
 
 public interface ServiceInterface extends Remote {
         
@@ -14,7 +16,8 @@ public interface ServiceInterface extends Remote {
 	public Response viewProfiles(String gender) throws RemoteException;
 	public Response blindAgeMatch(User user) throws RemoteException;
 	public Response blindLocationMatch(User user) throws RemoteException;
+	public Response search(Map<String, ArrayList> map) throws RemoteException;
 	public Response getOnlineUsers(User user) throws RemoteException;
-        public Response setClientRmi(String ip,User user) throws RemoteException;
-        public void receiveMail(Mail mail) throws RemoteException;
+	public Response setClientRmi(String ip,User user) throws RemoteException;
+	public void receiveMail(Mail mail) throws RemoteException;
 }

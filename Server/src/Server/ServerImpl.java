@@ -229,7 +229,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param map
 	 * @return Response - ArrayList - User
 	 */
-	public Response search(Map<Integer, ArrayList> map) {
+	@Override
+	public Response search(Map<String, ArrayList> map) {
 		Response res = new Response();
 		ArrayList<User> userArr = new ArrayList();
 		res.setResponse(userArr);
@@ -242,19 +243,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				//First check if the current user has set that preference.
 				if (userMap.get(i).getPreferencesMap().containsKey(cat)) {
 					//Then check to see if the current user has this value in their preferences.
-
-
-					//for (int x = 0; x < map.values().size(); x++) {
-					if (userMap.get(i).getPreferencesMap().get(map.keySet()).contains(map.values())) {
-						userArr.add(userMap.get(i));
-
-
-
-					for (int x = 0; x < map.values().size(); x++) {
+					for (int x = 0; x < map.values().size(); x++) {//maybe edit map.get(cat).values().size()
 						if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
 							userArr.add(userMap.get(i));
-
-
+						}
 					}
 				}
 			}
@@ -263,10 +255,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
-               
-    }
-                return res;
-    }
         
                         
                 
