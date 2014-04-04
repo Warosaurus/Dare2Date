@@ -349,7 +349,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 						}
 					}
 				}
-				if (res.getResponse().equals(null))
+				if (res.getResponse() == null)
 					res.setError("Sorry there are no matches right now.");
 			} else {
 				res.setError("Sorry there are no matches right now.");
@@ -421,12 +421,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	}
 
 	@Override
-	public void chatSignIn(int userid, String ip) {
-		clientIps.put(userid, ip);
-		System.out.println(clientIps);
-	}
-
-	@Override
 	public void chatSignOut(int userid) {
 		clientIps.remove(userid);
 	}
@@ -448,7 +442,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 		Response res = new Response();
 
-		//clientIps.put(user.getUserid(), ip);
+		clientIps.put(user.getUserid(), ip);
 		res.setResponse(true);
 
 		return res;

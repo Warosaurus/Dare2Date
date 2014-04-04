@@ -36,7 +36,7 @@ public class BasicChatReciever {
 			String ip = InetAddress.getLocalHost().getHostAddress();
 			LocateRegistry.createRegistry(1098);
 			ClientChatInterface chat = new ClientChatImpl();
-			service.chatSignIn(user.getUserid(), ip);
+			service.setClientRmi(ip,user);
 			Naming.rebind("DateClient", chat);
 		}
 		catch (NotBoundException | MalformedURLException | RemoteException | UnknownHostException e) {
