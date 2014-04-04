@@ -3,6 +3,7 @@ package Server;
 import Base.*;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,7 +25,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	private final ConcurrentHashMap<Integer, Boolean> sessions;
 	private final ConcurrentHashMap<Integer, UserServerInfo> userServerMap;
 	private final ConcurrentHashMap<Integer, ArrayList> userMatches;
-        private final ConcurrentHashMap<Integer, String> clientIps;
+	private final ConcurrentHashMap<Integer, String> clientIps;
 
 	/**
 	 *
@@ -35,7 +36,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		sessions = new ConcurrentHashMap();
 		userServerMap = new ConcurrentHashMap();
 		userMatches = new ConcurrentHashMap();
-                clientIps = new ConcurrentHashMap();
+		clientIps = new ConcurrentHashMap();
 	}
 
 	/**
@@ -47,7 +48,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	@Override
 	public Response SignUp(SignUp signUp) throws RemoteException {
 		Response res = new Response();
-		System.out.println(signUp.getPreferencesMap().keySet());
 		//possible refator, check if hashmap is empty, otherwise check email address. reduce calls.
 		if (!existingEmail(signUp.getE_Mail())) {
 			res.setError("This email address has already been registerd.");
@@ -154,7 +154,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @return int
 	 */
 	public int maxUserid() {
-		//if userServerMap is not empty ? (return maximum keyset(userids) + 1) : (else return 1)
+		//if userServerMap is not empty ? (return maximum keyset(userids)) : (else return 0)
 		return ((!userServerMap.isEmpty()) ? (Collections.max(userServerMap.keySet())) : 0);
 	}
 
@@ -167,31 +167,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 */
 	public User getUser(int userid) {
 		return ((userMap.containsKey(userid)) ? userMap.get(userid) : null);
-	}
-
-	/**
-	 *
-	 * Return a list of all users of a specific preference - Note to self,
-	 * possibly add bi-gender search
-	 *
-	 * @param gender String
-	 * @return Response - ArrayList - User
-	 */
-	@Override
-	public Response viewProfiles(String gender) {
-		Response res = new Response();
-		ArrayList<User> userlist = new ArrayList();
-		if (!userMap.isEmpty()) {
-			Iterator<Integer> iter = userMap.keySet().iterator();
-			while (iter.hasNext()) {
-				Integer i = iter.next();
-				if (userMap.get(i).getGender().equals(gender)) {
-					userlist.add(userMap.get(i));
-				}
-			}
-		}
-		res.setResponse(userlist);
-		return res;
 	}
 
 	/**
@@ -229,7 +204,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param map
 	 * @return Response - ArrayList - User
 	 */
-	public Response search(Map<Integer, ArrayList> map) {
+	@Override
+	public Response search(Map<String, ArrayList> map) {
 		Response res = new Response();
 		ArrayList<User> userArr = new ArrayList();
 		res.setResponse(userArr);
@@ -242,19 +218,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				//First check if the current user has set that preference.
 				if (userMap.get(i).getPreferencesMap().containsKey(cat)) {
 					//Then check to see if the current user has this value in their preferences.
-
-
-					//for (int x = 0; x < map.values().size(); x++) {
-					if (userMap.get(i).getPreferencesMap().get(map.keySet()).contains(map.values())) {
-						userArr.add(userMap.get(i));
-
-
-
-					for (int x = 0; x < map.values().size(); x++) {
+					for (int x = 0; x < map.values().size(); x++) {//maybe edit map.get(cat).values().size()
 						if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
 							userArr.add(userMap.get(i));
-
-
+						}
 					}
 				}
 			}
@@ -263,13 +230,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
-               
-    }
-                return res;
-    }
-        
-                        
-                
 
 	/**
 	 *
@@ -391,7 +351,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 	/**
 	 *
-	 * Get all of the currently online users -On todo list.
+	 * Get all of the currently online users
 	 *
 	 * @param user
 	 * @return Response - User
@@ -400,54 +360,73 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public Response getOnlineUsers(User user) {
 		ArrayList<User> onlineUsers = new ArrayList();
 		Response res = new Response();
-		System.out.println("error 5 :     " + sessions.toString());
 		if (!sessions.isEmpty()) {
-			for (int i = 1; i < sessions.size(); i++) {
-				System.out.println("error 1 :     " + onlineUsers.toString());
-				if (sessions.get(i)) {
-					System.out.println("error 2 :  " + onlineUsers.toString());
-					if (user.getUserid() != i) {
+			Iterator<Integer> iter = userMap.keySet().iterator();
+			while (iter.hasNext()) {
+				Integer i = iter.next();
+				if (sessions.get(userMap.get(i).getUserid())) {
+					if (user.getUserid() != userMap.get(i).getUserid()) {
 						onlineUsers.add(userMap.get(i));
 					}
-					System.out.println("error 3 :   " + onlineUsers.toString());
 				}
 			}
-			System.out.print("error 4 :   " + onlineUsers.toString());
 			res.setResponse(onlineUsers);
 		} else {
 			res.setError("There are no other users logged in!");
 		}
-		System.out.print(onlineUsers.toString());
 		return res;
 	}
-        
-        
-        public Response setClientRmi(String ip,User user){
-            
-            Response res = new Response();
-            
-            clientIps.put(user.getUserid(), ip);
-            
-            res.setResponse(true);
-            
-            return res;
-        }
-        
-        public void receiveMail(Mail mail){
-            
-            try{
-                String ip = clientIps.get(mail.getReciever().getUserid());
-            
-                ClientInterface client = (ClientInterface) Naming.lookup(ip);
-                
-                client.sendMail(mail);
-            }
-            catch(NotBoundException exp){
-                
-            }
-            catch(IOException exp){
-                
-            }
-        }
+	
+	@Override
+	public void chatSignIn(int userid, String ip) {
+		clientIps.put(userid, ip);
+		System.err.println(clientIps);
+	}
+	
+	@Override
+	public void chatSignOut(int userid) {
+		clientIps.remove(userid);
+	}
+	
+	@Override
+	public void sendMail(Mail mail) {
+		try {
+		String ip = clientIps.get(mail.getReciever().getUserid());
+		ip = "127.0.0.1"; //Error in setting ip address. For me, setting Virtualbox ip address.
+		ClientChatInterface chat = (ClientChatInterface) Naming.lookup("rmi://"+ip+"/DateClient");
+		chat.recieveMail(mail);
+		} 
+		catch (MalformedURLException | NotBoundException | RemoteException e) {
+			System.out.println(e);
+		}
+	}
+
+	@Override
+	public Response setClientRmi(String ip, User user) {
+
+		Response res = new Response();
+
+		//clientIps.put(user.getUserid(), ip);
+
+		res.setResponse(true);
+
+		return res;
+	}
+
+//	@Override
+//	public void receiveMail(Mail mail) {
+//
+//		try {
+//			String ip = clientIps.get(mail.getReciever().getUserid());
+//
+//			ClientInterface client = (ClientInterface) Naming.lookup(ip);
+//
+//			client.sendMail(mail);
+//		} catch (NotBoundException exp) {
+//
+//		} catch (IOException exp) {
+//
+//		}
+//	}
 
 }

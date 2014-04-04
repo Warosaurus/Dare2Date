@@ -1129,6 +1129,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         public void setRmiClient(){
             
             try{
+<<<<<<< HEAD
 
                 Response res = new Response();
                 
@@ -1137,26 +1138,40 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                 ServerSocket port = new ServerSocket(0);
             
                 LocateRegistry.createRegistry(port.getLocalPort());
+=======
+				Response res = new Response();
+>>>>>>> 35932618d9db9bc688d296311b609e147fa57e86
                 
                 ClientInterface client = new ProfileWindow(currentUser,2);
                 
                 Naming.rebind("DateClient", client);
                 
+<<<<<<< HEAD
 
                 String ip = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
+=======
+                String ip = InetAddress.getLocalHost().getHostAddress();
+>>>>>>> 35932618d9db9bc688d296311b609e147fa57e86
                 
                 ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
                 
                 res = service.setClientRmi(ip, currentUser);
+<<<<<<< HEAD
                 
                 
 
+=======
+                String url = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
+>>>>>>> 35932618d9db9bc688d296311b609e147fa57e86
                 
             }
             catch(IOException exp){
                 
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 35932618d9db9bc688d296311b609e147fa57e86
             catch(NotBoundException exp){
                 
             }
@@ -1216,6 +1231,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 	
             panelMainInstantM_Output.add(textArea);
 				
+<<<<<<< HEAD
 	
             panelMainInstantM_Output.repaint();
 	
@@ -1227,6 +1243,12 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                                 
 
 
+=======
+				panelMainInstantM_Output.repaint();
+				panelMainInstantM_Output.validate();
+				panelMainInstantM_Output.revalidate();
+				panelMainInstantM_Output.scrollRectToVisible(new Rectangle(x_im,y_im,430,140));
+>>>>>>> 35932618d9db9bc688d296311b609e147fa57e86
         }
         
          @Override
