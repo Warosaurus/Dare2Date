@@ -168,9 +168,21 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		return ((userMap.containsKey(userid)) ? userMap.get(userid) : null);
 	}
 
+	public Response UpdateUser(SignUp signUp, int userid) {
+		Response res = new Response();
+		User user = new User(signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap(), signUp.getSexPref());
+		//create a UserServerInfo object based on the SignUp object
+		UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(), signUp.getAccountNumber(), signUp.getPassword(), signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap(), signUp.getSexPref());
+		//place the userserverinfo object into the hashmap
+		userServerMap.put(userid, userserverinfo);
+		//place the user object into the the hashmap
+		userMap.put(userid, user);
+		return res;
+	}
+
 	/**
 	 *
-	 * Search for a person based on their first name or last name.
+	 * -Depreciated Search for a person based on their first name or last name.
 	 *
 	 * @param keyword String
 	 * @return Response - ArrayList - User
@@ -217,14 +229,16 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 					if (userMap.get(i).getPreferencesMap().containsKey(key)) {
 						//first check names, first and last.
 						if (key.equals("Fname") | key.equals("Lname")) {
-							if (userMap.get(i).getFName().matches(map.get(key).toString()) || userMap.get(i).getLName().matches(map.get(key).toString()))
+							if (userMap.get(i).getFName().matches(map.get(key).toString()) || userMap.get(i).getLName().matches(map.get(key).toString())) {
 								userArr.add(userMap.get(i));
+							}
 						}
 						//Then check to see if the current user has this value in their preferences.
 						for (int x = 0; x < map.get(key).size(); x++) {//maybe edit map.get(cat).values().size()
 							if (userMap.get(i).getPreferencesMap().get(key).contains(map.get(key).get(x))) {
-								if (!userArr.contains(userMap.get(i)))
+								if (!userArr.contains(userMap.get(i))) {
 									userArr.add(userMap.get(i));
+								}
 							}
 						}
 					}
@@ -307,6 +321,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param map Map<String, ArrayList>
 	 * @return Response - User
 	 */
+	@Override
 	public Response selectionMatch(User user, Map<String, ArrayList> map) {
 		Response res = new Response();
 		if (user.getLevel() == 2) {
@@ -345,11 +360,12 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 	/**
 	 *
-	 * Match users based a certain criteria
+	 * Match users based a certain criteria for VIP users
 	 *
 	 * @param user User
 	 * @return Response - User
 	 */
+	@Override
 	public Response criteriaMatch(User user) {
 		Response res = new Response();
 		Map<Integer, Integer> ranking = new HashMap();
