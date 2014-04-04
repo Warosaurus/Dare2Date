@@ -235,11 +235,11 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				//First check if the current user has set that preference.
 				if (userMap.get(i).getPreferencesMap().containsKey(map.keySet())) {
 					//Then check to see if the current user has this value in their preferences.
-					//for (int x = 0; x < map.values().size(); x++) {
-					if (userMap.get(i).getPreferencesMap().get(map.keySet()).contains(map.values())) {
-						userArr.add(userMap.get(i));
+					for (int x = 0; x < map.values().size(); x++) {
+						if (userMap.get(i).getPreferencesMap().get(map.keySet()).contains(map.get(map.keySet()).get(x))) {
+							userArr.add(userMap.get(i));
+						}
 					}
-					//}
 				}
 			}
 		} else {
