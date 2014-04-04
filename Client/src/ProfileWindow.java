@@ -1117,8 +1117,11 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         public void setRmiClient(){
             
             try{
+<<<<<<< HEAD
                 Response res = new Response();
                 
+=======
+>>>>>>> 83dd76ce6bc5e15095c3b4790d22ed3cff5aee61
                 ServerSocket port = new ServerSocket(0);
             
                 LocateRegistry.createRegistry(port.getLocalPort());
@@ -1127,16 +1130,23 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                 
                 Naming.rebind("DateClient", client);
                 
+<<<<<<< HEAD
                 String ip = InetAddress.getLocalHost().getHostAddress();
                 
                 ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
                 
                 res = service.setClientRmi(ip, currentUser);
+=======
+                String ip = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
+                
+                
+>>>>>>> 83dd76ce6bc5e15095c3b4790d22ed3cff5aee61
                 
             }
             catch(IOException exp){
                 
             }
+<<<<<<< HEAD
             catch(NotBoundException exp){
                 
             }
@@ -1193,6 +1203,8 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 				panelMainInstantM_Output.validate();
 				panelMainInstantM_Output.revalidate();
 				panelMainInstantM_Output.scrollRectToVisible(new Rectangle(x_im,y_im,430,140));
+=======
+>>>>>>> 83dd76ce6bc5e15095c3b4790d22ed3cff5aee61
         }
         
          @Override
