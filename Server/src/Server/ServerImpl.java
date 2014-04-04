@@ -227,17 +227,25 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		Response res = new Response();
 		ArrayList<User> userArr = new ArrayList();
 		res.setResponse(userArr);
+		String cat = map.keySet().toString();
 		if (!map.isEmpty() && !userMap.isEmpty()) {
 			Iterator<Integer> iter = userMap.keySet().iterator();
 			while (iter.hasNext()) {
 				Integer i = iter.next();
 				Collection<ArrayList> mapVals = map.values();
 				//First check if the current user has set that preference.
-				if (userMap.get(i).getPreferencesMap().containsKey(map.keySet())) {
+				if (userMap.get(i).getPreferencesMap().containsKey(cat)) {
 					//Then check to see if the current user has this value in their preferences.
+<<<<<<< HEAD
 					//for (int x = 0; x < map.values().size(); x++) {
 					if (userMap.get(i).getPreferencesMap().get(map.keySet()).contains(map.values())) {
 						userArr.add(userMap.get(i));
+=======
+					for (int x = 0; x < map.values().size(); x++) {
+						if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
+							userArr.add(userMap.get(i));
+						}
+>>>>>>> ae33a72... Updated search again
 					}
 					//}
 				}
