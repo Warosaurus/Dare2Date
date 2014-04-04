@@ -153,7 +153,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @return int
 	 */
 	public int maxUserid() {
-		//if userServerMap is not empty ? (return maximum keyset(userids) + 1) : (else return 1)
+		//if userServerMap is not empty ? (return maximum keyset(userids)) : (else return 0)
 		return ((!userServerMap.isEmpty()) ? (Collections.max(userServerMap.keySet())) : 0);
 	}
 
@@ -166,31 +166,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 */
 	public User getUser(int userid) {
 		return ((userMap.containsKey(userid)) ? userMap.get(userid) : null);
-	}
-
-	/**
-	 *
-	 * Return a list of all users of a specific preference - Note to self,
-	 * possibly add bi-gender search
-	 *
-	 * @param gender String
-	 * @return Response - ArrayList - User
-	 */
-	@Override
-	public Response viewProfiles(String gender) {
-		Response res = new Response();
-		ArrayList<User> userlist = new ArrayList();
-		if (!userMap.isEmpty()) {
-			Iterator<Integer> iter = userMap.keySet().iterator();
-			while (iter.hasNext()) {
-				Integer i = iter.next();
-				if (userMap.get(i).getGender().equals(gender)) {
-					userlist.add(userMap.get(i));
-				}
-			}
-		}
-		res.setResponse(userlist);
-		return res;
 	}
 
 	/**
@@ -375,7 +350,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 
 	/**
 	 *
-	 * Get all of the currently online users -On todo list.
+	 * Get all of the currently online users
 	 *
 	 * @param user
 	 * @return Response - User
