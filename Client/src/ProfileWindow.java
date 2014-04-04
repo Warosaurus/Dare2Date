@@ -83,6 +83,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
         
 	private Calendar cal = Calendar.getInstance();
         private HashMap prefMap;
+        private ArrayList<User> onlineUsers = new ArrayList<User>();
 	
 	private User currentUser; //= new User("gareth", "twat", "male", 1, 1, 34, cal, "Leiden",prefMap);
 	private User testUser_01 = new User("Kylie", "Minogue", "Female", 1, 1, 34, cal, "Leiden",prefMap,"Male");
@@ -169,36 +170,21 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		
             if(number == 2){
                     
-                
-		//initialize();
-		//frame.setVisible(true);
-		
-		if(user.getLevel() == 1){
-			panelMainSearch_Criteria2.setEnabled(false);
-			panelMainSearch_Criteria3.setEnabled(false);
-			panelMainSearch_Criteria4.setEnabled(false);
-			panelMainSearch_Criteria5.setEnabled(false);
-			
-			panelMainSearch_CB2.setEnabled(false);
-			panelMainSearch_CB3.setEnabled(false);
-			panelMainSearch_CB4.setEnabled(false);
-			panelMainSearch_CB5.setEnabled(false);
-			
-			//comboBoxpanelTitle_Settings.setEnabled(false);
-			//comboBoxpanelTitle_Settings.setFocusable(false);
-			//comboBoxpanelTitle_Settings.setVisible(false);
-			
-                }
-            }
-            
-            currentUser = user;
-            
-            if(number == 1){
-                
-                setRmiClient();
-                initialize();
+                currentUser = user;
+		initialize();
 		frame.setVisible(true);
+		
             }
+            
+            else if(number == 1){
+                
+                //initialize();
+		//frame.setVisible(true);
+                currentUser = user;
+                setRmiClient();
+                
+            }
+            
 		
 		
 	}
@@ -517,9 +503,16 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                             
 				this.mess = this.jt.getText();
                                 
-                                Mail mail = new Mail(currentUser,testUser_01,this.mess);  	
-
-				testMail(mail);
+                                int check = list.getSelectedIndex();
+                                
+                                User user = onlineUsers.get(check);
+                                
+                                Mail mail = new Mail(currentUser,user,this.mess);  	
+                                
+                                sendMail(mail);
+                                
+                                receiveMail(mail);
+				//testMail(mail);
 				
 			}
 			
@@ -1047,7 +1040,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                 
                 Response res = new Response();
                 
-                service.receiveMail(mail);
+                service.sendMail(mail);
              
             }
             catch (NotBoundException ex) {
@@ -1064,8 +1057,10 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         
         public void refreshList(ArrayList<User> usersOnline){
         	
-        	//listModel.clear();
-        	
+        	onlineUsers.clear();
+                
+                onlineUsers = (ArrayList<User>) usersOnline.clone();
+                
         	try{
 	            User[] userArray = new User[usersOnline.size()];
 	            usersOnline.toArray(userArray);
@@ -1074,7 +1069,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 	        		
 	        		listModel.addElement(userArray[i].getFName());
 	        	}
-                        System.out.println(userArray[1].getFName());
+                        //System.out.println(userArray[1].getFName());
 	        	
         	}
         	catch (NullPointerException excep){
@@ -1088,7 +1083,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         		list.validate();
                         
         	}*/
-    		listModel.addElement("Jane Doe");
+    		//listModel.addElement("Jane Doe");
     		//listModel.addElement("John Smith");
     		//listModel.addElement("Kathy Green");
         	
@@ -1137,16 +1132,16 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 
                 ServerSocket port = new ServerSocket(0);
             
-                LocateRegistry.createRegistry(port.getLocalPort());
+                LocateRegistry.createRegistry(port.getLocalPort()+1);
 
                 
                 ClientInterface client = new ProfileWindow(currentUser,2);
                 
-                Naming.rebind("DateClient", client);
+                Naming.rebind("DateClient"+currentUser.getUserid(), client);
                 
 
 
-                String ip = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
+                String ip = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient"+currentUser.getUserid();
 
                 //String ip = InetAddress.getLocalHost().getHostAddress();
 
@@ -1159,7 +1154,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                 
 
 
-                String url = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
+                //String url = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
 
                 
             }
@@ -1172,7 +1167,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
             }
         }
         
-        public void testMail(Mail mail){
+        public void receiveMail(Mail mail){
             
             JLabel label = new JLabel();
             label.setOpaque(true);
@@ -1190,7 +1185,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
             else{
 		x_im = 10;
 		label.setBackground(Color.GREEN);
-		label.setText("To : "+currentUser.getFName());
+		label.setText("To : "+mail.getReciever().getFName());
 	    }
 				
             if(mail.getContent().length() <= 50){
