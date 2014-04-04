@@ -1,9 +1,10 @@
 package Base;
 
+import java.io.Serializable;
 /**
  *
  */
-public class Mail {
+public class Mail implements Serializable {
 
 	private User sender;
 	private User reciever;

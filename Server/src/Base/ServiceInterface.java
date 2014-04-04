@@ -1,8 +1,9 @@
 package Base;
 
-import java.rmi.Remote;
 import java.util.Map;
+import java.rmi.Remote;
 import java.util.ArrayList;
+//import java.net.InetAddress;
 import java.rmi.RemoteException;
 
 
@@ -18,5 +19,8 @@ public interface ServiceInterface extends Remote {
 	public Response search(Map<String, ArrayList> map) throws RemoteException;
 	public Response getOnlineUsers(User user) throws RemoteException;
 	public Response setClientRmi(String ip,User user) throws RemoteException;
-	public void receiveMail(Mail mail) throws RemoteException;
+	//public void receiveMail(Mail mail) throws RemoteException;
+	public void sendMail(Mail mail) throws RemoteException;
+	public void chatSignIn(int userid, String ip) throws RemoteException;
+	public void chatSignOut(int userid) throws RemoteException;
 }

@@ -3,6 +3,7 @@ package Server;
 import Base.*;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -375,33 +376,57 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
+	
+	@Override
+	public void chatSignIn(int userid, String ip) {
+		clientIps.put(userid, ip);
+		System.err.println(clientIps);
+	}
+	
+	@Override
+	public void chatSignOut(int userid) {
+		clientIps.remove(userid);
+	}
+	
+	@Override
+	public void sendMail(Mail mail) {
+		try {
+		String ip = clientIps.get(mail.getReciever().getUserid());
+		ip = "127.0.0.1";
+		ClientChatInterface chat = (ClientChatInterface) Naming.lookup("rmi://"+ip+"/DateClient");
+		chat.recieveMail(mail);
+		} 
+		catch (MalformedURLException | NotBoundException | RemoteException e) {
+			System.out.println(e);
+		}
+	}
 
 	@Override
 	public Response setClientRmi(String ip, User user) {
 
 		Response res = new Response();
 
-		clientIps.put(user.getUserid(), ip);
+		//clientIps.put(user.getUserid(), ip);
 
 		res.setResponse(true);
 
 		return res;
 	}
 
-	@Override
-	public void receiveMail(Mail mail) {
-
-		try {
-			String ip = clientIps.get(mail.getReciever().getUserid());
-
-			ClientInterface client = (ClientInterface) Naming.lookup(ip);
-
-			client.sendMail(mail);
-		} catch (NotBoundException exp) {
-
-		} catch (IOException exp) {
-
-		}
-	}
+//	@Override
+//	public void receiveMail(Mail mail) {
+//
+//		try {
+//			String ip = clientIps.get(mail.getReciever().getUserid());
+//
+//			ClientInterface client = (ClientInterface) Naming.lookup(ip);
+//
+//			client.sendMail(mail);
+//		} catch (NotBoundException exp) {
+//
+//		} catch (IOException exp) {
+//
+//		}
+//	}
 
 }
