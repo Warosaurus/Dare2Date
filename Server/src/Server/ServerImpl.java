@@ -24,7 +24,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	private final ConcurrentHashMap<Integer, Boolean> sessions;
 	private final ConcurrentHashMap<Integer, UserServerInfo> userServerMap;
 	private final ConcurrentHashMap<Integer, ArrayList> userMatches;
-        private final ConcurrentHashMap<Integer, String> clientIps;
+	private final ConcurrentHashMap<Integer, String> clientIps;
 
 	/**
 	 *
@@ -35,7 +35,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		sessions = new ConcurrentHashMap();
 		userServerMap = new ConcurrentHashMap();
 		userMatches = new ConcurrentHashMap();
-                clientIps = new ConcurrentHashMap();
+		clientIps = new ConcurrentHashMap();
 	}
 
 	/**
@@ -47,7 +47,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	@Override
 	public Response SignUp(SignUp signUp) throws RemoteException {
 		Response res = new Response();
-		System.out.println(signUp.getPreferencesMap().keySet());
 		//possible refator, check if hashmap is empty, otherwise check email address. reduce calls.
 		if (!existingEmail(signUp.getE_Mail())) {
 			res.setError("This email address has already been registerd.");
@@ -255,7 +254,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
-        
+
 	/**
 	 *
 	 * Match users based on their location and gender preference
@@ -401,33 +400,33 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
-        
-        public Response setClientRmi(String ip,User user){
-            
-            Response res = new Response();
-            
-            clientIps.put(user.getUserid(), ip);
-            
-            res.setResponse(true);
-            
-            return res;
-        }
-        
-        public void receiveMail(Mail mail){
-            
-            try{
-                String ip = clientIps.get(mail.getReciever().getUserid());
-            
-                ClientInterface client = (ClientInterface) Naming.lookup(ip);
-                
-                client.sendMail(mail);
-            }
-            catch(NotBoundException exp){
-                
-            }
-            catch(IOException exp){
-                
-            }
-        }
+
+	@Override
+	public Response setClientRmi(String ip, User user) {
+
+		Response res = new Response();
+
+		clientIps.put(user.getUserid(), ip);
+
+		res.setResponse(true);
+
+		return res;
+	}
+
+	@Override
+	public void receiveMail(Mail mail) {
+
+		try {
+			String ip = clientIps.get(mail.getReciever().getUserid());
+
+			ClientInterface client = (ClientInterface) Naming.lookup(ip);
+
+			client.sendMail(mail);
+		} catch (NotBoundException exp) {
+
+		} catch (IOException exp) {
+
+		}
+	}
 
 }
