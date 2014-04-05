@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -99,8 +100,11 @@ public class MainWindow extends JFrame {
 		JButton btnNewButton = new JButton("Log in");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+                            
+                            
                             setLogin();
                             signIn();
+                            
 			}
 		});
 		btnNewButton.setBounds(150, 331, 107, 23);
@@ -210,7 +214,9 @@ public class MainWindow extends JFrame {
 			//Create a response object
 			Response res = new Response();
 			//Invoke server SignUp method
-			res = service.Login(finalEmail,finalPassword);
+                        
+                        res = service.Login(finalEmail,finalPassword);
+                        
 			//Test response
 			if (res.getError() != null) {
 				System.out.println(res.getError());
@@ -233,9 +239,8 @@ public class MainWindow extends JFrame {
 	}
         
         public void setLogin(){
-            
-            finalPassword = String.valueOf(pwdPassword.getPassword());
-            finalEmail = txtEmail.getText();
+                finalPassword = String.valueOf(pwdPassword.getPassword());
+                finalEmail = txtEmail.getText();
         }
 	
 	//Method to be called that will close the current window

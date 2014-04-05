@@ -27,6 +27,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -109,6 +110,7 @@ public class FormDetailsWindow extends JFrame {
 	private String gender = "";
 	private String location = "";
 	private String sexPref = "";
+        private User currentUser;
 	
 	private ArrayList<String> sports = new ArrayList<String>();
 	private ArrayList<String> music = new ArrayList<String>();
@@ -127,10 +129,11 @@ public class FormDetailsWindow extends JFrame {
 		frame.setVisible(true);
 	}
 	
-	public FormDetailsWindow(User currentUser,int number){
+	public FormDetailsWindow(User user,int number){
 		
 		onDrawFrame();
 		frame.setVisible(true);
+                currentUser = user;
 		
 		if(number == 1){
 			firstName = currentUser.getFName();
@@ -145,10 +148,10 @@ public class FormDetailsWindow extends JFrame {
 			onDrawPanelPersonal(number);
 		}
 		else if(number == 2){
-			onDrawPanelPreferences();
+                        onDrawPanelPreferences(2);
 		}
 		else if(number == 3){
-			onDrawPanelAccount();
+			onDrawPanelAccount(3);
 		}
 	}
 
@@ -160,9 +163,9 @@ public class FormDetailsWindow extends JFrame {
 		
 		onDrawPanelPersonal(0);
 		
-		onDrawPanelPreferences();
+		onDrawPanelPreferences(0);
 		
-		onDrawPanelAccount();
+		onDrawPanelAccount(0);
 		
 	}
 	
@@ -333,7 +336,26 @@ public class FormDetailsWindow extends JFrame {
                     btnNextPers.addActionListener(new ActionListener(){
                             public void actionPerformed(ActionEvent arg0){
                                 
+                              setPersonal(txtPersonal_Firstname.getText(), txtPersonal_Surname.getText(), txtPersonal_Day.getText(), txtPersonal_Month.getText(),
+                                                    txtPersonal_Year.getText(), txtPersonal_Town.getText());  
                                 
+                              boolean go = validate.onValidate(firstName, surName, day, month, year, gender, location, lblFirstnameerror,
+                                                    lblSurnameerror, lblDOBerror, lblGendererror, lblTownerror);  
+                              
+                              
+                              if(go){
+                                            dob = validate.getCalendar();
+                                            age = validate.getAge();
+                                            SignUp sign = new SignUp();
+                                            sign.setAge(age);
+                                            sign.setGender(gender);
+                                            sign.setFirstName(firstName);
+                                            sign.setSurName(surName);
+                                            sign.setBirthdate(dob);
+                                            sign.setLocation(location);
+                                            onUpdate(sign);  
+                                            
+                                    }
                             }
                     }); 
                 btnNextPers.setBounds(484, 350, 90, 24);
@@ -355,7 +377,7 @@ public class FormDetailsWindow extends JFrame {
 	}
 	
 	
-	public void onDrawPanelPreferences(){
+	public void onDrawPanelPreferences(int number){
 		
 		preferences = new JPanel();
 		frame.getContentPane().add(preferences, "name_212123375373559");
@@ -367,12 +389,8 @@ public class FormDetailsWindow extends JFrame {
 		lblDaredate2.setBounds(150, 25, 500, 78);
 		preferences.add(lblDaredate2);
 		
-		lblPreferences_Education = new JLabel("Education :");
-		lblPreferences_Education.setBounds(150, 240, 100, 20);
-		preferences.add(lblPreferences_Education);
-		
 		lblPreferences_Sports = new JLabel("Sports :");
-		lblPreferences_Sports.setBounds(150, 270, 80, 20);
+		lblPreferences_Sports.setBounds(150, 240, 100, 20);
 		preferences.add(lblPreferences_Sports);
 		
 		JLabel lblPreferences_SexualPreference = new JLabel("*Sexual Preference :");
@@ -409,43 +427,59 @@ public class FormDetailsWindow extends JFrame {
 		preferences.add(txtPreferences_Music);
 		txtPreferences_Music.setColumns(10);
 		
-		txtPreferences_Education = new JTextField();
-		txtPreferences_Education.setText("");
-		txtPreferences_Education.setBounds(283, 240, 367, 20);
-		preferences.add(txtPreferences_Education);
-		txtPreferences_Education.setColumns(10);
-		
 		txtPreferences_Sport = new JTextField();
-		txtPreferences_Sport.setBounds(283, 270, 367, 20);
+		txtPreferences_Sport.setBounds(283, 240, 367, 20);
 		preferences.add(txtPreferences_Sport);
 		txtPreferences_Sport.setColumns(10);
 		
-		JButton btnBackPref = new JButton("Back");
-		btnBackPref.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				onClickNext(preferences,personal);
-			}
-		});
-		btnBackPref.setBounds(384, 350, 90, 24);
-		preferences.add(btnBackPref);
-		
-		JButton btnNextPref = new JButton("Next");
-		btnNextPref.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				setPreferences(txtPreferences_Sport.getText(),txtPreferences_Film.getText(),txtPreferences_Music.getText());
-				
-				boolean go = validate.onValidate(sexPref, lblSexpreferror);
-				
-				if(go){
-					onClickNext(preferences,account);
-				}
-			}
-		});
-		btnNextPref.setBounds(484, 350, 90, 24);
-		preferences.add(btnNextPref);
-		
+                if(number == 0){
+                    JButton btnBackPref = new JButton("Back");
+                    btnBackPref.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+
+                                    onClickNext(preferences,personal);
+                            }
+                    });
+                    btnBackPref.setBounds(384, 350, 90, 24);
+                    preferences.add(btnBackPref);
+
+                    JButton btnNextPref = new JButton("Next");
+                    btnNextPref.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+
+                                    setPreferences(txtPreferences_Sport.getText(),txtPreferences_Film.getText(),txtPreferences_Music.getText());
+
+                                    boolean go = validate.onValidate(sexPref, lblSexpreferror);
+
+                                    if(go){
+                                            onClickNext(preferences,account);
+                                    }
+                            }
+                    });
+                    btnNextPref.setBounds(484, 350, 90, 24);
+                    preferences.add(btnNextPref);
+                }
+                
+                else if(number > 1){
+                    JButton btnConfirmPref = new JButton("Next");
+                    btnConfirmPref.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+
+                                    setPreferences(txtPreferences_Sport.getText(),txtPreferences_Film.getText(),txtPreferences_Music.getText());
+
+                                    boolean go = validate.onValidate(sexPref, lblSexpreferror);
+
+                                    if(go){
+                                            SignUp sign = new SignUp();
+                                            sign.setSexPref(sexPref);
+                                            sign.setPreferencesMap(prefMap);
+                                            onUpdate(sign);  
+                                    }
+                            }
+                    });
+                    btnConfirmPref.setBounds(484, 350, 90, 24);
+                    preferences.add(btnConfirmPref);
+                }
 		JButton btnCancelPref = new JButton("Cancel");
 		btnCancelPref.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -472,7 +506,7 @@ public class FormDetailsWindow extends JFrame {
 	}
 	
 	
-	public void onDrawPanelAccount(){
+	public void onDrawPanelAccount(int number){
 		
 		account = new JPanel();
 		frame.getContentPane().add(account, "name_212126368410378");
@@ -539,6 +573,7 @@ public class FormDetailsWindow extends JFrame {
 		lblAccounterror.setBounds(485, 210, 280, 20);
 		account.add(lblAccounterror);
 		
+            if(number == 0){
 		JButton btnNextAcc = new JButton("Next");
 		btnNextAcc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -555,17 +590,8 @@ public class FormDetailsWindow extends JFrame {
 		});
 		btnNextAcc.setBounds(484, 350, 90, 24);
 		account.add(btnNextAcc);
-		
-		JButton btnCancelAcc = new JButton("Cancel");
-		btnCancelAcc.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cancelWindow();
-			}
-		});
-		btnCancelAcc.setBounds(584, 350, 90, 24);
-		account.add(btnCancelAcc);
-		
-		JButton btnBackAcc = new JButton("Back");
+                
+                JButton btnBackAcc = new JButton("Back");
 		btnBackAcc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -574,6 +600,38 @@ public class FormDetailsWindow extends JFrame {
 		});
 		btnBackAcc.setBounds(384, 350, 90, 24);
 		account.add(btnBackAcc);
+        }
+		
+            else if(number > 1){
+                JButton btnConfirmAcc = new JButton("Confirm");
+		btnConfirmAcc.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				setAccount(txtAccount_Email.getText(), String.valueOf(txtAccount_Password.getPassword()), txtAccount_AccountNumber.getText());
+				
+				boolean go = validate.onValidate(email, password, accountNumber, level, lblEmailerror, lblPassworderror, lblAccounterror, lblLevelerror);
+				
+				if(go){
+                                    SignUp sign = new SignUp();
+                                    sign.setPassword(password);
+                                    sign.setE_Mail(email);
+                                    sign.setAccountNumber(accountNumber);
+                                    sign.setLevel(level);
+                                    onUpdate(sign);
+				}
+			}
+		});
+		btnConfirmAcc.setBounds(484, 350, 90, 24);
+		account.add(btnConfirmAcc);
+            }
+		JButton btnCancelAcc = new JButton("Cancel");
+		btnCancelAcc.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancelWindow();
+			}
+		});
+		btnCancelAcc.setBounds(584, 350, 90, 24);
+		account.add(btnCancelAcc);
 		
 		onDrawPictures(account);
 		
@@ -910,6 +968,35 @@ public class FormDetailsWindow extends JFrame {
 			else {
 				System.out.println("Everything went okay.");
 				System.out.println(res.getResponse());
+                                cancelWindow();
+                                
+			}
+		} catch (NotBoundException ex) {
+			System.out.println(ex);
+		} catch (MalformedURLException ex) {
+			System.out.println(ex);
+		} catch (RemoteException ex) {
+			System.out.println(ex);
+		}
+	}
+        
+        public void onUpdate (SignUp signUp) {
+		try {
+			//Create a reference to the service interface at the location.
+			ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+			//Create a response object
+			Response res = new Response();
+			//Invoke server SignUp method
+			res = service.UpdateUser(signUp,currentUser.getUserid());
+			//Test response
+			if (res.getError() != null) {
+				System.out.println(res.getError());
+				System.out.println("There was an error.");
+			}
+			else {
+				System.out.println("Everything went okay.");
+				System.out.println(res.getResponse());
+                                JOptionPane.showMessageDialog(null, "Your user information will be updated next tim you login, Thank you", "Information", JOptionPane.INFORMATION_MESSAGE);
                                 cancelWindow();
                                 
 			}

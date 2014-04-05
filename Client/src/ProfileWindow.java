@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -76,6 +77,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 	private JTextArea textArea_Enter;
 	private JScrollPane scrollPaneIM;
         private JLabel newMessages;
+        JButton viewchatprofile;
 	
 	//--------------------------------------Variables for 	
 	private JLayeredPane MainlayeredPane;
@@ -89,10 +91,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
         private HashMap prefMap;
         private ArrayList<User> onlineUsers = new ArrayList<User>();
 	
-	private User currentUser; //= new User("gareth", "twat", "male", 1, 1, 34, cal, "Leiden",prefMap);
-	private User testUser_01 = new User("Kylie", "Minogue", "Female", 1, 1, 34, cal, "Leiden",prefMap,"Male");
-	//private User testUser_02 = new User("jaimie", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap,"Male");
-	//private User testUser_03 = new User("todd", "twat", "male", 1, 1, 34, cal, "Leiden", prefMap,"Both");
+	private User currentUser; 
 	
 	private JButton btnpanelProfileTitle_Home;
 	private String[] comboBoxSettings = {"Account Settings","Edit Personal Details","Edit Preferences","Edit Account Details","View Profile"};
@@ -154,27 +153,17 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 	/**
 	 * Launch the application.
         * @param args
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ProfileWindow window = new ProfileWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	 *
 	/**
 	 * Create the application.
 	 */
 	public ProfileWindow() throws RemoteException{
-		initialize();
+		User user = new User();
+                user.setLevel(0);
+                currentUser = user;
+                initialize();
 		frame.setVisible(true);
-		currentScreen = 1;
+		
 	}
 	
 	public ProfileWindow(User user, int number) throws RemoteException{
@@ -238,6 +227,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 			
 		}
 	}
+        
 	
 	public class MySearchListener implements ActionListener{
 		
@@ -286,7 +276,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                         }
                         
                         if(checker > 0){
-                            
+                            searches(1);
                         }
                         
                     }
@@ -301,11 +291,11 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                             Response res = new Response();
                             if(choice == 0){
                                 //Invoke server blindAgeMatch method
-                               // res = service.blindAgeMatch(currentUser,"male");
+                                res = service.blindAgeMatch(currentUser);
                             }
                             if(choice == 1){
                                 //Invoke server blindAgeMatch method
-                               // res = service.blindLocationMatch(currentUser,"female");
+                                res = service.blindLocationMatch(currentUser);
                             }
                                 //Test response
                                 if (res.getError() != null) {
@@ -316,7 +306,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                                         System.out.println("Everything went okay.");
                                         System.out.println(res.getResponse());
                                         ArrayList<User> usersFound = (ArrayList<User>)res.getResponse();
-                                        if(usersFound != null){
+                                        if(!usersFound.isEmpty()){
                                             usersFound = (ArrayList<User>) res.getResponse();
                                             User[] userArray = new User[usersFound.size()];
                                             onDrawSearchResults(panelSearchResults,userArray);
@@ -357,10 +347,12 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		lblpanelTitle_Dare2Date.setBounds(201, 20, 500, 60);
 		panelProfileTitle.add(lblpanelTitle_Dare2Date);
 		
-		comboBoxpanelTitle_Settings = new JComboBox<Object>(comboBoxSettings);
-		comboBoxpanelTitle_Settings.setBounds(740, 54, 140, 25);
-		comboBoxpanelTitle_Settings.addActionListener(this);
-		panelProfileTitle.add(comboBoxpanelTitle_Settings);
+                if(currentUser.getLevel()>0){
+                    comboBoxpanelTitle_Settings = new JComboBox<Object>(comboBoxSettings);
+                    comboBoxpanelTitle_Settings.setBounds(740, 54, 140, 25);
+                    comboBoxpanelTitle_Settings.addActionListener(this);
+                    panelProfileTitle.add(comboBoxpanelTitle_Settings);
+                }
 		
 		JButton btnpanelProfileTitle_Home = new JButton("HOME");
 		btnpanelProfileTitle_Home.addActionListener(new ActionListener() {
@@ -435,12 +427,10 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		
 		panelMainSearch_CB1 = new JComboBox<Object>(comboBoxSearch);
 		panelMainSearch_CB1.setBounds(20, 50, 120, 20);
-		
 		panelMainSearch.add(panelMainSearch_CB1);
 		
 		panelMainSearch_CB2 = new JComboBox<Object>(comboBoxSearch);
 		panelMainSearch_CB2.setBounds(20, 80, 120, 20);
-		//panelMainSearch_CB2.addActionListener(this);
 		panelMainSearch.add(panelMainSearch_CB2);
 		
 		panelMainSearch_CB3 = new JComboBox<Object>(comboBoxSearch);
@@ -457,7 +447,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		panelMainSearch_CB5.setBounds(20, 170, 120, 20);
 		//panelMainSearch_CB5.addActionListener(this);
 		panelMainSearch.add(panelMainSearch_CB5);
-		
+                
 		panelMainSearch_Criteria1 = new JTextField();
 		panelMainSearch_Criteria1.setBounds(190, 50, 150, 20);
 		panelMainSearch.add(panelMainSearch_Criteria1);
@@ -482,6 +472,19 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		panelMainSearch_Criteria5.setBounds(190, 170, 150, 20);
 		panelMainSearch.add(panelMainSearch_Criteria5);
 		panelMainSearch_Criteria5.setColumns(10);
+                
+                if(currentUser.getLevel()<2){
+                    panelMainSearch_CB2.setEnabled(false);
+                    panelMainSearch_CB3.setEnabled(false);
+                    panelMainSearch_CB4.setEnabled(false);
+                    panelMainSearch_CB5.setEnabled(false);
+                    
+                    panelMainSearch_Criteria2.setEnabled(false);
+                    panelMainSearch_Criteria3.setEnabled(false);
+                    panelMainSearch_Criteria4.setEnabled(false);
+                    panelMainSearch_Criteria5.setEnabled(false);
+                                            
+                }
 		
 		JButton btnpanelMainSearch_Match = new JButton("Search");
 		btnpanelMainSearch_Match.addActionListener(new MySearchListener(0));
@@ -499,7 +502,6 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		pane.add(panelMainInstantM);
 		panelMainInstantM.setLayout(null);
 		
-		
 		panelMainInstantM_Output = new JPanel();
 		panelMainInstantM_Output.setBounds(10, 50, 430, 150);
 		panelMainInstantM_Output.setVisible(true);
@@ -515,16 +517,6 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		textArea_Enter.setWrapStyleWord(true);
 		textArea_Enter.setLineWrap(true);
 		panelMainInstantM.add(textArea_Enter);
-		
-		/*lblWorld = new JLabel("world");
-		lblWorld.setBounds(300, 40, 120, 20);
-		panelMainInstantM_Output.add(lblWorld);*/
-		
-		/*txtpanelMainInstantM_Message = new LimitField();
-		txtpanelMainInstantM_Message.setText("Enter text here.....");
-		txtpanelMainInstantM_Message.setBounds(10, 200, 340, 50);
-		panelMainInstantM.add(txtpanelMainInstantM_Message);
-		txtpanelMainInstantM_Message.setColumns(10);*/
 		
 		class SendListener implements ActionListener{
 			
@@ -553,13 +545,16 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                                 
                                 int check = list.getSelectedIndex();
                                 
-                                User user = onlineUsers.get(check);
+                                if(check != -1){
+                                    User user = onlineUsers.get(check);
                                 
-                                Mail mail = new Mail(currentUser,user,this.mess);  	
+                                    Mail mail = new Mail(currentUser,user,this.mess);  	
                                 
-                                sendMail(mail);
+                                    sendMail(mail);
                                 
-                                receiveMail(mail);
+                                    receiveMail(mail);
+                                }
+                                
 				//testMail(mail);
 				
 			}
@@ -600,7 +595,11 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		btnNewButton_1.setBounds(430, 210, 100, 40);
 		panelMainInstantM.add(btnNewButton_1);
 		
-		
+		if(currentUser.getUserid()<1){
+                    btnpanelMainInstantM_Send.setEnabled(false);
+                    btnNewButton_1.setEnabled(false);
+                    textArea_Enter.setEnabled(false);
+                }
 		
 	}
 	
@@ -627,6 +626,11 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		btnpanelMainBlind_Match.addActionListener(new MySearchListener(1));
 		btnpanelMainBlind_Match.setBounds(90, 139, 110, 50);
 		panelMainBlind.add(btnpanelMainBlind_Match);
+                
+                if(currentUser.getUserid()<1){
+                    btnpanelMainBlind_Match.setEnabled(false);
+                    panelMainBlind_CB1.setEnabled(false);
+                }
 	}
 
 	public void onDrawPanelMain_VipSearch(JLayeredPane pane){
@@ -640,14 +644,20 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		panelMainVipSearch.setLayout(null);
                 
                 JLabel panelMainVipSearch_label = new JLabel("V.I.P. SEARCH");
-                panelMainVipSearch_label.setBounds(90, 50, 120, 50);
+                panelMainVipSearch_label.setBounds(90, 30, 120, 50);
                 panelMainVipSearch_label.setFont(new Font("Verdana", Font.BOLD, 15));
                 panelMainVipSearch.add(panelMainVipSearch_label);
                 
                 JButton panelMainVipSearch_button = new JButton("FULL MATCH");
+                panelMainVipSearch_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                            searches(2);
+                }});
                 panelMainVipSearch_button.setBounds(80, 120, 140, 50);
                 panelMainVipSearch.add(panelMainVipSearch_button);
                 
+                if(currentUser.getUserid()<3)
+                    panelMainVipSearch_button.setEnabled(false);
                 
 	}
 	
@@ -659,6 +669,31 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		panelMainInbox.setBounds(602+leftMargin, 362+topMargin, 300, 200);
 		pane.add(panelMainInbox);
 		panelMainInbox.setLayout(null);
+                
+                JLabel panelMainInbox_label = new JLabel("VIEW CHAT USERS PROFILE");
+                panelMainInbox_label.setBounds(0, 30, 300, 50);
+                panelMainInbox_label.setHorizontalAlignment(SwingConstants.CENTER);
+                panelMainInbox_label.setFont(new Font("Verdana", Font.BOLD, 15));
+                panelMainInbox.add(panelMainInbox_label);
+                
+                viewchatprofile = new JButton("VIEW PROFILE");
+                viewchatprofile.setBounds(80, 120, 140, 50);
+                viewchatprofile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                        
+                    if(list.getSelectedIndex() != -1){        
+                        int check = list.getSelectedIndex();
+                        User user = onlineUsers.get(check);
+                    }
+                    else
+                        noResults(4);
+                }});
+                panelMainInbox.add(viewchatprofile);
+                
+                if(currentUser.getUserid()<1)
+                    viewchatprofile.setEnabled(false);
+                
+                
 	}
 	
 	public void onDrawPanelProfile(){
@@ -666,13 +701,14 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		ProfilelayeredPane = new JLayeredPane();
                 ProfilelayeredPane.setName("3");
 		frame.getContentPane().add(ProfilelayeredPane, "3");
-                ProfilelayeredPane.setBackground(new Color(212,54,54));
+                ProfilelayeredPane.setBackground(new Color(171,37,37));
                 ProfilelayeredPane.setOpaque(true);
 		
 		onDrawPanelTitle(ProfilelayeredPane);
 		
 		panelProfileMain = new JPanel();
 		panelProfileMain.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+                panelProfileMain.setBackground(new Color(250,235,231));
 		panelProfileMain.setBounds(0+leftMargin, 100+topMargin, 902, 460);
 		ProfilelayeredPane.add(panelProfileMain);
 		panelProfileMain.setLayout(null);
@@ -683,7 +719,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		SearchlayeredPane = new JLayeredPane();
                 SearchlayeredPane.setName("3");
 		frame.getContentPane().add(SearchlayeredPane, "3");
-                SearchlayeredPane.setBackground(new Color(212,54,54));
+                SearchlayeredPane.setBackground(new Color(171,37,37));
                 SearchlayeredPane.setOpaque(true);
 		
 		onDrawPanelTitle(SearchlayeredPane);
@@ -780,61 +816,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		}
 		
 		
-	}
-	
-//	public void onDrawSearchResults(JLayeredPane pane,User[] users){
-//		
-//		int x = 0;
-//		
-//		JLabel[] label_array_first = new JLabel[users.length];
-//		JLabel[] label_array_sur = new JLabel[users.length];
-//		JLabel[] label_array_age = new JLabel[users.length];
-//		JLabel[] label_array_gender = new JLabel[users.length];
-//		JLabel[] label_array_loc = new JLabel[users.length];
-//		
-//		
-//		for(int i = 0;i < users.length;i++){
-//			
-//			label_array_first[i] = new JLabel(users[i].getFName());
-//			label_array_first[i].setBounds(100, 100+x, 120, 20);
-//			label_array_first[i].setOpaque(true);
-//			pane.add(label_array_first[i]);
-//			
-//			label_array_sur[i] = new JLabel(users[i].getLName());
-//			label_array_sur[i].setBounds(220, 100+x, 120, 20);
-//			label_array_sur[i].setOpaque(true);
-//			pane.add(label_array_sur[i]);
-//			
-//			label_array_age[i] = new JLabel(String.valueOf(users[i].getAge()));
-//			label_array_age[i].setBounds(340, 100+x, 70, 20);
-//			label_array_age[i].setOpaque(true);
-//			pane.add(label_array_age[i]);
-//			
-//			label_array_gender[i] = new JLabel(users[i].getGender());
-//			label_array_gender[i].setBounds(410, 100+x, 90, 20);
-//			label_array_gender[i].setOpaque(true);
-//			pane.add(label_array_gender[i]);
-//			
-//			label_array_loc[i] = new JLabel(users[i].getLocation());
-//			label_array_loc[i].setBounds(500, 100+x, 120, 20);
-//			label_array_loc[i].setOpaque(true);
-//			pane.add(label_array_loc[i]);
-//			
-////			JButton btnNewButton = new JButton("View Profile");
-////			btnNewButton.addActionListener(new ActionListener() {
-////				public void actionPerformed(ActionEvent arg0) {
-////					
-////					
-////					changePanels(SearchlayeredPane,ProfilelayeredPane);
-////					
-////				}
-////			});
-////			btnNewButton.setBounds(620, 100+x, 110, 20);
-////			pane.add(btnNewButton);
-//			
-//			x = x+20;
-//		}
-//	}
+        }
 	
     /**
      *
@@ -888,11 +870,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 		lblpanelSearchResults_SurNameTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lblpanelSearchResults_SurNameTag.setBounds(220, 50, 120, 20);
 		panelSearchResults.add(lblpanelSearchResults_SurNameTag);
-//		JLabel[] label_array_first = new JLabel[users.length];
-//		JLabel[] label_array_sur = new JLabel[users.length];
-//		JLabel[] label_array_age = new JLabel[users.length];
-//		JLabel[] label_array_gender = new JLabel[users.length];
-//		JLabel[] label_array_loc = new JLabel[users.length];
+
 		int x = 0;
 		
 		for(int i = 0;i < users.length;i++){
@@ -949,99 +927,120 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 		JLabel lblpanelProfileMain_Picture = new JLabel("PIC");
 		lblpanelProfileMain_Picture.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpanelProfileMain_Picture.setBounds(100, 60, 100, 100);
+                lblpanelProfileMain_Picture.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		lblpanelProfileMain_Picture.setOpaque(true);
 		lblpanelProfileMain_Picture.setBackground(Color.WHITE);
 		panelProfileMain.add(lblpanelProfileMain_Picture);
 		
 		JLabel lblpanelProfileMain_NameTag = new JLabel("Name :");
 		lblpanelProfileMain_NameTag.setBounds(300, 60, 130, 20);
+                lblpanelProfileMain_NameTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.add(lblpanelProfileMain_NameTag);
 		
 		JLabel lblpanelProfileMain_AgeTag = new JLabel("Age :");
 		lblpanelProfileMain_AgeTag.setBounds(300, 140, 130, 20);
+                lblpanelProfileMain_AgeTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.add(lblpanelProfileMain_AgeTag);
 		
 		JLabel lblpanelProfileMain_GenderTag = new JLabel("Gender :");
 		lblpanelProfileMain_GenderTag.setBounds(300, 100, 130, 20);
+                lblpanelProfileMain_GenderTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.add(lblpanelProfileMain_GenderTag);
 		
 		JLabel lblpanelProfileMain_LocationTag = new JLabel("Location :");
 		lblpanelProfileMain_LocationTag.setBounds(300, 180, 130, 20);
+                lblpanelProfileMain_LocationTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.add(lblpanelProfileMain_LocationTag);
 		
 		JLabel lblpanelProfileMain_SexPrefTag = new JLabel("Sexual Preference :");
 		lblpanelProfileMain_SexPrefTag.setBounds(300, 220, 130, 20);
+                lblpanelProfileMain_SexPrefTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.add(lblpanelProfileMain_SexPrefTag);
 		
 		JLabel lblpanelProfileMain_SportTag = new JLabel("Sports :");
 		lblpanelProfileMain_SportTag.setBounds(300, 260, 130, 20);
+                lblpanelProfileMain_SportTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.add(lblpanelProfileMain_SportTag);
 		
 		JLabel lblpanelProfileMain_FilmTag = new JLabel("Films : ");
 		lblpanelProfileMain_FilmTag.setBounds(300, 300, 130, 20);
+                lblpanelProfileMain_FilmTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.add(lblpanelProfileMain_FilmTag);
                 
                 JLabel lblpanelProfileMain_MusicTag = new JLabel("Music : ");
 		lblpanelProfileMain_MusicTag.setBounds(300, 340, 130, 20);
+                lblpanelProfileMain_MusicTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panelProfileMain.add(lblpanelProfileMain_MusicTag);
 		
 		JLabel lblpanelProfileMain_Name = new JLabel(firstname+" "+surname);
 		lblpanelProfileMain_Name.setBackground(Color.WHITE);
 		lblpanelProfileMain_Name.setOpaque(true);
-		lblpanelProfileMain_Name.setBounds(480, 60, 200, 20);
+                lblpanelProfileMain_Name.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		lblpanelProfileMain_Name.setBounds(480, 60, 100, 20);
 		panelProfileMain.add(lblpanelProfileMain_Name);
 		
 		JLabel lblpanelProfileMain_Gender = new JLabel(gender);
 		lblpanelProfileMain_Gender.setBackground(Color.WHITE);
-		lblpanelProfileMain_Gender.setBounds(480, 100, 50, 20);
+                lblpanelProfileMain_Gender.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		lblpanelProfileMain_Gender.setBounds(480, 100, 100, 20);
 		lblpanelProfileMain_Gender.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Gender);
 		
 		JLabel lblpanelProfileMain_Age = new JLabel(String.valueOf(age));
 		lblpanelProfileMain_Age.setBackground(Color.WHITE);
-		lblpanelProfileMain_Age.setBounds(480, 140, 50, 20);
+                lblpanelProfileMain_Age.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		lblpanelProfileMain_Age.setBounds(480, 140, 100, 20);
 		lblpanelProfileMain_Age.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Age);
 		
 		JLabel lblpanelProfileMain_Location = new JLabel(location);
 		lblpanelProfileMain_Location.setBackground(Color.WHITE);
-		lblpanelProfileMain_Location.setBounds(480, 180, 200, 20);
+                lblpanelProfileMain_Location.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		lblpanelProfileMain_Location.setBounds(480, 180, 100, 20);
 		lblpanelProfileMain_Location.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Location);
 		
 		JLabel lblpanelProfileMain_SexPref = new JLabel(sexPref);
 		lblpanelProfileMain_SexPref.setBackground(Color.WHITE);
+                lblpanelProfileMain_SexPref.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		lblpanelProfileMain_SexPref.setBounds(480, 220, 100, 20);
 		lblpanelProfileMain_SexPref.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_SexPref);
 		
 		JLabel lblpanelProfileMain_Sports = new JLabel(sports);
 		lblpanelProfileMain_Sports.setBackground(Color.WHITE);
+                lblpanelProfileMain_Sports.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		lblpanelProfileMain_Sports.setBounds(480, 260, 240, 20);
 		lblpanelProfileMain_Sports.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Sports);
 		
 		JLabel lblpanelProfileMain_Films = new JLabel(films);
 		lblpanelProfileMain_Films.setBackground(Color.WHITE);
+                lblpanelProfileMain_Films.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		lblpanelProfileMain_Films.setBounds(480, 300, 240, 20);
 		lblpanelProfileMain_Films.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Films);
                 
                 JLabel lblpanelProfileMain_Music = new JLabel(music);
                 lblpanelProfileMain_Music.setBackground(Color.WHITE);
+                lblpanelProfileMain_Music.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		lblpanelProfileMain_Music.setBounds(480, 340, 240, 20);
 		lblpanelProfileMain_Music.setOpaque(true);
 		panelProfileMain.add(lblpanelProfileMain_Music);
 	}
 
-	public void nameSearch(String keyword){
+	public void searches(int number){
             try {
 	            //Create a reference to the service interface at the location.
-	            ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+	            ServiceInterface service = (ServiceInterface) Naming.lookup(serviceip);
 	            //Create a response object
 	            Response res = new Response();
 	            //Invoke server SignUp method
-	            res = service.nameSearch(keyword);
+	            if(number == 1)
+                           res = service.search(searchMap); 
+                    else if(number == 2)
+                           res = service.criteriaMatch(currentUser);
+                    
 	            //Test response
 	            if (res.getError() != null) {
 	                    System.out.println(res.getError());
@@ -1077,6 +1076,8 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                     error = " matching the entered criteria, please try again with different keywords.";
                 case 3:
                     error = ", please try again later.";
+                case 4:
+                    error = ", please select an online user from the list to your right";
             }
             
             JOptionPane.showMessageDialog(null, "No matches were found"+error, "Information", JOptionPane.INFORMATION_MESSAGE);
@@ -1085,7 +1086,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         public void LogOff(){
             
             try{
-                 ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+                 ServiceInterface service = (ServiceInterface) Naming.lookup(serviceip);
                  
                  Response res = new Response();
                  
@@ -1106,7 +1107,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
         public void sendMail(Mail mail){
         	
             try{
-                ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+                ServiceInterface service = (ServiceInterface) Naming.lookup(serviceip);
                 
                 Response res = new Response();
                 
@@ -1140,30 +1141,19 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 	        		
 	        		listModel.addElement(userArray[i].getFName());
 	        	}
-                        //System.out.println(userArray[1].getFName());
 	        	
         	}
         	catch (NullPointerException excep){
         		System.out.print("no users online");
-                        System.out.println("\nuser list works yeah!");
         		return;
         	}
-        	/*finally{
-                        list.repaint();
-                        list.revalidate();
-        		list.validate();
-                        
-        	}*/
-    		//listModel.addElement("Jane Doe");
-    		//listModel.addElement("John Smith");
-    		//listModel.addElement("Kathy Green");
         	
         }
         
         public void updateList(){
             
             try{
-                ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+                ServiceInterface service = (ServiceInterface) Naming.lookup(serviceip);
                 
                 Response res = new Response();
                 
@@ -1176,7 +1166,10 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 	        else {
 	                    System.out.println("Everything went okay.");
                             ArrayList<User> arr = (ArrayList<User>) res.getResponse();
-                            refreshList(arr);
+                            if (arr.isEmpty())
+                                return;//noResults(4);
+                            else
+                                refreshList(arr);
                             
 	                    
                 }
@@ -1217,15 +1210,9 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                 //String ip = InetAddress.getLocalHost().getHostAddress();
 
                 
-                ServiceInterface service = (ServiceInterface) Naming.lookup("rmi://127.0.0.1/DateServer");
+                ServiceInterface service = (ServiceInterface) Naming.lookup(serviceip);
                 
                 res = service.setClientRmi(ip, currentUser);
-
-                
-                
-
-
-                //String url = "rmi://"+InetAddress.getLocalHost().getHostAddress()+"/DateClient";
 
                 
             }
@@ -1343,60 +1330,4 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                     fil.add(string);
             }
         } 
-        
-        public void serverMethods(int number){
-            
-            try {
-                //Create a reference to the service interface at the location.
-                ServiceInterface service = (ServiceInterface) Naming.lookup(serviceip);
-                //Create a response object
-                Response res = new Response();
-                
-                
-                switch (number){
-                    case 1:
-                        //Invoke server blindAgeMatch method
-                        res = service.blindAgeMatch(currentUser);
-                    case 2:
-                        //Invoke server blindAgeMatch method
-                        res = service.blindLocationMatch(currentUser);
-                    case 3:
-                        //Invoke server search method
-                        res = service.search(searchMap);
-                    case 4:
-                        //Invoke server
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                }
-                                if (res.getError() != null) {
-                                        System.out.println(res.getError());
-                                        System.out.println("There was an error.");
-                                }
-                                else {
-                                        System.out.println("Everything went okay.");
-                                        System.out.println(res.getResponse());
-                                        ArrayList<User> usersFound = (ArrayList<User>)res.getResponse();
-                                        if(usersFound != null){
-                                            usersFound = (ArrayList<User>) res.getResponse();
-                                            User[] userArray = new User[usersFound.size()];
-                                            onDrawSearchResults(panelSearchResults,userArray);
-                                        }
-                                        else
-                                            noResults(3);
-                                }
-                            } catch (NotBoundException ex) {
-                                    System.out.println(ex);
-                            } catch (MalformedURLException ex) {
-                                    System.out.println(ex);
-                            } catch (RemoteException ex) {
-                                    System.out.println(ex);
-                            }
-        }
-    
 }
