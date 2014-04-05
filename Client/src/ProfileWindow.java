@@ -684,6 +684,8 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                     if(list.getSelectedIndex() != -1){        
                         int check = list.getSelectedIndex();
                         User user = onlineUsers.get(check);
+                        setProfile(user);
+                        changePanels(SearchlayeredPane,ProfilelayeredPane);
                     }
                     else
                         noResults(4);
