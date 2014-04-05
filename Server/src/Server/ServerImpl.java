@@ -475,7 +475,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 					}
 				}
 			}
-			res.setResponse(onlineUsers);
+			if (!onlineUsers.isEmpty())
+				res.setResponse(onlineUsers);
+			else
+				res.setError("There are no other users logged in.");
 		} else {
 			res.setError("There are no other users logged in!");
 		}
