@@ -168,15 +168,28 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		return ((userMap.containsKey(userid)) ? userMap.get(userid) : null);
 	}
 
+	/**
+	 *
+	 * @param signUp
+	 * @param userid
+	 * @return Response - boolean
+	 */
+	@Override
 	public Response UpdateUser(SignUp signUp, int userid) {
 		Response res = new Response();
-		User user = new User(signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap(), signUp.getSexPref());
-		//create a UserServerInfo object based on the SignUp object
-		UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(), signUp.getAccountNumber(), signUp.getPassword(), signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap(), signUp.getSexPref());
-		//place the userserverinfo object into the hashmap
-		userServerMap.put(userid, userserverinfo);
-		//place the user object into the the hashmap
-		userMap.put(userid, user);
+		if (userMap.containsKey(userid)) {
+			User user = new User(signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap(), signUp.getSexPref());
+			//create a UserServerInfo object based on the SignUp object
+			UserServerInfo userserverinfo = new UserServerInfo(signUp.getE_Mail(), signUp.getAccountNumber(), signUp.getPassword(), signUp.getFirstName(), signUp.getSurName(), signUp.getGender(), userid, signUp.getLevel(), signUp.getAge(), signUp.getBirthdate(), signUp.getLocation(), signUp.getPreferencesMap(), signUp.getSexPref());
+			//place the userserverinfo object into the hashmap
+			userServerMap.put(userid, userserverinfo);
+			//place the user object into the the hashmap
+			userMap.put(userid, user);
+			res.setResponse(true);
+		} else {
+			res.setResponse(false);
+			res.setError("User does not exist.");
+		}
 		return res;
 	}
 
@@ -480,7 +493,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		try {
 			String ip = clientIps.get(mail.getReciever().getUserid());
 			ClientInterface chat = (ClientInterface) Naming.lookup(ip);
-			chat.receiveMail(mail);
+			chat.recieveMail(mail);
 		} catch (MalformedURLException | NotBoundException | RemoteException | NullPointerException e) {
 			System.out.println(e);
 		}
