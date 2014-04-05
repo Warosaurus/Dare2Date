@@ -245,8 +245,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 						if (userMap.get(i).getFName().matches(map.get(key).toString()) || userMap.get(i).getLName().matches(map.get(key).toString())) {
 							userArr.add(userMap.get(i));
 						}
-					}
-					//First check if the current user has set that preference.
+					} //First check if the current user has set that preference.
 					else if (userMap.get(i).getPreferencesMap().containsKey(key)) {
 						//Then check to see if the current user has this value in their preferences.
 						for (int x = 0; x < map.get(key).size(); x++) {//maybe edit map.get(cat).values().size()
@@ -260,10 +259,11 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				}
 
 			}
-			if (!userArr.isEmpty())
+			if (!userArr.isEmpty()) {
 				res.setResponse(userArr);
-			else
+			} else {
 				res.setError("No results.");
+			}
 		} else {
 			res.setError("no keyword specified");
 		}
@@ -280,20 +280,28 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	@Override
 	public Response blindLocationMatch(User user) {
 		Response res = new Response();
+		ArrayList<User> userArr = new ArrayList();
 		if (user.getLevel() > 1) {
 			if (!userMap.isEmpty()) {
 				Iterator<Integer> iter = userServerMap.keySet().iterator();
 				while (iter.hasNext()) {
 					Integer i = iter.next();
-					//first chack if the locations match and their gender is what they are looking for and that the person in question is the gender type they are looking for.
-					if (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation()) && userMap.get(i).getGender().equals(userMap.get(i).getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
-						//then check if the this user has matches, then check if these two users haven't been matched before.
-						if (userMatches.containsKey(user.getUserid()) && !userMatches.get(user.getUserid()).contains(i)) {
-							//if the criteria is matched then return this user
-							res.setResponse(userMap.get(i));
+					if (i != user.getUserid()) {
+						//first chack if the locations match and their gender is what they are looking for and that the person in question is the gender type they are looking for.
+						if (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation()) && userMap.get(i).getGender().equals(userMap.get(i).getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
+							//then check if the this user has matches, then check if these two users haven't been matched before.
+							if (userMatches.containsKey(user.getUserid()) && !userMatches.get(user.getUserid()).contains(i)) {
+								//if the criteria is matched then return this user
+								userArr.add(userMap.get(i));
+							}
 						}
 					}
 				}
+			}
+			if (!userArr.isEmpty()) {
+				res.setResponse(userArr);
+			} else {
+				res.setError("There are no matches");
 			}
 		} else {
 			res.setError("You do not have sufficiant rights to perform this action.");
@@ -310,21 +318,29 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 */
 	@Override
 	public Response blindAgeMatch(User user) {
+		ArrayList<User> userArr = new ArrayList();
 		Response res = new Response();
 		if (user.getLevel() > 1) {
 			if (!userMap.isEmpty()) {
 				Iterator<Integer> iter = userServerMap.keySet().iterator();
 				while (iter.hasNext()) {
 					Integer i = iter.next();
-					//first chack if the ages match and their gender is what they are looking for
-					if ((userMap.get(i).getAge() == user.getAge()) && userMap.get(i).getGender().equals(user.getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
-						//then check if the this user has matches, then check if these two users haven't been matched before.
-						if (userMatches.containsKey(user.getUserid()) && !userMatches.get(user.getUserid()).contains(i)) {
-							//if the criteria is matched then return this user
-							res.setResponse(userMap.get(i));
+					if (i != user.getUserid()) {
+						//first chack if the ages match and their gender is what they are looking for
+						if ((userMap.get(i).getAge() == user.getAge()) && userMap.get(i).getGender().equals(user.getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
+							//then check if the this user has matches, then check if these two users haven't been matched before.
+							if (userMatches.containsKey(user.getUserid()) && !userMatches.get(user.getUserid()).contains(i)) {
+								//if the criteria is matched then return this user
+								userArr.add(userMap.get(i));
+							}
 						}
 					}
 				}
+			}
+			if (!userArr.isEmpty()) {
+				res.setResponse(userArr);
+			} else {
+				res.setError("There are no matches");
 			}
 		} else {
 			res.setError("You do not have sufficiant rights to perform this action.");
@@ -475,16 +491,17 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			Iterator<Integer> iter = userMap.keySet().iterator();
 			while (iter.hasNext()) {
 				Integer i = iter.next();
-				if (sessions.get(userMap.get(i).getUserid())) {
-					if (userMap.get(i).getUserid() != i) {
+				if (userMap.get(i).getUserid() != i) {
+					if (sessions.get(userMap.get(i).getUserid())) {
 						onlineUsers.add(userMap.get(i));
 					}
 				}
 			}
-			if (!onlineUsers.isEmpty())
+			if (!onlineUsers.isEmpty()) {
 				res.setResponse(onlineUsers);
-			else
+			} else {
 				res.setError("There are no other users logged in.");
+			}
 		} else {
 			res.setError("There are no other users logged in!");
 		}
