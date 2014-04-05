@@ -530,7 +530,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		panelMainInstantM_Output.setVisible(true);
 		panelMainInstantM_Output.setPreferredSize(new Dimension(430,140));
 		panelMainInstantM_Output.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		//panelMainInstantM.add(panelMainInstantM_Output);
+		panelMainInstantM_Output.setBackground(Color.WHITE);
 		panelMainInstantM_Output.setLayout(null);
 		
 		textArea_Enter = new JTextArea(2,10);
@@ -711,7 +711,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                         int check = list.getSelectedIndex();
                         User user = onlineUsers.get(check);
                         setProfile(user);
-                        changePanels(SearchlayeredPane,ProfilelayeredPane);
+                        changePanels(MainlayeredPane,ProfilelayeredPane);
                     }
                     else
                         noResults(4);
@@ -755,6 +755,7 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
 		panelSearchResults = new JPanel();
 		panelSearchResults.setBounds(leftMargin, 100+topMargin, 902, 462);
                 panelSearchResults.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+                panelSearchResults.setBackground(new Color(255, 232, 232));
 		SearchlayeredPane.add(panelSearchResults);
 		panelSearchResults.setLayout(null);
 		
@@ -858,14 +859,14 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                 changePanels(MainlayeredPane,SearchlayeredPane);
     
 		JLabel lblpanelSearchResults_FirstNameTag = new JLabel("Firstname");
-		lblpanelSearchResults_FirstNameTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_FirstNameTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		lblpanelSearchResults_FirstNameTag.setFont(new Font("Verdana", Font.BOLD, 12));
 		lblpanelSearchResults_FirstNameTag.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpanelSearchResults_FirstNameTag.setBounds(100, 50, 120, 20);
 		panelSearchResults.add(lblpanelSearchResults_FirstNameTag);
 		
 		JLabel lblpanelSearchResults_AgeTag = new JLabel("Age");
-		lblpanelSearchResults_AgeTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_AgeTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		lblpanelSearchResults_AgeTag.setFont(new Font("Verdana", Font.BOLD, 12));
 		lblpanelSearchResults_AgeTag.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpanelSearchResults_AgeTag.setBounds(340, 50, 70, 20);
@@ -873,14 +874,14 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 		
 		JLabel lblpanelSearchResults_GenderTag = new JLabel("Gender");
 		lblpanelSearchResults_GenderTag.setHorizontalAlignment(SwingConstants.CENTER);
-		lblpanelSearchResults_GenderTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_GenderTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		lblpanelSearchResults_GenderTag.setFont(new Font("Verdana", Font.BOLD, 12));
 		lblpanelSearchResults_GenderTag.setBounds(410, 50, 90, 20);
 		panelSearchResults.add(lblpanelSearchResults_GenderTag);
 		
 		JLabel lblpanelSearchResults_LocTag = new JLabel("Location");
 		lblpanelSearchResults_LocTag.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblpanelSearchResults_LocTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_LocTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		lblpanelSearchResults_LocTag.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpanelSearchResults_LocTag.setBounds(500, 50, 120, 20);
 		panelSearchResults.add(lblpanelSearchResults_LocTag);
@@ -888,14 +889,14 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 		JLabel lblpanelSearchResults_ProfTag = new JLabel("Profile");
 		lblpanelSearchResults_ProfTag.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpanelSearchResults_ProfTag.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblpanelSearchResults_ProfTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_ProfTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		lblpanelSearchResults_ProfTag.setBounds(620, 50, 110, 20);
 		panelSearchResults.add(lblpanelSearchResults_ProfTag);
 		
 		JLabel lblpanelSearchResults_SurNameTag = new JLabel("Surname");
 		lblpanelSearchResults_SurNameTag.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpanelSearchResults_SurNameTag.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblpanelSearchResults_SurNameTag.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lblpanelSearchResults_SurNameTag.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		lblpanelSearchResults_SurNameTag.setBounds(220, 50, 120, 20);
 		panelSearchResults.add(lblpanelSearchResults_SurNameTag);
 
@@ -1068,8 +1069,9 @@ public void onDrawSearchResults(JPanel pane,User[] users){
                            System.out.println(searchMap.toString());
                            res = service.search(searchMap); 
                     }
-                    else if(number == 2)
+                    else if(number == 2){
                            res = service.criteriaMatch(currentUser);
+                    }
                     
 	            //Test response
 	            if (res.getError() != null) {
@@ -1077,14 +1079,30 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 	                    System.out.println("There was an error.");
 	            }
 	            else {
-	                    System.out.println("Everything went okay.");
-	                    ArrayList<User> usersFound = new ArrayList<User>();
-                            System.out.println(usersFound.toString());
-	                    usersFound = (ArrayList<User>) res.getResponse();
-	                    User[] userArray = new User[usersFound.size()];
-	                    usersFound.toArray(userArray);
 	                    
-	                    onDrawSearchResults(panelSearchResults,userArray);
+                            System.out.println("Everything went okay.");
+	                    ArrayList<User> usersFound = new ArrayList<User>();
+                            
+                            
+                            //System.out.println(usersFound.toString());
+                            if(number == 1){
+                                usersFound = (ArrayList<User>) res.getResponse();
+                                User[] userArray = new User[usersFound.size()];
+                                usersFound.toArray(userArray);
+                                onDrawSearchResults(panelSearchResults,userArray);
+                            }
+                            else if(number == 2){
+                                
+                                User userfound = (User) res.getResponse();
+                                
+                                if(userfound != null){
+                                    setProfile(userfound);
+                                    changePanels(MainlayeredPane,ProfilelayeredPane);
+                                }
+                                else
+                                    noResults(3);
+                            }
+                                
 	                    
             }
             } catch (NotBoundException ex) {

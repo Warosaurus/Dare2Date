@@ -63,8 +63,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			userMap.put(userid, user);
 			ArrayList<Integer> m = new ArrayList();
 			userMatches.put(userid, m);
+			sessions.put(userid, false);
 			res.setResponse(true);
-			System.out.println(userMap);
 		}
 		return res;
 	}
@@ -134,7 +134,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 */
 	public int checkLoginDetails(String email, String pass) {
 		//UserServerInfo userserverinfo = new UserServerInfo();
-		//boolean valid = false;
 		int userid = 0;
 		//if there are no users then there is no point in checking if a specific email address is registerd.
 		if (!userServerMap.isEmpty()) {
@@ -142,7 +141,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			do {
 				Integer i = iter.next();
 				if ((userServerMap.get(i).getEmail().equalsIgnoreCase(email)) && (userServerMap.get(i).getPass().equals(pass))) {
-					//valid = true;
 					userid = i;
 				}
 			} while ((userid == 0) && iter.hasNext());
@@ -196,7 +194,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		}
 		return res;
 	}
-	
+
 	/**
 	 *
 	 * Match users based on their location and gender preference
@@ -217,9 +215,11 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 					//first check names, first and last.
 					if (key.equals("Fname") || key.equals("Lname")) {
 						for (String name : map.get(key)) { //dirty code.. but it works. :(
-							if (name.equalsIgnoreCase(userMap.get(i).getFName()) || name.equalsIgnoreCase(userMap.get(i).getLName()))
-								if (!userArr.contains(userMap.get(i)))
+							if (name.equalsIgnoreCase(userMap.get(i).getFName()) || name.equalsIgnoreCase(userMap.get(i).getLName())) {
+								if (!userArr.contains(userMap.get(i))) {
 									userArr.add(userMap.get(i));
+								}
+							}
 						}
 					} //First check if the current user has set that preference.
 					else if (userMap.get(i).getPreferencesMap().containsKey(key)) {
@@ -262,7 +262,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 					Integer i = iter.next();
 					if (i != user.getUserid()) {
 						//first chack if the locations match and their gender is what they are looking for and that the person in question is the gender type they are looking for.
-						if (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation()) && userMap.get(i).getGender().equals(userMap.get(i).getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
+						if (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation()) && userMap.get(i).getGender().equals(user.getSexPref()) && userMap.get(i).getSexPref().equals(user.getGender())) {
 							//then check if the this user has matches, then check if these two users haven't been matched before.
 							if (!userMatches.get(user.getUserid()).contains(i)) {
 								//if the criteria is matched then return this user
@@ -302,7 +302,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 							//then check if the this user has matches, then check if these two users haven't been matched before.
 							if (!userMatches.get(user.getUserid()).contains(i)) {
 								//if the criteria is matched then return this user
-								res.setResponse(userMap.get(i));
+								res.setResponse(userMap.get(i)); //we have someone, we are done here.
+								userMatches.get(user.getUserid()).add(i);
 							}
 						}
 					}
@@ -344,6 +345,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 								for (int x = 0; x < map.get(cat).size(); x++) {
 									if (userMap.get(i).getPreferencesMap().get(cat).contains(map.get(cat).get(x))) {
 										res.setResponse(userMap.get(i));//we are done here.
+										userMatches.get(user.getUserid()).add(i);
 									}
 								}
 							}
@@ -373,43 +375,50 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	public Response criteriaMatch(User user) {
 		Response res = new Response();
 		Map<Integer, Integer> ranking = new HashMap();
-		if (user.getLevel() == 2) {
+		if (user.getLevel() > 2) {
 			if (!userMap.isEmpty()) {
 				Iterator<Integer> iter = userMap.keySet().iterator();
 				while (iter.hasNext()) {
 					Integer i = iter.next();
-					//check if these people have been matched previously.
-					if (!userMatches.get(user.getUserid()).contains(userMap.get(i).getUserid())) {
-						//check if they are interested in each other.
-						if (user.getSexPref().equals(userMap.get(i).getGender()) && userMap.get(i).getSexPref().equals(user.getGender())) {
-							int rank = 0;//rank will be used to determine the best match
-							//if they have the same location then rank +1
-							rank += (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation())) ? 1 : 0;
-							//if they are the same age then rank +1
-							rank += (userMap.get(i).getAge() == user.getAge()) ? 1 : 0;
-							//now check their preferences map. for each category
-							for (String cat : user.getPreferencesMap().keySet()) {
-								for (int x = 0; i < user.getPreferencesMap().get(cat).size(); i++) {
-									rank += (userMap.get(i).getPreferencesMap().get(cat).contains(user.getPreferencesMap().get(cat).get(x))) ? 1 : 0;
+					if (user.getUserid() != i) {
+						//check if these people have been matched previously.
+						if (!userMatches.get(user.getUserid()).contains(userMap.get(i).getUserid())) {
+							//check if they are interested in each other.
+							if (user.getSexPref().equals(userMap.get(i).getGender()) && userMap.get(i).getSexPref().equals(user.getGender())) {
+								int rank = 0;//rank will be used to determine the best match
+								//if they have the same location then rank +1
+								rank += (userMap.get(i).getLocation().equalsIgnoreCase(user.getLocation())) ? 1 : 0;
+								//if they are the same age then rank +1
+								rank += (userMap.get(i).getAge() == user.getAge()) ? 1 : 0;
+								//now check their preferences map. for each category
+								for (String cat : user.getPreferencesMap().keySet()) {
+									for (int x = 0; i < user.getPreferencesMap().get(cat).size(); i++) {
+										rank += (userMap.get(i).getPreferencesMap().get(cat).contains(user.getPreferencesMap().get(cat).get(x))) ? 1 : 0;
+									}
 								}
+								//now place the user in the map.
+								ranking.put(userMap.get(i).getUserid(), rank);
 							}
-							//now place the user in the map.
-							ranking.put(userMap.get(i).getUserid(), rank);
 						}
 					}
 				}
 			}
 		}
-		int id = 0;
-		int max = 0;
-		//get the highest rank.
-		for (int i : ranking.keySet()) {
-			if (ranking.get(i) > max) {
-				max = ranking.get(i);
-				id = i;
+		if (!ranking.isEmpty()) {
+			int id = 0;
+			int max = 0;
+			//get the highest rank.
+			for (int i : ranking.keySet()) {
+				if (ranking.get(i) >= max) {
+					max = ranking.get(i);
+					id = i;
+				}
 			}
+			res.setResponse(getUser(ranking.get(id)));
+			userMatches.get(user.getUserid()).add(id);
+		} else {
+			res.setError("There are no matches.");
 		}
-		res.setResponse(getUser(ranking.get(id)));
 		return res;
 	}
 
