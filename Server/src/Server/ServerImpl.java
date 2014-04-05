@@ -238,14 +238,14 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			while (iter.hasNext()) {
 				Integer i = iter.next();
 				for (String key : map.keySet()) {
-					//First check if the current user has set that preference.
-					if (userMap.get(i).getPreferencesMap().containsKey(key)) {
-						//first check names, first and last.
-						if (key.equals("Fname") | key.equals("Lname")) {
-							if (userMap.get(i).getFName().matches(map.get(key).toString()) || userMap.get(i).getLName().matches(map.get(key).toString())) {
-								userArr.add(userMap.get(i));
-							}
+					//first check names, first and last.
+					if (key.equals("Fname") || key.equals("Lname")) {
+						if (userMap.get(i).getFName().matches(map.get(key).toString()) || userMap.get(i).getLName().matches(map.get(key).toString())) {
+							userArr.add(userMap.get(i));
 						}
+					}
+					//First check if the current user has set that preference.
+					else if (userMap.get(i).getPreferencesMap().containsKey(key)) {
 						//Then check to see if the current user has this value in their preferences.
 						for (int x = 0; x < map.get(key).size(); x++) {//maybe edit map.get(cat).values().size()
 							if (userMap.get(i).getPreferencesMap().get(key).contains(map.get(key).get(x))) {
