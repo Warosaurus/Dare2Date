@@ -61,7 +61,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			userServerMap.put(userid, userserverinfo);
 			//place the user object into the the hashmap
 			userMap.put(userid, user);
-			userMatches.put(userid, null);
+			ArrayList<Integer> m = new ArrayList();
+			userMatches.put(userid, m);
 			res.setResponse(true);
 			System.out.println(userMap);
 		}
