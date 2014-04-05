@@ -62,6 +62,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			//place the user object into the the hashmap
 			userMap.put(userid, user);
 			res.setResponse(true);
+			System.out.println(userMap);
 		}
 		return res;
 	}
@@ -76,10 +77,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	@Override
 	public Response Login(String email, String pass) throws RemoteException {
 		Response res = new Response();
-		UserServerInfo userserverinfo = checkLoginDetails(email, pass);
-		if (userserverinfo != null) {
-			User user = userMap.get(userserverinfo.getUserid());
-			startSession(user.getUserid());
+		int userid = checkLoginDetails(email, pass);
+		if (userid != 0) {
+			User user = getUser(userid);
+			startSession(userid);
 			res.setResponse(user);
 		} else {
 			res.setError("email and password combination does not match.");
@@ -129,21 +130,22 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @param pass String
 	 * @return UserServerInfo
 	 */
-	public UserServerInfo checkLoginDetails(String email, String pass) {
-		UserServerInfo userserverinfo = new UserServerInfo();
-		boolean valid = false;
+	public int checkLoginDetails(String email, String pass) {
+		//UserServerInfo userserverinfo = new UserServerInfo();
+		//boolean valid = false;
+		int userid = 0;
 		//if there are no users then there is no point in checking if a specific email address is registerd.
 		if (!userServerMap.isEmpty()) {
 			Iterator<Integer> iter = userServerMap.keySet().iterator();
 			do {
 				Integer i = iter.next();
 				if ((userServerMap.get(i).getEmail().equals(email)) && (userServerMap.get(i).getPass().equals(pass))) {
-					valid = true;
-					userserverinfo = userServerMap.get(i);
+					//valid = true;
+					userid = i;
 				}
-			} while (!valid && iter.hasNext());
+			} while ((userid == 0) && iter.hasNext());
 		}
-		return userserverinfo;
+		return userid;
 	}
 
 	/**
@@ -258,6 +260,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				}
 
 			}
+			if (!userArr.isEmpty())
+				res.setResponse(userArr);
+			else
+				res.setError("No results.");
 		} else {
 			res.setError("no keyword specified");
 		}
