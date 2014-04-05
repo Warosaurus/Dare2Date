@@ -205,7 +205,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @return Response - ArrayList - User
 	 */
 	@Override
-	public Response search(Map<String, ArrayList> map) {
+	public Response search(Map<String, ArrayList<String>> map) {
 		Response res = new Response();
 		ArrayList<User> userArr = new ArrayList();
 		res.setResponse(userArr);
@@ -216,8 +216,10 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 				for (String key : map.keySet()) {
 					//first check names, first and last.
 					if (key.equals("Fname") || key.equals("Lname")) {
-						if (map.get(key).contains(userMap.get(i).getFName()) || map.get(key).contains(userMap.get(i).getLName())) {
-							userArr.add(userMap.get(i));
+						for (String name : map.get(key)) { //dirty code.. but it works. :(
+							if (name.equalsIgnoreCase(userMap.get(i).getFName()) || name.equalsIgnoreCase(userMap.get(i).getLName()))
+								if (!userArr.contains(userMap.get(i)))
+									userArr.add(userMap.get(i));
 						}
 					} //First check if the current user has set that preference.
 					else if (userMap.get(i).getPreferencesMap().containsKey(key)) {
@@ -324,7 +326,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 	 * @return Response - User
 	 */
 	@Override
-	public Response selectionMatch(User user, Map<String, ArrayList> map) {
+	public Response selectionMatch(User user, Map<String, ArrayList<String>> map) {
 		Response res = new Response();
 		if (user.getLevel() == 2) {
 			if (!userMap.isEmpty() && !map.isEmpty()) {

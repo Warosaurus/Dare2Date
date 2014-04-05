@@ -14,10 +14,10 @@ public interface ServiceInterface extends Remote {
 	public Response Logoff(int userid) throws RemoteException;
 	public Response blindAgeMatch(User user) throws RemoteException;
 	public Response blindLocationMatch(User user) throws RemoteException;
-	public Response search(Map<String, ArrayList> map) throws RemoteException;
+	public Response search(Map<String, ArrayList<String>> map) throws RemoteException;
 	public Response getOnlineUsers(User user) throws RemoteException;
 	public Response setClientRmi(String ip,User user) throws RemoteException;
-	public Response selectionMatch(User user, Map<String, ArrayList> map) throws RemoteException;
+	public Response selectionMatch(User user, Map<String, ArrayList<String>> map) throws RemoteException;
 	public Response criteriaMatch(User user) throws RemoteException;
 	public Response UpdateUser(SignUp signUp, int userid) throws RemoteException;
 	public void sendMail(Mail mail) throws RemoteException;

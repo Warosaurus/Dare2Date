@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 
 
 public class FormDetailsWindow extends JFrame {
@@ -741,24 +742,31 @@ public class FormDetailsWindow extends JFrame {
 		confirm.add(lblConfirm_Town);
 		
 		lblFinal_name = new JLabel(firstName+" "+surName);
-		lblFinal_name.setEnabled(false);
-		lblFinal_name.setBackground(new Color(192, 192, 192));
+		lblFinal_name.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+                lblFinal_name.setOpaque(true);
+		lblFinal_name.setBackground(Color.WHITE);
 		lblFinal_name.setForeground(Color.BLACK);
 		lblFinal_name.setBounds(240, 150, 120, 20);
 		confirm.add(lblFinal_name);
 		
 		lblFinal_DOB = new JLabel(formatCal.format(dob.getTime()));
-		lblFinal_DOB.setEnabled(false);
+		lblFinal_DOB.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+                lblFinal_DOB.setOpaque(true);
+                lblFinal_DOB.setBackground(Color.WHITE);
 		lblFinal_DOB.setBounds(240, 180, 120, 20);
 		confirm.add(lblFinal_DOB);
 		
 		lblFinal_Gender = new JLabel(gender);
-		lblFinal_Gender.setEnabled(false);
+		lblFinal_Gender.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+                lblFinal_Gender.setBackground(Color.WHITE);
+                lblFinal_Gender.setOpaque(true);
 		lblFinal_Gender.setBounds(240, 210, 120, 20);
 		confirm.add(lblFinal_Gender);
 		
 		lblFinal_Location = new JLabel(location);
-		lblFinal_Location.setEnabled(false);
+		lblFinal_Location.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+                lblFinal_Location.setBackground(Color.WHITE);
+                lblFinal_Location.setOpaque(true);
 		lblFinal_Location.setBounds(240, 240, 120, 20);
 		confirm.add(lblFinal_Location);
 		
@@ -779,22 +787,30 @@ public class FormDetailsWindow extends JFrame {
 		confirm.add(lblConfirm_Level);
 		
 		JLabel lblFinal_Email = new JLabel(email);
-		lblFinal_Email.setEnabled(false);
+		lblFinal_Email.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+                lblFinal_Email.setBackground(Color.WHITE);
+                lblFinal_Email.setOpaque(true);
 		lblFinal_Email.setBounds(570, 150, 170, 20);
 		confirm.add(lblFinal_Email);
 		
 		JLabel lblFinal_Password = new JLabel(password);
-		lblFinal_Password.setEnabled(false);
+		lblFinal_Password.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+                lblFinal_Password.setBackground(Color.WHITE);
+                lblFinal_Password.setOpaque(true);
 		lblFinal_Password.setBounds(570, 180, 170, 20);
 		confirm.add(lblFinal_Password);
 		
 		JLabel lblFinal_AccountNumber = new JLabel(accountNumber);
-		lblFinal_AccountNumber.setEnabled(false);
+		lblFinal_AccountNumber.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+                lblFinal_AccountNumber.setBackground(Color.WHITE);
+                lblFinal_AccountNumber.setOpaque(true);
 		lblFinal_AccountNumber.setBounds(570, 210, 170, 20);
 		confirm.add(lblFinal_AccountNumber);
 		
 		JLabel lblFinal_Level = new JLabel(cbgAcc.getSelectedCheckbox().getLabel());
-		lblFinal_Level.setEnabled(false);
+		lblFinal_Level.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+                lblFinal_Level.setBackground(Color.WHITE);
+                lblFinal_Level.setOpaque(true);
 		lblFinal_Level.setBounds(570, 240, 170, 20);
 		confirm.add(lblFinal_Level);
 		
@@ -804,7 +820,7 @@ public class FormDetailsWindow extends JFrame {
 				onClickNext(confirm,personal);
 			}
 		});
-		btnEditPersonalDetails.setBounds(139, 310, 165, 25);
+		btnEditPersonalDetails.setBounds(150, 290, 165, 25);
 		confirm.add(btnEditPersonalDetails);
 		
 		JButton btnEditAccountDetails = new JButton("Edit Account Details..");
@@ -813,7 +829,7 @@ public class FormDetailsWindow extends JFrame {
 				onClickNext(confirm,account);
 			}
 		});
-		btnEditAccountDetails.setBounds(435, 310, 165, 25);
+		btnEditAccountDetails.setBounds(470, 290, 165, 25);
 		confirm.add(btnEditAccountDetails);
 		
 		onDrawPictures(confirm);

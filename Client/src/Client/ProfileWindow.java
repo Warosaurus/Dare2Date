@@ -329,13 +329,10 @@ public class ProfileWindow extends UnicastRemoteObject implements ActionListener
                                         System.out.println("Everything went okay.");
                                         System.out.println(res.getResponse());
                                         User userFound = (User)res.getResponse();
+                                        
                                         if( userFound != null ){
-                                            System.out.println(userFound.toString());
-                                            ArrayList<User> usersFounds = new ArrayList();
-                                            usersFounds.add(userFound);
-                                            usersFounds = (ArrayList<User>) res.getResponse();
-                                            User[] userArray = new User[usersFounds.size()];
-                                            onDrawSearchResults(panelSearchResults,userArray);
+                                            setProfile(userFound);
+                                            changePanels(MainlayeredPane,ProfilelayeredPane);
                                         }
                                         else
                                             noResults(3);
