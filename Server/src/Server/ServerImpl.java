@@ -118,7 +118,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			Iterator<Integer> iter = userServerMap.keySet().iterator();
 			while (iter.hasNext() && valid == true) {
 				Integer i = iter.next();
-				if (userServerMap.get(i).getEmail().equals(email)) {
+				if (userServerMap.get(i).getEmail().equalsIgnoreCase(email)) {
 					valid = false;
 				}
 			}
@@ -141,7 +141,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			Iterator<Integer> iter = userServerMap.keySet().iterator();
 			do {
 				Integer i = iter.next();
-				if ((userServerMap.get(i).getEmail().equals(email)) && (userServerMap.get(i).getPass().equals(pass))) {
+				if ((userServerMap.get(i).getEmail().equalsIgnoreCase(email)) && (userServerMap.get(i).getPass().equals(pass))) {
 					//valid = true;
 					userid = i;
 				}
