@@ -1290,7 +1290,7 @@ public void onDrawSearchResults(JPanel pane,User[] users){
             textArea.setLineWrap(true);
             if(mail.getSender().getUserid() != currentUser.getUserid()){
                 x_im = 120;
-                if(mail.getSender().getGender() == "Female")
+                if(mail.getSender().getGender().equals("Female"))
                     label.setBackground(new Color(255,219,219));
                 else
                     label.setBackground(new Color(150,174,239));
@@ -1362,10 +1362,10 @@ public void onDrawSearchResults(JPanel pane,User[] users){
 
         }
         
-         @Override
-        public void updateUsers(ArrayList<User> users) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//         @Override
+//        public void updateUsers(ArrayList<User> users) throws RemoteException {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
         
         public void checkCriteria(int checker,String string){
                        

@@ -1,7 +1,6 @@
 package Base;
 
 import java.io.Serializable;
-
 /**
  *
  */

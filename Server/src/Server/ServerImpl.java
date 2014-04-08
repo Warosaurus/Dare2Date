@@ -470,7 +470,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 			while (iter.hasNext()) {
 				Integer i = iter.next();
 				if (sessions.get(userMap.get(i).getUserid())) {
-					if (userMap.get(i).getUserid() != i) {
+					if (user.getUserid() != i) {
 						onlineUsers.add(userMap.get(i));
 					}
 				}
@@ -497,7 +497,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServiceInterface 
 		try {
 			String ip = clientIps.get(mail.getReciever().getUserid());
 			ClientInterface chat = (ClientInterface) Naming.lookup(ip);
-			chat.recieveMail(mail);
+			chat.receiveMail(mail);
 		} catch (MalformedURLException | NotBoundException | RemoteException | NullPointerException e) {
 			System.out.println(e);
 		}
